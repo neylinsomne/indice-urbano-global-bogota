@@ -1,0 +1,1753 @@
+\documentclass[12pt, a4paper, twoside]{report}
+
+% Idioma y títulos
+\usepackage[spanish, es-nodecimaldot, es-noquoting]{babel}
+\addto\captionsspanish{\renewcommand{\bibname}{Referencias}}
+
+\usepackage{tikz,tikz-3dplot,tkz-euclide}
+\usetikzlibrary{positioning, arrows.meta, shadows, shapes.geometric}
+
+% Codificación y fuentes
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{palatino}
+
+% Matemáticas y teoremas
+\usepackage{amsmath, amsthm, amsfonts, mathtools}
+
+% Gráficos y dibujo
+\usepackage{graphicx}
+
+% Tablas/variado
+\usepackage{booktabs}
+\usepackage{enumerate}
+\usepackage{float}
+\usepackage{microtype}
+\usepackage{listings}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+
+% Colores y enlaces
+\usepackage{xcolor}
+\definecolor{mypurple}{HTML}{622567}
+\definecolor{myred}{HTML}{D55C19}
+\definecolor{myblue}{HTML}{007A87}
+\usepackage[colorlinks,linkcolor=myblue,citecolor=mypurple]{hyperref}
+
+% Encabezados y formato de capítulos
+\usepackage{fancyhdr,titlesec}
+\renewcommand{\baselinestretch}{1.5}
+
+% Entornos de teoremas
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}{Nota}
+\newtheorem{assumption}{Supuesto}
+
+% ==========================================
+% DEFINICIONES DE VARIABLES (Poner en el Preámbulo)
+% ==========================================
+\newcommand{\IHED}{I_{\text{HED}}} % Componente Hedónico
+\newcommand{\IACC}{I_{\text{ACC}}} % Accesibilidad
+\newcommand{\ISEG}{I_{\text{SEG}}} % Seguridad
+\newcommand{\IDOT}{I_{\text{DOT}}} % Dotacional
+\newcommand{\IPNU}{I_{\text{PNU}}} % Potencial Normativo
+\newcommand{\IUG}{IUG}             % Índice Global
+
+\usepackage[round]{natbib} % 'round' pone paréntesis redondos ()
+% Encabezados
+\pagestyle{fancy}
+\setlength{\headheight}{15.5pt}
+\fancyheadoffset[LE,RO]{0pt}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
+\fancyhf{}
+\fancyhead[LE]{\makebox[0pt][l]{\thepage}\hfill\leftmark}
+\fancyhead[RO]{\rightmark\hfill\makebox[0pt][r]{\thepage}}
+\fancypagestyle{plain}{\fancyhead{}\renewcommand{\headrulewidth}{0pt}}
+
+% Formato de capítulos
+\titleformat{\chapter}[display]
+    {\normalfont\bfseries\color{myred}}
+    {\filleft\hspace*{-60pt}%
+        \rotatebox[origin=c]{90}{%
+            \normalfont\color{black}\Large%
+            \textls[180]{\textsc{\chaptertitlename}}%
+        }\hspace{10pt}%
+        {\setlength\fboxsep{0pt}%
+            \colorbox{myred}{\parbox[c][3cm][c]{2.5cm}{%
+                \centering\color{white}\fontsize{80}{90}\selectfont\thechapter}}
+        }}
+    {10pt}
+    {\titlerule[2.5pt]\vskip3pt\titlerule\vskip4pt\LARGE\sffamily}
+
+\begin{document}
+
+%%%%%%%%%%%% BEGIN TITLE PAGE %%%%%%%%%%%%
+
+\thispagestyle{empty} % For the title page, no header / footer
+
+\noindent
+    \begin{minipage}{0.1\textwidth}
+    \includegraphics[height=4 cm]{logoPUJ.png}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.5\textwidth}
+    \begin{center}
+        \renewcommand\familydefault{\sfdefault}
+        \fontfamily{phv}\selectfont
+        {\large Facultad de Ciencias\\Departamento de Matem\'aticas}
+    \end{center}
+    \end{minipage}
+
+\begin{center}
+    \noindent\textcolor{myred}{\rule{\linewidth}{4.8pt}}
+    
+    \vspace{2em}
+    \noindent {\LARGE \sc Programa Ciencia de Datos\\Trabajo de Grado}
+    
+    \vspace{3em}
+    \noindent {\Huge{\color{myblue} \'Indice de Precios Inmobiliarios por
+Bienestar y Entorno Urbano}}
+    
+    \vspace{3em}
+    \noindent {\Large \bf NEYL PEÑUELA BERNATE}
+    \vfill
+    \noindent {\Large {Director:} {\color{mypurple} \bf Vladimir Moreno G.}}
+    
+    \vspace{0.5em}
+    \noindent\textcolor{myred}{\rule{\linewidth}{4.8pt}}
+    
+    \vspace{2em}
+    {\Large \today }
+    
+    {\Large Bogot\'a, Colombia}
+\end{center}
+\newpage
+
+\vspace{10cm}
+
+\begin{center}
+
+ \includegraphics[scale=3.0]{selloagua.pdf}  
+    \end{center}
+
+
+
+\clearpage
+
+%%%%%%%%%%%% END TITLE PAGE %%%%%%%%%%%%
+
+\tableofcontents
+
+% If you have lots of figures with captions / numbers, uncomment the following line
+% \listoffigures
+
+% If you have lots of tables and want a list of them, uncomment the following line
+% \listoftables
+% --- Macros útiles ---
+\newcommand{\ratio}{\textit{ratio}}% palabra "ratio" siempre en cursiva
+
+% ==========================================
+% CAPÍTULO 1: INTRODUCCIÓN
+% ==========================================
+\chapter{Introducción}\label{ch:intro}
+\section{Contexto y Motivación}
+
+El mercado de finca raíz ha constituido tradicionalmente un vehículo fundamental de ahorro e inversión en Colombia, y específicamente Bogotá se ha visto inundada por este manejo de los inmuebles. Históricamente, agentes económicos de diversa escala, desde pequeños propietarios hasta grandes fondos de inversión, han diversificado sus portafolios mediante activos inmobiliarios, bajo la premisa de que estos ofrecen estabilidad temporal, baja volatilidad y resiliencia frente a las fluctuaciones macroeconómicas.
+
+
+
+No obstante, la valoración residencial persiste como un desafío técnico y económico. La vivienda es un activo inherentemente heterogéneo y con alta especificidad espacial; su valor de mercado no solo responde a las características físicas de la estructura, sino que es función de las preferencias de los avaluadores, las condiciones del entorno inmediato y una serie de atributos urbanos (seguridad, accesibilidad, normativa) que frecuentemente resultan subrepresentados en las metodologías de valoración convencionales y hasta subjetivos. En la literatura especializada, el enfoque hedónico, que conceptualiza el valor del bien como la suma de los precios implícitos de sus componentes, se ha establecido como el vehículo central para explicar la formación de precios \citep{rosen1974}.
+
+
+
+Finalmente, reconociendo que la interpretación de estos datos urbanos puede ser compleja para un usuario no experto, el proyecto contempla una fase de despliegue tecnológico mediante Inteligencia Artificial Generativa. Se aprovecha la capacidad de modelos de lenguaje avanzados y la riqueza de los datos no estructurados de los inmuebles para habilitar un asistente conversacional, permitiendo consultar el IUG y encontrar oportunidades de inversión mediante lenguaje natural.
+
+
+
+\section{Planteamiento del IUG}
+
+En este contexto, el presente trabajo propone el desarrollo del \textbf{\IUG} como una herramienta de análisis estadístico poblacional para Bogotá. La base empírica del estudio compila un extenso dataset de anuncios de vivienda publicados en portales de alta penetración en el mercado local. Si bien esta muestra no agota el universo transaccional total, captura una porción estadísticamente significativa de la oferta efectiva, permitiendo una trazabilidad espacial detallada a nivel de Barrio y Localidad.
+
+
+
+El \IUG{} contribuye no solo a explicar la varianza en los precios, sino a medir la calidad integral del activo inmobiliario de manera independiente al valor monetario. El índice sintetiza cinco dimensiones críticas:
+
+\begin{itemize}
+
+    \item \textbf{Componente Hedónico (Calidad Intrínseca):} Evalúa las especificaciones propias del inmueble, considerando tanto su dimensión espacial (área construida, distribución) como sus atributos físicos y de confort.
+
+    \item \textbf{Seguridad objetiva y entorno:} Medición basada en datos históricos de incidencia delictiva (GeoJSON) y percepción ciudadana.
+
+    \item \textbf{Accesibilidad y movilidad:} Oferta de transporte público (SITP/TransMilenio) y conectividad vial.
+
+    \item \textbf{Proximidad a puntos de interés (Dotacionales):} Cercanía a servicios de salud, educación, abastecimiento y espacio público.
+
+    \item \textbf{Potencial normativo:} Capacidad de edificabilidad y lineamientos de planeación urbana (POT).
+
+\end{itemize}
+
+
+
+\section{Pregunta de Investigación, Objetivos y Postura Metodológica}
+\label{sec:objetivos}
+
+\subsection{Postura: el IUG no es un predictor de precio}
+
+Un señalamiento natural sobre cualquier indicador construido a partir de variables urbanas es: ``¿qué tan bien predice el precio?''. Esta tesis toma deliberadamente la postura contraria. El \IUG{} \textbf{no se propone inferir, estimar ni predecir el precio de mercado} de un inmueble; existen ya familias maduras de Modelos de Valoración Automática (AVM) que cumplen ese rol con métricas IAAO bien establecidas (COD, PRD, PRB).
+
+Lo que se propone es una \textbf{herramienta-perspectiva}: un instrumento analítico que condensa cinco metodologías heterogéneas (modelo gravitacional de accesibilidad, indicador tridimensional de seguridad, scoring hedónico mediante PCA, proximidad acumulada a equipamientos y scoring normativo del POT) en una sola escala interpretable, calculada de forma \emph{ortogonal al precio}. La virtud del \IUG{} no reside en su correlación con el precio sino en su capacidad de revelar la \emph{brecha} entre lo que el mercado paga y la calidad urbana objetiva del entorno.
+
+\subsection{Pregunta de investigación}
+
+\begin{quote}
+\itshape
+¿Es posible construir, a partir de fuentes abiertas y replicables, un indicador sintético de calidad urbana que sea estadísticamente válido, robusto y operativamente útil para identificar discrepancias entre el precio observado y los fundamentales urbanos del territorio?
+\end{quote}
+
+La pregunta es deliberadamente \emph{descriptiva-decisional} y no \emph{predictiva}. Su validación no se establece por bondad de ajuste sobre el precio sino por cuatro propiedades verificables empíricamente: ortogonalidad informativa, robustez ante perturbaciones, estabilidad espacial, y capacidad de discriminar segmentos accionables del mercado (Capítulo~\ref{ch:validez}).
+
+\subsection{Objetivo general}
+
+Diseñar, implementar y validar el Índice Urbano Global (\IUG{}) como una herramienta poblacional, abierta y reproducible que sintetice cinco dimensiones del bienestar urbano de Bogotá en una métrica única, independiente del precio de mercado, y que opere como sistema de soporte a la decisión inmobiliaria.
+
+\subsection{Objetivos específicos}
+
+\begin{enumerate}
+    \item \textbf{Operacionalizar} cinco dimensiones del entorno urbano (accesibilidad, seguridad, calidad construida, dotación y potencial normativo) en subíndices comparables, derivados de fuentes oficiales abiertas (DANE, IDECA, SDP, POT 555, EPV 2024, ICSU).
+
+    \item \textbf{Construir un pipeline de datos reproducible} que integre extracción automatizada de oferta inmobiliaria, asignaciones espaciales PostGIS, control de calidad mediante DBSCAN y persistencia versionada, documentando la trazabilidad completa de cada inmueble desde el anuncio hasta el indicador final.
+
+    \item \textbf{Estimar un modelo hedónico de referencia} (OLS, Ridge, Lasso, Elastic Net) cuyo propósito \emph{no} es servir como predictor operativo, sino como \emph{benchmark} contra el cual contrastar la información incremental que aporta el \IUG{}.
+
+    \item \textbf{Validar estadísticamente el indicador} mediante un protocolo de once pruebas que cubre bondad de ajuste, robustez, validez convergente y validez de uso (modelos anidados, comunalidad, estabilidad de ranking vía Monte Carlo, validación cruzada espacial, bootstrap, Ramsey RESET, comparación de especificaciones, subgrupos, AUC y matriz de mispricing).
+
+    \item \textbf{Cuantificar la incertidumbre} del indicador mediante descomposición de varianza (índices de Sobol con muestreo Saltelli) y análisis de sensibilidad ante perturbación Monte Carlo de los pesos.
+
+    \item \textbf{Habilitar el acceso operativo al sistema} mediante un despliegue web público y un asistente conversacional basado en arquitectura RAG, que democratice la consulta del indicador sin requerir conocimiento técnico de SQL ni geoestadística.
+\end{enumerate}
+
+\subsection{Hipótesis y delimitación de lo que esta tesis \emph{no} intenta}
+
+\paragraph{Hipótesis central.} Existe información estructural sobre la calidad urbana que el precio \emph{no} captura íntegramente. El \IUG{} extrae esa información, la mide y la pone a disposición del decisor en forma comparable.
+
+\paragraph{Hipótesis operativa.} La ortogonalidad entre el \IUG{} y el precio (correlación débil esperada, $|\rho| < 0.30$) no es un defecto del indicador, sino la condición \emph{necesaria} para que aporte información incremental sobre el \emph{benchmark} hedónico.
+
+\paragraph{Lo que esta tesis no intenta.} Para evitar lecturas equivocadas del aporte se delimita explícitamente lo que queda fuera del alcance:
+
+\begin{itemize}
+    \item No se propone como Modelo de Valoración Automática (AVM) ni sustituye la valoración profesional caso a caso.
+    \item No estima un precio puntual ni un intervalo de precio para un inmueble individual.
+    \item No incorpora costos de obra, tasas de descuento ni estructura financiera de un proyecto (Método Residual Dinámico).
+    \item No constituye instrumento tributario ni base catastral (Resolución IGAC 1912 de 2024); ofrece complemento analítico, no sustitución regulatoria.
+    \item No pretende eficiencia predictiva sobre el precio: la débil correlación con \emph{precio} y \emph{estrato} es un resultado consistente con la hipótesis de ortogonalidad, no una falla del modelo.
+\end{itemize}
+
+
+
+\section{Contribución y Aplicabilidad}
+
+La idea central de esta investigación es comparar el \textit{precio observado} con un conjunto de \textit{fundamentales urbanos} comparables. Este enfoque permite reducir la brecha subjetiva que introducen las valoraciones puntuales o estrictamente zonales.
+
+
+
+Al considerar la normativa reciente, como la Resolución IGAC 1912 de 2024 sobre actualización catastral masiva por zonas \citep{IGAC1912}, el \IUG{} ofrece un complemento analítico al trabajar sobre la población total de inmuebles ofertados, más allá de las zonas homogéneas fiscales.
+
+
+
+\subsection{Valor para Inversionistas y Sector Financiero}
+
+Para los agentes de inversión, el contraste entre el \IUG{} y el precio de mercado ayuda a identificar \textbf{oportunidades}, entendidas como entornos con alto valor urbanístico relativo y precios contenidos, y a emitir \textbf{alertas}, cuando el valor urbanístico es bajo y los precios son elevados, soportando así una selección de activos más eficiente basada en datos (data-driven).
+
+
+
+\subsection{Aplicación Actuarial}
+
+En el ámbito actuarial, los subíndices desagregados, por ejemplo, el componente de seguridad ($I_{SEG}$), poseen la capacidad de incorporarse directamente en modelos de frecuencia y severidad, tarificación geoespacial, análisis de acumulación de riesgo y criterios de suscripción de pólizas de hogar, sin requerir necesariamente el indicador agregado.
+
+
+
+\section{Alcance Metodológico}
+
+La metodología integra cuatro componentes analíticos articulados, cada uno respondiendo a una pregunta distinta sobre el mismo conjunto de datos:
+
+\begin{enumerate}
+
+    \item[(i)] \textbf{Benchmark hedónico:} Modelo de regresión con cuatro estimadores (OLS, Ridge, Lasso, Elastic Net) y métricas IAAO (COD, PRD, PRB). Su función es \emph{descriptiva}: cuantificar lo que el mercado retribuye actualmente y servir como línea base contra la cual contrastar el aporte incremental del \IUG{}.
+
+    \item[(ii)] \textbf{Índice sintético:} Construcción del \IUG{} como combinación ponderada de cinco subíndices, calculado de forma independiente del precio. Habilita el \emph{Ratio de Oportunidad} como instrumento de detección de \emph{mispricing} relativo:
+
+    \[
+    \ratio = \frac{\IUG}{\text{Precio Estandarizado}}
+    \]
+
+    Este ratio permite mapear sobre- y subvaloraciones espaciales en Bogotá.
+
+    \item[(iii)] \textbf{Protocolo de validación estadística:} Once pruebas (Capítulo~\ref{ch:validez}) que verifican la robustez del indicador bajo perturbación Monte Carlo, validación cruzada espacial, bootstrap, especificación funcional y discriminación de cuadrantes accionables.
+
+    \item[(iv)] \textbf{Despliegue para decisión:} Plataforma web con mapa coroplético, panel de subíndices y asistente conversacional basado en arquitectura RAG (Retrieval-Augmented Generation), diseñado para democratizar el acceso al indicador sin requerir conocimiento técnico de bases de datos ni geoestadística.
+
+\end{enumerate}
+
+% ==========================================
+% CAPÍTULO 2: MARCO TEÓRICO Y CONCEPTUAL
+% ==========================================
+\chapter{Marco Teórico}\label{ch:marco_teorico}
+
+\section{Fundamentos Econométricos}
+
+\subsection{Lo que ve el mercado: Regresión Lineal Múltiple}
+El punto de partida para modelar el precio es la especificación lineal clásica. Sea $Y$ la variable respuesta (precio o log-precio) y $X_1,\dots,X_p$ los predictores (atributos). En notación matricial, el modelo se expresa como:
+\begin{equation}
+\mathbf{Y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{\varepsilon}
+\end{equation}
+Donde:
+\begin{itemize}
+    \item $\mathbf{X} \in \mathbb{R}^{n\times (p+1)}$ es la matriz de diseño (incluyendo el intercepto).
+    \item $\boldsymbol{\beta}=(\beta_0,\dots,\beta_p)^\top$ es el vector de coeficientes a estimar.
+    \item $\boldsymbol{\varepsilon} \sim \mathcal{N}(\mathbf{0},\sigma^2\mathbf{I})$ es el término de error, bajo supuestos de independencia y homocedasticidad.
+\end{itemize}
+
+El estimador de Mínimos Cuadrados Ordinarios (MCO) está dado por $\hat{\boldsymbol{\beta}}=(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\mathbf{Y}$, siendo este el Mejor Estimador Lineal Insesgado (BLUE) bajo las condiciones de Gauss-Markov. En la práctica inmobiliaria, es crítico evaluar la linealidad, la normalidad de los residuos y, especialmente, la multicolinealidad entre atributos estructurales.
+
+\subsection{Teoría de Precios Hedónicos}
+La valoración residencial presenta complejidades derivadas de la heterogeneidad del activo. La Teoría de Precios Hedónicos, formalizada por \citet{rosen1974}, postula que los bienes heterogéneos son valorados por su conjunto de atributos de utilidad. El modelo descompone el precio total en la suma de los valores implícitos de sus características:
+\begin{enumerate}
+    \item \textbf{Estructurales:} Área, edad, acabados.
+    \item \textbf{Vecindario:} Estrato, demografía.
+    \item \textbf{Localización:} Accesibilidad, cercanía a CBD (Central Business District).
+\end{enumerate}
+Mientras que la estimación por MCO captura los efectos promedio, la \textbf{Regresión Cuantílica} permite revelar la heterogeneidad de estos efectos a lo largo de la distribución condicional del precio (ej. en los cuantiles $q_{10}, q_{50}, q_{90}$), reconociendo que el mercado de lujo puede valorar los atributos de forma distinta al mercado de vivienda de interés social.
+
+\section{Enfoques de Valoración y Desarrollo Urbano}
+
+\subsection{Valoración Masiva y Modelos Poblacionales}
+En diversas jurisdicciones, la gestión tributaria y catastral ha migrado hacia esquemas de \emph{Valoración Masiva Automatizada} (AVM). Estos sistemas buscan consistencia y eficiencia mediante modelos econométricos calibrados con información transaccional y catastral. Este trabajo se alinea con este espíritu comparativo al estimar un modelo supervisado para caracterizar "lo que ve el mercado", pero innova al proponer el \IUG{} como una métrica independiente del precio para contrastar el valor observado con los fundamentales urbanos.
+
+\subsection{El Método Residual Dinámico y su Relación con el IUG}
+En el ámbito del desarrollo inmobiliario, la valoración de suelo o proyectos en curso suele realizarse mediante el \emph{Método Residual Dinámico}. Este enfoque calcula el valor actual del suelo partiendo del valor hipotético del proyecto terminado y descontando los costos de construcción, honorarios, financieros y la utilidad del promotor en el tiempo \citep{TasadorResidual}. Es especialmente útil para activos que aún no generan rentas o suelos urbanizables.
+
+\begin{remark}[\textbf{Relación con este estudio}]
+El enfoque residual es idóneo cuando el \emph{potencial edificatorio} es el driver principal del valor. En esta tesis, dicha dimensión se captura mediante el subíndice $I_{PNU}$ (Potencial Normativo–Urbanístico), que resume la capacidad edificatoria (índice de construcción) y los usos permitidos por el POT.
+\\
+Sin embargo, el \IUG{} no internaliza explícitamente costos de obra o tasas de descuento financiero; su función es complementaria. Mientras el método residual determina la viabilidad financiera de un proyecto específico, el \IUG{} y el ratio IUG/Precio ofrecen un \emph{benchmark} espacial poblacional para detectar si el mercado está pagando por el suelo un precio acorde a su capacidad normativa y calidad urbana, independientemente de la estructura de costos de un desarrollador particular.
+\end{remark}
+
+\section{Dimensiones del Bienestar Urbano}
+
+\subsection{Espacio Público y Seguridad}
+El bienestar urbano trasciende la propiedad privada. El espacio público (zonas verdes, parques) y la seguridad (tanto objetiva, medida en tasas de criminalidad, como subjetiva/percibida) son determinantes en la disposición a pagar de los hogares. La literatura sugiere que la inseguridad actúa como un "impuesto implícito" sobre el valor de la vivienda, mientras que la accesibilidad peatonal y el transporte masivo generan plusvalías por localización.
+
+\subsection{Econometría Espacial y Machine Learning}
+Dado que "todo está relacionado con todo, pero las cosas cercanas están más relacionadas que las distantes" (Primera Ley de la Geografía, Tobler), los modelos inmobiliarios deben gestionar la dependencia espacial.
+\begin{itemize}
+    \item \textbf{Diagnóstico:} Uso del Índice de Moran para detectar autocorrelación en los residuos.
+    \item \textbf{Exploración:} Técnicas de aprendizaje no supervisado como \textbf{PCA} (Análisis de Componentes Principales) para reducir la dimensionalidad de atributos correlacionados, y \textbf{DBSCAN} para identificar "clústeres" espaciales de precios o anomalías que no siguen la lógica del mercado general.
+\end{itemize}
+
+% ==========================================
+% SECCIÓN 2.4: MARCO CONCEPTUAL Y OPERATIVO
+% ==========================================
+
+\section{Marco Conceptual y Definiciones Operativas}
+\label{sec:marco_conceptual}
+
+A diferencia del marco teórico, que expone los fundamentos científicos generales, esta sección operacionaliza dichas teorías en variables específicas, estableciendo el sistema de ecuaciones del Índice Urbano Global (IUG) y los protocolos de manejo de datos.
+
+\subsection{Definiciones Básicas del Estudio}
+\begin{description}
+    \item[\textbf{Inmueble (Unidad de Análisis):}] Anuncio georreferenciado de vivienda (Propiedad Horizontal o Casa) en Bogotá. El precio observado se estandariza como precio por metro cuadrado ($\tilde P_i$), ajustado por métricas de control.
+    \item[\textbf{Barrio / Localidad:}] Unidades administrativas del Distrito Capital usadas como contenedores espaciales para la agregación de métricas zonales y validación geométrica.
+    \item[\textbf{Modelo Hedónico:}] Especificación econométrica supervisada que explica el logaritmo del precio en función de los atributos. Representa \emph{lo que ve el mercado}.
+    \item[\textbf{Índice Urbano Global (IUG):}] Indicador sintético adimensional (escala 0-5), \emph{independiente del precio}, que cuantifica la calidad integral del entorno urbano.
+\end{description}
+
+% -- FUSIÓN DE FÓRMULA, TABLA Y NORMALIZACIÓN --
+\subsection{Construcción y Formulación Matemática del IUG}
+\label{subsec:construccion_iug}
+
+El modelo conceptual del índice se define como la combinación lineal ponderada de cinco dimensiones críticas del bienestar urbano. Para cada inmueble $i$, la formulación matemática se expresa como:
+
+\begin{equation}
+\IUG_i = w_1 I_{HED} + w_2 I_{ACC} + w_3 I_{SEG} + w_4 I_{DOT} + w_5 I_{PNU}
+\end{equation}
+
+Donde $\sum w_k = 1$. Cada uno de estos componentes ($I_k$) se calcula a partir de variables operativas específicas, detalladas en la Tabla \ref{tab:indicadores_conceptuales}.
+
+\begin{table}[ht]
+  \centering
+  \caption{Definición operativa y dirección de los subíndices del IUG.}
+  \label{tab:indicadores_conceptuales}
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{@{}p{1.5cm} p{3.5cm} p{8.0cm} p{1.5cm}@{}}
+    \toprule
+    \textbf{Símbolo} & \textbf{Dimensión} & \textbf{Definición Operativa} & \textbf{Signo ($S$)}\\
+    \midrule
+    $I_{HED}$ & Calidad Intrínseca & \textbf{Score Hedónico:} Resultado de un PCA sobre variables estructurales (área, baños, garajes). Representa el confort privado. & + \\ \addlinespace
+    
+    $I_{ACC}$ & Accesibilidad & \textbf{Modelo Gravitacional:} Sumatoria de oportunidades ponderadas por el inverso de la distancia ($d_{ij}^{-\beta}$) a estaciones de TransMilenio y SITP. & + \\ \addlinespace
+    
+    $I_{SEG}$ & Seguridad & \textbf{Indicador Tridimensional:} Combina tres capas: (1)~de proximidad local (proximidad a CAI y sectores priorizados, peso 0.40), (2)~criminalidad objetiva ICSU con 7 tipos de delito normalizados por km$^2$ (peso 0.30), y (3)~percepción subjetiva derivada de la EPV 2024 (peso 0.30). & $-$ (Inv) \\ \addlinespace
+    
+    $I_{DOT}$ & Dotacional & \textbf{Proximidad Acumulada:} Disponibilidad espacial de equipamientos (salud, educación, cultura) en radios de caminabilidad (400m - 800m). & + \\ \addlinespace
+    
+    $I_{PNU}$ & Normativa & \textbf{Potencial de Desarrollo:} Scoring basado en el POT 555, evaluando la edificabilidad permitida (altura) y el tratamiento urbanístico. & + \\
+    \bottomrule
+  \end{tabular}%
+  }
+\end{table}
+
+Se seleccionaron estas métricas bajo criterios de disponibilidad de datos abiertos y literatura previa. Específicamente, para la dimensión de \textbf{Seguridad} ($I_{SEG}$), el diseño original contemplaba un enfoque de densidad inversa basado exclusivamente en datos objetivos de criminalidad. Durante la fase de desarrollo, la auditoría metodológica reveló que la correlación entre criminalidad objetiva y percepción ciudadana es débil ($r = 0.3174$), y que el 44\,\% de las localidades exhibe la denominada ``paradoja de inseguridad'' (baja criminalidad reportada pero alta percepción de riesgo). Esto motivó la reformulación hacia un indicador tridimensional:
+
+\begin{equation}\label{eq:iseg_tridim}
+I'_{SEG} = \underbrace{0.40 \cdot S_{micro}}_{\text{CAI + sectores}}
++ \underbrace{0.30 \cdot D_{obj}}_{\text{criminalidad ICSU}}
++ \underbrace{0.30 \cdot D_{subj}}_{\text{percepcion EPV}}
+\end{equation}
+
+donde $D_{obj}$ proviene del Indicador Compuesto de Seguridad Urbana (ICSU), que analiza 7 tipos de delito normalizados por km$^2$, y $D_{subj}$ integra 8 variables de la Encuesta de Percepción y Victimización (EPV 2024, Cámara de Comercio de Bogotá, $n = 19\,354$). Los pesos son configurables mediante perfiles de usuario (equilibrado, inversión, residencial), lo que permite que distintos perfiles de decisión prioricen la dimensión más relevante para su caso de uso. El componente de proximidad local ($S_{micro}$) se preserva como eje articulador del indicador.
+
+Para el componente \textbf{Dotacional} ($I_{DOT}$), los radios de 400m y 800m no son arbitrarios; corresponden a los estándares de caminabilidad urbana (5 y 10 minutos a pie) que determinan la cobertura efectiva de servicios para un residente sin vehículo particular.
+
+\paragraph{Normalización y Escala Común}
+Dado que las dimensiones descritas anteriormente poseen unidades heterogéneas (metros, densidades, conteos), es necesario llevarlas a una escala uniforme. Se adopta una normalización Min-Max escalada al rango $[0, 5]$ con el objetivo de facilitar la interpretación del usuario final:
+
+\begin{equation}
+S(X_i) = 5 \times \frac{\operatorname{rank}(X_i)-1}{N-1}
+\end{equation}
+
+A diferencia de una estandarización Z-score (que produce valores negativos difíciles de comunicar a un público no experto), esta escala permite una lectura intuitiva donde 5 representa la máxima dotación teórica observada en la muestra. Finalmente, esta métrica permite calcular el \textbf{Ratio de Oportunidad}:
+
+\begin{equation}
+\text{Ratio}_i = \frac{\IUG_i}{\tilde P_i}
+\end{equation}
+
+Donde un $\text{Ratio} > 1$ sugiere una subvaloración relativa, indicando una potencial oportunidad de inversión.
+
+% -- FIN DE LA FUSIÓN --
+
+\subsection{Conceptos de Inteligencia Artificial}
+Para sustentar el módulo de despliegue tecnológico (Chatbot) descrito en la metodología, se definen los siguientes conceptos fundamentales:
+
+\begin{description}
+    \item[\textbf{Embeddings (Vectorización):}] Representación matemática de texto no estructurado en vectores numéricos densos, donde la cercanía geométrica implica similitud semántica.
+    \item[\textbf{RAG (Retrieval-Augmented Generation):}] Arquitectura que conecta modelos de lenguaje (LLMs) con bases de datos vectoriales privadas para responder consultas sobre el índice con veracidad.
+\end{description}
+
+\subsection{Protocolo de Tratamiento de Outliers (DBSCAN)}
+\label{subsec:dbscan_outliers}
+Dado el ruido inherente a los portales inmobiliarios, se utiliza el algoritmo de clustering espacial basado en densidad (DBSCAN). Las observaciones etiquetadas como \texttt{-1} (ruido) siguen este protocolo:
+
+\begin{enumerate}
+  \item \textbf{Clasificación:} Marcar \texttt{-1} como \textit{atípico} (posible error de geocodificación o dato anómalo).
+  \item \textbf{Estrategia de Modelado:}
+    \begin{itemize}
+      \item \emph{Modelos Hedónicos:} Se estiman sobre la muestra limpia (sin outliers) para evitar sesgos en los coeficientes $\beta$.
+      \item \emph{Cálculo de IUG:} Se calcula para \textbf{todos} los inmuebles, pero los outliers se visualizan con simbología diferenciada para alertar al usuario.
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Interpretación de Resultados Econométricos}
+\label{subsec:lectura_rlm}
+Para la lectura de los modelos de precios, se adoptan los siguientes criterios:
+\begin{enumerate}
+  \item \textbf{Señal y Magnitud:} Interpretación económica de los signos de $\hat\beta$.
+  \item \textbf{Precisión Estadística:} Reporte de intervalos de confianza al 95\% y errores estándar robustos (HC).
+  \item \textbf{Heterogeneidad:} Análisis de coeficientes por deciles de precio ($q_{10}$ vs $q_{90}$) para entender la segmentación del mercado.
+\end{enumerate}
+
+\paragraph{Cross-Validation Espacial}
+Dado que las observaciones inmobiliarias presentan autocorrelación espacial, donde inmuebles cercanos tienden a tener precios similares en concordancia con la Primera Ley de la Geografía, la validación cruzada estándar (KFold aleatorio) puede generar \emph{data leakage} cuando inmuebles del mismo edificio o cuadra caen en folds distintos. Para mitigar este riesgo, se implementa como diagnóstico complementario un esquema \textbf{GroupKFold por localidad}, donde todos los inmuebles de una misma unidad administrativa pertenecen al mismo fold. Se define el \textit{leakage ratio} como:
+\begin{equation}
+\text{Leakage} = \frac{\text{RMSE}_{\text{espacial}} - \text{RMSE}_{\text{estandar}}}{\text{RMSE}_{\text{estandar}}}
+\end{equation}
+Si este ratio supera el 15\,\%, se emite una advertencia de que el modelo podría estar memorizando efectos de barrio en vez de aprender patrones generalizables.
+
+\paragraph{Intervalos de Confianza con $t$-Student en el ACM}
+El módulo de Análisis Comparativo de Mercado (ACM) requiere estimar intervalos de confianza a partir de conjuntos pequeños de comparables ($n = 2$--$10$). Con muestras de este tamaño, la distribución normal subestima la incertidumbre del estimador, produciendo intervalos artificialmente estrechos. Por tanto, se adopta la distribución $t$-Student con $n-1$ grados de libertad y desviación típica \emph{muestral} ($\div (n-1)$) para el cálculo de los intervalos al 90\,\%. A modo de referencia, para $n = 3$ el valor crítico $t_{2,\,0.95} = 2.920$ produce intervalos un 77\,\% más anchos que los obtenidos con $z_{0.95} = 1.645$, reflejando con mayor fidelidad la incertidumbre real de la estimación. La asimetría del intervalo solo se reporta cuando $n \geq 8$.
+
+
+
+
+
+
+% ==========================================
+% CAPÍTULO 3: METODOLOGÍA
+% ==========================================
+
+\chapter{Metodología}\label{ch:metodologia}
+
+El presente capítulo detalla la estrategia de ejecución técnica adoptada para la construcción del Índice Urbano Global (\IUG). A diferencia del marco conceptual, que define las variables teóricas, esta sección describe la \textbf{arquitectura de datos}, el \textbf{flujo de procesamiento} y las \textbf{herramientas computacionales} que permiten transformar los datos brutos en métricas de valor, garantizando la reproducibilidad, escalabilidad y auditoría del estudio.
+
+\section{Enfoque de Investigación: Big Data Urbano}
+
+El estudio se enmarca dentro del paradigma de \textbf{Big Data} y sigue la metodología estándar \textbf{CRISP-DM} (Cross-Industry Standard Process for Data Mining). Según la definición canónica de las "3 Vs" \citep{laney2001}, el proyecto cumple con los criterios taxonómicos de esta disciplina:
+
+\begin{itemize}
+    \item \textbf{Volumen:} Gestión de cartografía catastral masiva (millones de vértices geométricos) y bases históricas de seguridad con alta densidad de registros.
+    \item \textbf{Variedad:} Fusión de formatos heterogéneos, integrando archivos espaciales (\texttt{SHP}, \texttt{GeoJSON}), registros tabulares históricos (\texttt{CSV} de delitos) y datos no estructurados (\texttt{HTML} proveniente de Web Scraping).
+    \item \textbf{Veracidad:} Validación cruzada de la oferta de mercado contra fuentes oficiales del Distrito (IDECA, SDP) para mitigar el ruido inherente a la información web.
+\end{itemize}
+
+% ===================== DIAGRAMA CRISP-DM (TikZ) =====================
+\begin{figure}[htbp]
+\centering
+\resizebox{1.0\textwidth}{!}{%
+\begin{tikzpicture}[
+    node distance=1.5cm and 1.5cm,
+    font=\footnotesize,
+    % Estilos de los nodos
+    phase/.style={
+        rectangle,
+        draw=black!60,
+        fill=white,
+        rounded corners,
+        minimum width=3.8cm,
+        minimum height=2.2cm,
+        align=left,
+        drop shadow,
+        line width=0.8pt
+    },
+    % Estilos de las flechas
+    arrow/.style={->, >=latex, very thick, color=myblue},
+    cyclearrow/.style={->, >=latex, thick, dashed, color=myred, bend left=45}
+]
+
+% -- Fila Superior --
+\node[phase] (bu) {\textbf{1. Business Understanding}\\$\bullet$ Objetivo: IUG vs. Precio\\$\bullet$ KPI: Ratio Oportunidad\\$\bullet$ Alcance: Bogotá};
+
+\node[phase, right=of bu] (du) {\textbf{2. Data Understanding}\\$\bullet$ Exploración de Portales\\$\bullet$ Calidad (IGAC/SIEDCO)\\$\bullet$ Cobertura Espacial};
+
+% -- Fila Central --
+\node[phase, below=of du] (dp) {\textbf{3. Data Preparation}\\$\bullet$ ETL Distribuido\\$\bullet$ Geocodificación\\$\bullet$ Snapping Espacial};
+
+\node[phase, left=of dp] (mo) {\textbf{4. Modeling}\\$\bullet$ Hedónico \& Cuantílica\\$\bullet$ Clustering DBSCAN\\$\bullet$ Cálculo IUG};
+
+% -- Fila Inferior --
+\node[phase, below=of mo] (ev) {\textbf{5. Evaluation}\\$\bullet$ Validación Cruzada\\$\bullet$ Robustez Espacial\\$\bullet$ Análisis de Sensibilidad};
+
+\node[phase, right=of ev] (de) {\textbf{6. Deployment}\\$\bullet$ Containerizaci\'on\\$\bullet$ Asistente IA\\$\bullet$ Mapas Interactivos};
+
+% -- Conexiones de Flujo (Camino Feliz) --
+\draw[arrow] (bu) -- (du);
+\draw[arrow] (du) -- (dp);
+\draw[arrow] (dp) -- (mo);
+\draw[arrow] (mo) -- (ev);
+\draw[arrow] (ev) -- (de);
+
+% -- Retroalimentaciones (Ciclos Iterativos) --
+% De Evaluación a Entendimiento del Negocio (Reiniciar ciclo)
+\draw[cyclearrow] (ev.west) to node[left, font=\tiny, color=black]{Refinar Objetivos} (bu.west);
+
+% De Modelado a Preparación de Datos (Ajuste de variables)
+\draw[->, >=latex, thick, dashed, color=myred] (mo.north) to node[right, font=\tiny, color=black]{Ajuste ETL} (dp.south);
+
+\end{tikzpicture}%
+}
+\caption{Ciclo de vida CRISP-DM adaptado al proyecto IUG: Flujo iterativo desde la definición del negocio hasta el despliegue del asistente virtual.}
+\label{fig:crispdm}
+\end{figure}
+
+\section{Fuentes de Información Oficiales}
+
+La construcción del \IUG{} se fundamenta en la integración de datos abiertos gubernamentales y fuentes colaborativas, asegurando la calidad y legalidad de la información base. La Tabla \ref{tab:fuentes_detalladas} detalla el inventario de datasets utilizados.
+
+\begin{table}[htbp]
+\centering
+\caption{Inventario detallado de fuentes de datos espaciales y alfanuméricos.}
+\label{tab:fuentes_detalladas}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{p{3.0cm} p{6.0cm} p{2.5cm} p{3.5cm}}
+\toprule
+\textbf{Dimensión} & \textbf{Dataset / Capa} & \textbf{Formato} & \textbf{Fuente} \\ \midrule
+
+\multicolumn{4}{l}{\textit{\textbf{1. Normativa y Administrativo (SDP / IDECA)}}} \\
+División & Localidades, UPL y Sectores Catastrales & GeoJSON & Datos Abiertos Bogotá \\
+Normativa (Piso) & Tratamientos Urbanísticos (POT 555) & SHP & Secretaría Planeación \\
+Edificabilidad & Rangos de edificabilidad y Alturas & SHP & Datos Abiertos Bogotá \\
+Usos del Suelo & Áreas de Actividad (Residencial/Comercial) & GDB & IDECA \\ \midrule
+
+\multicolumn{4}{l}{\textit{\textbf{2. Seguridad y Convivencia (Secretaría de Seguridad / Policía)}}} \\
+Zonas & Cuadrantes de Policía y Sectores Priorizados & GeoJSON & Datos Abiertos Bogotá \\
+Puntos & Estaciones de Policía y CAI & SHP (ZIP) & IDECA \\
+Incidencia & Delitos de Alto Impacto (Mapas de Calor) & CSV & Sec. Seguridad \\
+Percepción & Encuesta de Percepción y Victimización (EPV 2024) & Tabulados & Cámara de Comercio \\
+Barrios & Barrios Legalizados & JSON & Datos Abiertos Bogotá \\ \midrule
+
+\multicolumn{4}{l}{\textit{\textbf{3. Equipamientos y Servicios (Dotacional)}}} \\
+Educación & Colegios (Sedes) y Universidades & CSV / GeoJSON & Sec. Educación \\
+Salud & IPS y Farmacéuticos (Droguerías) & SHP / GeoJSON & Datos Abiertos Bogotá \\
+Abastecimiento & Plazas de Mercado (IPES) & Excel / GeoJSON & IPES \\
+Comercio & Centros Comerciales y Supermercados & CSV / OSM & Kaggle / OpenStreetMap \\
+Cultura & Red de Bibliotecas (BibloRed) y Teatros & GeoJSON & Sec. Cultura \\
+Recreación & Parques y Canchas (IDRD) & SHP / CSV & IDRD \\ \midrule
+
+\multicolumn{4}{l}{\textit{\textbf{4. Mercado Inmobiliario}}} \\
+Oferta & Anuncios de Vivienda (Venta/Arriendo) & HTML (DOM) & Web Scraping \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+Aunque la meta de recolección es de 10,600 registros para maximizar la cobertura espacial, la muestra consolidada de 6,418 inmuebles de vivienda ya permite inferencias estadísticas robustas. Según el Teorema del Límite Central, este volumen supera ampliamente los umbrales mínimos para la convergencia de los estimadores en los modelos de regresión hedónica planteados, garantizando que los resultados posean validez econométrica.
+
+\section{Arquitectura del Pipeline de Datos}\label{sec:pipeline}
+
+Para orquestar la ingesta y el procesamiento de información, se diseñó un pipeline automatizado con dos ramas que comparten origen pero alimentan funciones distintas: una \textbf{rama analítica espacial} sobre PostGIS, encargada del cálculo de los indicadores y los modelos econométricos, y una \textbf{rama vectorial} sobre PgVector que sustenta el asistente conversacional. Ambas se nutren de los mismos datos crudos almacenados en MongoDB, tras una etapa común de limpieza y geocodificación. La rama vectorial transforma la información no estructurada de los inmuebles en representaciones densas (\emph{embeddings}), habilitando consultas en lenguaje natural (e.g., \emph{``apartamentos cerca a parques seguros''}) que las consultas SQL convencionales no resuelven.
+
+El detalle técnico de la arquitectura ---diagrama del pipeline, modelo de datos completo, volumetría por tabla, contenedores y orquestación de tareas--- se documenta en el Anexo~\ref{ax:tecnico} para mantener este capítulo enfocado en la lógica metodológica del estudio.
+
+\subsection{Protocolo de Validación PCA}
+\label{subsec:validacion_pca}
+
+Dado que varios subíndices del IUG emplean Análisis de Componentes Principales para la extracción de pesos, tanto en el score hedónico ($\IHED$) como en la ponderación de modos de transporte ($\IACC$), resulta indispensable verificar que la estructura de correlación de los datos justifique la reducción factorial antes de ejecutarla. Se implementa un protocolo de validación obligatorio previo a cualquier PCA, compuesto por cuatro pasos: (1)~el test KMO (Kaiser-Meyer-Olkin), que verifica que las correlaciones parciales son lo suficientemente pequeñas, con un umbral mínimo de KMO $\geq 0.50$; (2)~el test de esfericidad de Bartlett, que verifica que la matriz de correlación difiere significativamente de la identidad ($p < 0.05$); (3)~el criterio de Kaiser, que retiene únicamente componentes con autovalor $\lambda > 1$; y (4)~un bootstrap de estabilidad con 200 remuestreos para calcular intervalos de confianza de los \textit{loadings}.
+
+El mínimo de observaciones para ejecutar un PCA se estableció en $n = 40$, garantizando una razón $n/p \geq 10$ con 4 variables de transporte. Si el PCA no supera la validación en cualquiera de los primeros dos tests, se activa una jerarquía de \textit{fallback} automática: PCA robusto (RobustScaler) $\to$ pesos proporcionales a la varianza $\to$ promedio simple. Este mecanismo asegura que ningún subíndice quede sin calcular por insuficiencia muestral, pero que tampoco se produzcan componentes dominados por ruido aleatorio cuando la estructura de datos es inadecuada para la factorización.
+
+\section{Consideraciones Éticas}
+El proyecto se adhiere estrictamente a la Ley 1581 de 2012 sobre protección de datos. Los registros de la base de datos en ningún momento almacenan información privada ni personal de los propietarios o anunciantes. Se utilizan exclusivamente datasets públicos o recolectados bajo políticas de uso justo con fines académicos y de investigación.
+
+% ==========================================
+% CAPÍTULO 4: RESULTADOS
+% ==========================================
+
+\chapter{Resultados}\label{ch:resultados}
+
+Este capítulo presenta los hallazgos del estudio organizados en seis ejes: la muestra final, los subíndices y el IUG desplegado espacialmente, los modelos hedónicos de precios, el asistente conversacional y, finalmente, la discusión comparativa entre lo que el mercado refleja a través de la regresión y lo que el IUG mide como calidad urbana.
+
+
+% ============================================================
+\section{Descripción de la Muestra}\label{sec:muestra}
+% ============================================================
+
+\paragraph{Fecha de corte y vigencia.}
+Los datos de mercado corresponden al corte mensual del pipeline automatizado vigente al cierre de abril de 2026, alimentado por el ciclo de \emph{scraping} programado el día 15 de cada mes. Las capas oficiales (POT 555, criminalidad por localidad, EPV 2024, dotaciones IDECA) corresponden a sus versiones públicas más recientes a esa misma fecha. El estudio admite replicación con cortes posteriores sin cambio metodológico: el resultado de cualquier mes futuro se obtiene re-ejecutando el \emph{pipeline} sobre el dataset actualizado.
+
+Tras la migración desde MongoDB Atlas y la asignación espacial mediante PostGIS, el dataset final comprende \textbf{6\,418 inmuebles} de vivienda en Bogotá: 3\,717 apartamentos (57.9\,\%) y 2\,701 casas (42.1\,\%), distribuidos en 19 localidades y 676 barrios legalizados.
+
+\begin{table}[H]
+\centering
+\caption{Distribución de la muestra de vivienda.}
+\label{tab:distribucion_res}
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+\textbf{Tipo} & $n$ & \textbf{Precio/m$^2$} & \textbf{Área med.} &
+\textbf{Estrato} & \textbf{Outliers} & \textbf{\%} \\
+\midrule
+Apartamento & 3\,717 & \$7\,384\,741 &  72.0\,m$^2$ & 4 & 106 (2.9\%) & 57.9\% \\
+Casa        & 2\,701 & \$7\,664\,971 & 240.0\,m$^2$ & 4 & 133 (4.9\%) & 42.1\% \\
+\midrule
+\textbf{Total} & \textbf{6\,418} & & & & \textbf{239 (3.7\%)} & \textbf{100\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+El DBSCAN identificó 239 outliers (3.7\,\%), más frecuentes en casas (4.9\,\%) que en apartamentos (2.9\,\%), consistente con la mayor heterogeneidad del segmento. Estos se excluyeron de los modelos hedónicos pero se conservaron en el cálculo del IUG con simbología diferenciada. Suba concentra el 24.6\,\% de la muestra y Chapinero el 22.8\,\%, reflejando la estructura real de la oferta en portales de alta penetración.
+
+
+% ============================================================
+\section{Subíndices del IUG}\label{sec:subindices}
+% ============================================================
+
+\begin{table}[H]
+\centering
+\caption{Estadísticos descriptivos de los subíndices (vivienda, $I_{k} > 0$).}
+\label{tab:estadisticos_ind_res}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+& $\IACC$ & $\ISEG$ & $\IHED$ & $\IDOT$ & $\IPNU$ & $\IUG$ \\
+\midrule
+Media ($\bar{x}$) & 1.06 & 2.75 & 4.22 & 3.34 & 3.45 & 1.50 \\
+Desv.\ est.\ ($s$)  & 1.42 & 0.77 & 1.02 & 1.42 & 0.42 & 1.28 \\
+$n$ con valor $> 0$ & 3\,448 & 6\,410 & 2\,162 & 2\,113 & 2\,139 & 6\,418 \\
+Cobertura & 53.7\% & 99.9\% & 33.7\% & 32.9\% & 33.3\% & 100\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+El $\ISEG$ cubre el 99.9\,\% de la muestra porque opera a escala de localidad, mientras que los demás indicadores dependen de intersecciones espaciales de mayor granularidad (estaciones, POIs, polígonos del POT), alcanzando coberturas cercanas al 33\,\%. El $\IUG$ se calcula para el 100\,\% de los inmuebles con los subíndices disponibles.
+
+En accesibilidad, Antonio Nariño lidera ($\bar{I}_{ACC} = 2.94$) por su posición central y alta densidad de rutas SITP, mientras que Usme ($\bar{I}_{ACC} = 1.18$) evidencia la marginalidad de la periferia sur. Un resultado notable es Suba ($\bar{I}_{ACC} = 1.71$): la localidad con más oferta inmobiliaria pero con amplias zonas interiores mal conectadas al transporte masivo.
+
+Respecto a seguridad, la incorporación del $\ISEG$ tridimensional (Ecuación~\ref{eq:iseg_tridim}) que combina la capa de proximidad local, la criminalidad objetiva del ICSU y la percepción de la EPV 2024 permite capturar la ``paradoja de inseguridad'' que afecta al 44\,\% de las localidades. Kennedy ($\ISEG = 2.39$) y Suba ($\ISEG = 2.41$) presentan los peores scores; en el caso de Suba, la disonancia entre su volumen de oferta y su percepción de inseguridad es un hallazgo que los modelos hedónicos convencionales no capturan.
+
+
+% ============================================================
+\section{Índice Urbano Global ($\IUG$)}\label{sec:iug_resultados}
+% ============================================================
+
+El $\IUG$ se calculó con pesos equiponderados ($w_k = 0.20$) para los 6\,418 inmuebles, obteniendo una distribución con media $\bar{x} = 1.50$ y desviación $s = 1.28$. Las correlaciones entre subíndices son bajas ($|r| < 0.30$), confirmando que las cinco dimensiones capturan aspectos independientes del bienestar urbano (Tabla~\ref{tab:corr_matrix_res}).
+
+\begin{table}[H]
+\centering
+\caption{Correlación de Pearson entre subíndices.}
+\label{tab:corr_matrix_res}
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+& $\IHED$ & $\IACC$ & $\ISEG$ & $\IDOT$ & $\IPNU$ \\
+\midrule
+$\IHED$ & 1.00 & & & & \\
+$\IACC$ & 0.02 & 1.00 & & & \\
+$\ISEG$ & $-0.06$ & 0.09 & 1.00 & & \\
+$\IDOT$ & $-0.03$ & \textbf{0.28} & $-0.06$ & 1.00 & \\
+$\IPNU$ & 0.03 & $-0.10$ & 0.02 & $-0.18$ & 1.00 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+La Tabla~\ref{tab:iug_localidad_res} presenta el desglose completo por localidad, ordenado por $\IUG$ descendente.
+
+\begin{table}[H]
+\centering
+\caption{Índice Urbano Global y subíndices por localidad (vivienda, ordenado por $\IUG$).}
+\label{tab:iug_localidad_res}
+\small
+\begin{tabular}{@{}lrccccccc@{}}
+\toprule
+\textbf{Localidad} & $n$ & $\IACC$ & $\ISEG$ & $\IHED$ &
+$\IDOT$ & $\IPNU$ & $\boldsymbol{\IUG}$ & \textbf{Precio/m$^2$} \\
+\midrule
+Barrios Unidos     &   39 & 1.74 & 3.06 & 4.71 & 4.21 & 3.53 & \textbf{2.17} & \$2.9M \\
+Antonio Nariño     &   85 & 2.90 & 3.49 & 3.03 & 3.76 & 2.97 & \textbf{1.92} & \$5.0M \\
+Bosa               &   44 & 1.85 & 3.04 & 4.29 & 4.19 & 3.09 & \textbf{1.71} & \$4.0M \\
+Santa Fe           &   49 & 1.51 & 2.58 & 3.82 & 4.29 & 3.66 & \textbf{1.65} & \$3.2M \\
+Puente Aranda      &  178 & 2.25 & 2.80 & 3.78 & 3.97 & 3.36 & \textbf{1.63} & \$3.3M \\
+Tunjuelito         &   76 & 2.38 & 3.00 & 4.15 & 3.71 & 3.20 & \textbf{1.63} & \$4.7M \\
+Sumapaz            &  694 & 1.07 & 3.32 & 4.27 & 3.38 & 3.42 & \textbf{1.62} & \$5.7M \\
+Kennedy            &  300 & 1.97 & 2.43 & 4.39 & 3.15 & 3.18 & \textbf{1.53} & \$4.0M \\
+Usaquén            &   86 & 1.21 & 2.65 & 3.97 & 3.44 & 3.79 & \textbf{1.53} & \$3.6M \\
+Rafael Uribe       &  478 & 0.98 & 2.54 & 4.28 & 3.75 & 3.43 & \textbf{1.53} & \$3.6M \\
+Los Mártires       &  129 & 1.15 & 2.51 & 4.24 & 3.39 & 3.63 & \textbf{1.50} & \$4.1M \\
+Chapinero          & 1\,405 & 1.13 & 2.80 & 4.23 & 2.60 & 3.48 & \textbf{1.50} & \$4.3M \\
+Suba               & 1\,478 & 0.73 & 2.41 & 4.35 & 3.76 & 3.45 & \textbf{1.47} & \$5.2M \\
+San Cristóbal      &  414 & 0.92 & 2.74 & 4.07 & 3.79 & 3.49 & \textbf{1.45} & \$3.9M \\
+Engativá           &   52 & 1.07 & 2.92 & 3.91 & 3.56 & 3.67 & \textbf{1.42} & \$3.7M \\
+Candelaria         &  379 & 0.51 & 3.08 & 3.86 & 2.83 & 3.61 & \textbf{1.36} & \$5.3M \\
+Usme               &   53 & 0.24 & 2.77 & 4.28 & 2.65 & 3.49 & \textbf{1.17} & \$3.1M \\
+Teusaquillo        &  188 & 0.32 & 3.08 & 3.69 & 3.96 & 3.35 & \textbf{1.08} & \$3.2M \\
+Ciudad Bolívar     &    7 & 1.19 & 2.88 & -- & -- & -- & \textbf{0.81} & \$2.9M \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Barrios Unidos lidera el $\IUG$ (2.17) con el mejor $\IHED$ (4.71) y precios relativamente bajos (\$2.9M/m$^2$), posicionándose como zona de alto valor urbanístico relativo. Suba y Chapinero, pese a concentrar la mayor oferta, obtienen un $\IUG$ medio (1.47--1.50) con precios superiores (\$4.3--5.2M/m$^2$), evidenciando que volumen de oferta no implica calidad urbana integral.
+
+A nivel de barrio (Tabla~\ref{tab:iug_barrio_res}), Villa Ximena (Barrios Unidos) destaca con $\IUG = 2.60$, $\IHED = 4.98$ y un precio de \$2.3M/m$^2$, muy por debajo de la mediana de Bogotá (\$4.75M/m$^2$), lo que lo posiciona como oportunidad de inversión según el \ratio{}.
+
+\begin{table}[H]
+\centering
+\caption{Top 8 barrios por $\IUG$ promedio (mínimo 10 inmuebles).}
+\label{tab:iug_barrio_res}
+\small
+\begin{tabular}{@{}llrccccccc@{}}
+\toprule
+\textbf{Barrio} & \textbf{Localidad} & $n$ & $\IACC$ & $\ISEG$ &
+$\IHED$ & $\IDOT$ & $\IPNU$ & $\boldsymbol{\IUG}$ & \textbf{\$/m$^2$} \\
+\midrule
+El Pino & Chapinero & 10 & 2.25 & 3.29 & 3.14 & 4.31 & 3.40 & \textbf{2.63} & 4.8M \\
+Villa Ximena & B. Unidos & 13 & 1.52 & 3.16 & 4.98 & 4.98 & 3.60 & \textbf{2.60} & 2.3M \\
+San Martín de P. & Sumapaz & 23 & 2.46 & 3.81 & 2.96 & 5.00 & 3.82 & \textbf{2.48} & 5.1M \\
+Centroaméricas & S. Cristóbal & 15 & 2.09 & 2.90 & 4.10 & 3.86 & 3.58 & \textbf{2.38} & 3.8M \\
+Bellavista & R. Uribe & 10 & 1.14 & 2.64 & 4.52 & 4.93 & 3.53 & \textbf{2.32} & 3.0M \\
+Floresta del Sur & S. Cristóbal & 12 & 1.34 & 2.78 & 4.50 & 4.43 & 3.40 & \textbf{2.26} & 4.4M \\
+Mariscal Sucre & Sumapaz & 11 & 2.11 & 3.46 & 3.30 & 5.00 & 3.46 & \textbf{2.18} & 4.2M \\
+Prado Pinzón & Suba & 58 & 2.23 & 2.47 & 4.06 & 4.98 & 3.38 & \textbf{2.14} & 5.0M \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsection{Contraste Extremo: Mejor versus Peor Entorno}
+
+La Tabla~\ref{tab:contraste_res} pone en evidencia la desconexión entre precio y calidad urbanística. Los cinco inmuebles con peor $\IUG$ (0.23), sin transporte cercano ($\IACC = 0$) y con baja seguridad ($\ISEG \approx 1.1$), tienen precios comparables o superiores a los del top ($\IUG \geq 4.58$). Un apartamento en Lagos de Torca se cotiza a \$6.3M/m$^2$ con un entorno urbano prácticamente vacío, mientras que un apartamento en Chico Norte con $\IUG = 4.82$ se ofrece a \$6.9M/m$^2$. El IUG hace visible esta distorsión que el precio solo no revela.
+
+\begin{table}[H]
+\centering
+\caption{Contraste entre los 5 mejores y 5 peores inmuebles por $\IUG$.}
+\label{tab:contraste_res}
+\small
+\begin{tabular}{@{}llccccccr@{}}
+\toprule
+& \textbf{Ubicación} & $\IACC$ & $\ISEG$ & $\IHED$ &
+$\IDOT$ & $\IPNU$ & $\boldsymbol{\IUG}$ & \textbf{\$/m$^2$} \\
+\midrule
+\multicolumn{9}{l}{\textit{Top 5 (mejor entorno urbano):}} \\
+Apto & Chico Norte & 4.63 & 4.99 & 5.00 & 5.00 & 4.50 & \textbf{4.82} & 6.9M \\
+Apto & Antiguo Country & 4.45 & 4.99 & 4.34 & 5.00 & 4.50 & \textbf{4.66} & 6.7M \\
+Apto & Chapinero Central & 4.56 & 4.99 & 5.00 & 5.00 & 3.60 & \textbf{4.63} & 5.6M \\
+Apto & Chapinero & 4.37 & 4.99 & 5.00 & 5.00 & 3.60 & \textbf{4.59} & 3.1M \\
+Casa & Chapinero & 4.33 & 4.99 & 5.00 & 5.00 & 3.60 & \textbf{4.58} & 2.5M \\
+\addlinespace
+\multicolumn{9}{l}{\textit{Bottom 5 (peor entorno urbano):}} \\
+Casa & Normandía & 0.00 & 1.13 & -- & -- & -- & \textbf{0.23} & 4.3M \\
+Apto & Verbenal & 0.00 & 1.13 & -- & -- & -- & \textbf{0.23} & 5.6M \\
+Apto & Lagos de Torca & 0.00 & 1.13 & -- & -- & -- & \textbf{0.23} & 6.3M \\
+Casa & Usaquén & 0.00 & 1.15 & -- & -- & -- & \textbf{0.23} & 2.7M \\
+Apto & San Antonio Norte & 0.00 & 1.14 & -- & -- & -- & \textbf{0.23} & 6.8M \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsection{Oportunidades de Inversión}
+
+El \ratio{} de oportunidad ($\IUG / \tilde{P}$) identifica inmuebles donde la calidad urbanística supera lo que el mercado cobra. La Tabla~\ref{tab:oportunidades_res} muestra que las 10 principales oportunidades son casas en estratos~2--3 con $\IUG \geq 3.58$ y precios de \$0.8--1.6M/m$^2$, muy por debajo de la mediana. Estas zonas tienen buena dotación urbana y potencial normativo, pero precios contenidos por la percepción de mercado. El contraste entre fundamentales urbanos y precio es la esencia del indicador.
+
+\begin{table}[H]
+\centering
+\caption{Top 10 oportunidades: alto $\IUG$, precio inferior a la mediana (\$4.75M/m$^2$).}
+\label{tab:oportunidades_res}
+\small
+\begin{tabular}{@{}cllccrcl@{}}
+\toprule
+\textbf{ID} & \textbf{Tipo} & \textbf{Ubicación} & \textbf{Loc.} & \textbf{E} &
+$\boldsymbol{\IUG}$ & \textbf{\$/m$^2$} & \textbf{Ratio} \\
+\midrule
+9235 & Casa & Córdoba & Engativá & 2 & 3.81 & 802K & 22.55 \\
+9326 & Casa & La Estancia & Usaquén & 3 & 3.58 & 1.2M & 14.58 \\
+8565 & Casa & Engativá & R. Uribe & 3 & 4.18 & 1.5M & 13.13 \\
+8881 & Casa & Vda. El Salitre & A. Nariño & 5 & 4.26 & 1.6M & 12.95 \\
+9220 & Casa & San Francisco & Usaquén & 2 & 3.82 & 1.4M & 12.88 \\
+9214 & Casa & Casa Blanca & Chapinero & 4 & 3.60 & 1.4M & 12.51 \\
+9229 & Casa & Engativá & R. Uribe & 3 & 4.23 & 1.6M & 12.24 \\
+9152 & Casa & Nva. Delicias & S. Cristóbal & 3 & 3.96 & 1.6M & 12.01 \\
+9032 & Casa & Gustavo Restrepo & Santa Fe & 3 & 4.12 & 1.6M & 11.95 \\
+9181 & Casa & La Azucena & Teusaquillo & 2 & 4.11 & 1.6M & 11.95 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsection{Despliegue Espacial}\label{subsec:despliegue_espacial}
+
+El sistema integra los \num{6418} inmuebles, los \num{8434} POIs de dotaciones y las capas POT~555 en una base de datos PostGIS que permite agregaciones a tres escalas: \textbf{localidad}, \textbf{barrio} e \textbf{inmueble individual}. Cada agregación se calcula vía consultas SQL parametrizadas que se exponen al frontend (mapa coroplético) y al asistente conversacional. Las Tablas~\ref{tab:iug_localidad} y~\ref{tab:iug_barrio} resumen los hallazgos espaciales más representativos.
+
+\begin{table}[H]
+\centering
+\caption{$\IUG$ promedio por localidad (vivienda, ordenado por $\IUG$ descendente).}
+\label{tab:iug_localidad}
+\small
+\begin{tabular}{@{}lrcccccc@{}}
+\toprule
+\textbf{Localidad} & $n$ & $\IACC$ & $\ISEG$ & $\IHED$ &
+$\IDOT$ & $\IPNU$ & $\boldsymbol{\IUG}$ \\
+\midrule
+Barrios Unidos     &   39 & 1.74 & 3.06 & 4.71 & 4.21 & 3.53 & \textbf{2.17} \\
+Antonio Nariño     &   85 & 2.90 & 3.49 & 3.03 & 3.76 & 2.97 & \textbf{1.92} \\
+Bosa               &   44 & 1.85 & 3.04 & 4.29 & 4.19 & 3.09 & \textbf{1.71} \\
+Santa Fe           &   49 & 1.51 & 2.58 & 3.82 & 4.29 & 3.66 & \textbf{1.65} \\
+Puente Aranda      &  178 & 2.25 & 2.80 & 3.78 & 3.97 & 3.36 & \textbf{1.63} \\
+Tunjuelito         &   76 & 2.38 & 3.00 & 4.15 & 3.71 & 3.20 & \textbf{1.63} \\
+Sumapaz            &  694 & 1.07 & 3.32 & 4.27 & 3.38 & 3.42 & \textbf{1.62} \\
+Kennedy            &  300 & 1.97 & 2.43 & 4.39 & 3.15 & 3.18 & \textbf{1.53} \\
+Usaquén            &   86 & 1.21 & 2.65 & 3.97 & 3.44 & 3.79 & \textbf{1.53} \\
+Rafael Uribe Uribe &  478 & 0.98 & 2.54 & 4.28 & 3.75 & 3.43 & \textbf{1.53} \\
+Los Mártires       &  129 & 1.15 & 2.51 & 4.24 & 3.39 & 3.63 & \textbf{1.50} \\
+Chapinero          & 1\,405 & 1.13 & 2.80 & 4.23 & 2.60 & 3.48 & \textbf{1.50} \\
+Suba               & 1\,478 & 0.73 & 2.41 & 4.35 & 3.76 & 3.45 & \textbf{1.47} \\
+San Cristóbal      &  414 & 0.92 & 2.74 & 4.07 & 3.79 & 3.49 & \textbf{1.45} \\
+Engativá           &   52 & 1.07 & 2.92 & 3.91 & 3.56 & 3.67 & \textbf{1.42} \\
+Candelaria         &  379 & 0.51 & 3.08 & 3.86 & 2.83 & 3.61 & \textbf{1.36} \\
+Usme               &   53 & 0.24 & 2.77 & 4.28 & 2.65 & 3.49 & \textbf{1.17} \\
+Teusaquillo        &  188 & 0.32 & 3.08 & 3.69 & 3.96 & 3.35 & \textbf{1.08} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Lectura}: Barrios Unidos lidera el agregado ($\IUG = 2.17$) gracias al $\IHED$ más alto del sistema (4.71). Suba y Chapinero, pese a concentrar el 45\,\% de la oferta total ($n = 2\,883$ entre las dos), tienen $\IUG$ medio entre 1.47 y 1.50; el volumen de listados no garantiza calidad urbana superior. Localidades de baja accesibilidad como Sumapaz, Usme y Teusaquillo se ven penalizadas por $\IACC < 1.10$.
+
+\begin{table}[H]
+\centering
+\caption{Top 8 barrios por $\IUG$ promedio (mínimo 10 inmuebles).}
+\label{tab:iug_barrio}
+\small
+\begin{tabular}{@{}llrcccccc@{}}
+\toprule
+\textbf{Barrio} & \textbf{Localidad} & $n$ & $\IACC$ & $\ISEG$ &
+$\IHED$ & $\IDOT$ & $\IPNU$ & $\boldsymbol{\IUG}$ \\
+\midrule
+El Pino             & Chapinero      & 10 & 2.25 & 3.29 & 3.14 & 4.31 & 3.40 & \textbf{2.63} \\
+Villa Ximena        & B.\ Unidos     & 13 & 1.52 & 3.16 & 4.98 & 4.98 & 3.60 & \textbf{2.60} \\
+San Martín de Porres & Sumapaz       & 23 & 2.46 & 3.81 & 2.96 & 5.00 & 3.82 & \textbf{2.48} \\
+Centroaméricas      & S.\ Cristóbal  & 15 & 2.09 & 2.90 & 4.10 & 3.86 & 3.58 & \textbf{2.38} \\
+Bellavista          & R.\ Uribe      & 10 & 1.14 & 2.64 & 4.52 & 4.93 & 3.53 & \textbf{2.32} \\
+Floresta del Sur    & S.\ Cristóbal  & 12 & 1.34 & 2.78 & 4.50 & 4.43 & 3.40 & \textbf{2.26} \\
+Mariscal Sucre      & Sumapaz        & 11 & 2.11 & 3.46 & 3.30 & 5.00 & 3.46 & \textbf{2.18} \\
+Prado Pinzón        & Suba           & 58 & 2.23 & 2.47 & 4.06 & 4.98 & 3.38 & \textbf{2.14} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Hallazgo}: el desglose por barrio expone la \textbf{heterogeneidad interna} que la agregación por localidad oculta. Villa Ximena (Barrios Unidos), con $\IHED = 4.98$, $\IDOT = 4.98$ y $\IUG = 2.60$, queda en el top~2 del sistema; sin embargo, la localidad agregada Barrios Unidos exhibe $\IUG = 2.17$. Esta diferencia de 0.43 puntos refleja la varianza intra-localidad: en una misma localidad coexisten barrios con calidad urbana sustancialmente distinta. La conclusión operativa es que las decisiones de inversión deben formularse a escala de barrio, no de localidad.
+
+\begin{table}[H]
+\centering
+\caption{Ficha de inmueble individual con desglose de subíndices.}
+\label{tab:detalle_inmueble}
+\small
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Atributo} & \textbf{Valor} & \textbf{Atributo} & \textbf{Valor} \\
+\midrule
+ID                 & 5\,700                & $\IACC$ (transporte)     & 4.62 \\
+Tipo               & Apartamento           & $\ISEG$ (seguridad)      & 3.28 \\
+Localización       & Puente Largo, Chapinero & $\IHED$ (hedónico)     & 5.00 \\
+Estrato            & 5                     & $\IDOT$ (dotaciones)     & 5.00 \\
+Área construida    & 96 m$^2$              & $\IPNU$ (normativo)      & 3.50 \\
+Habitaciones / Baños & 3 / 3               & $\boldsymbol{\IUG}$      & \textbf{4.28} \\
+Precio publicado   & \$659\,M              & $\IUG$ banda 90\,\%      & $[3.49,\ 5.07]$ \\
+Precio estimado modelo & \$837\,M          & Residual hedónico        & $-21.3\,\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Lectura}: este inmueble es un caso prototípico del cuadrante \textsc{comprar} (Sección~\ref{sec:matriz_decision}): $\IUG = 4.28$ (top 5\,\% del sistema) con un precio 21\,\% por debajo del valor predicho por sus características físicas. La banda de confianza de $\pm 0.48$ alrededor del $\IUG$ propaga la incertidumbre desde GPS y EPV, evidenciando que el indicador no es un estimador puntual sino un rango.
+
+
+% ============================================================
+\section{Modelo Hedónico de Precios}\label{sec:modelo_hedonico}
+% ============================================================
+
+Se entrenaron cuatro modelos de regresión sobre $\ln(\text{Precio}/m^2)$ por tipo de vivienda (OLS, Ridge, Lasso, Elastic Net), con validación cruzada espacial GroupKFold por localidad.
+
+\begin{table}[H]
+\centering
+\caption{Comparación de modelos por tipo de vivienda.}
+\label{tab:modelos_res}
+\begin{tabular}{@{}llccccl@{}}
+\toprule
+\textbf{Tipo} & \textbf{Mejor} & $n$ & $R^2_{OLS}$ & $R^2_{Ridge}$ &
+$R^2_{Lasso}$ & \textbf{Top feature} \\
+\midrule
+Apartamento & Ridge & 1\,669 & 0.4242 & 0.4226 & 0.4236 & Estrato (26.8\%) \\
+Casa & Lasso & 1\,679 & 0.4926 & 0.4850 & 0.4838 & Estrato (44.9\%) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Los $R^2$ de 42--49\,\% indican que los modelos explican menos de la mitad de la varianza del precio. Esto no es una falla metodológica: es un reflejo honesto de que el mercado inmobiliario de Bogotá no se entiende ni a sí mismo. Inmuebles con características estructurales idénticas pueden tener precios radicalmente distintos por factores de microlocalización, percepción, acabados y variables no observables que ningún modelo de regresión, por sofisticado que sea, va a capturar con datos de oferta web. Lo que sí revelan estos modelos es \emph{cuáles} variables mueven el precio.
+
+\begin{table}[H]
+\centering
+\caption{Top~5 coeficientes estandarizados: Apartamento (Ridge) y Casa (Lasso).}
+\label{tab:coefs_res}
+\begin{tabular}{@{}lccc|lccc@{}}
+\toprule
+\multicolumn{4}{c|}{\textbf{Apartamento (Ridge, $n = 1\,669$)}} &
+\multicolumn{4}{c}{\textbf{Casa (Lasso, $n = 1\,679$)}} \\
+\textbf{Variable} & $\hat{\beta}$ & \textbf{\%} & \textbf{$\pm$} &
+\textbf{Variable} & $\hat{\beta}$ & \textbf{\%} & \textbf{$\pm$} \\
+\midrule
+Estrato & 0.2021 & 26.8 & + & Estrato & 0.3208 & 44.9 & + \\
+$\ln$(Área) & $-$0.1387 & 18.4 & $-$ & $\ln$(Área) & $-$0.2094 & 29.3 & $-$ \\
+Área const. & 0.1032 & 13.7 & + & Baños & 0.0736 & 10.3 & + \\
+Habitaciones & $-$0.0604 & 8.0 & $-$ & Área const. & $-$0.0532 & 7.4 & $-$ \\
+Baños/Hab. & 0.0583 & 7.7 & + & Baños/Hab. & 0.0502 & 7.0 & + \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+El estrato domina en ambos segmentos, con un peso desproporcionado en casas (44.9\,\%) que sugiere un mercado más estratificado socialmente. El $\ln(\text{Área})$ negativo refleja rendimientos decrecientes: a mayor área, menor precio unitario. Lo crucial es que el estrato está comprimiendo en una sola variable ordinal los efectos de seguridad, dotaciones y accesibilidad que el IUG desagrega en cinco dimensiones medibles.
+
+Las métricas IAAO confirman ausencia de sesgo (ratios medianos $\approx 1.00$), pero los COD de 21--27\,\% exceden el rango aceptable de 5--15\,\%, reflejando la dispersión intrínseca del mercado. Es justamente en esa varianza residual donde el IUG aporta contexto.
+
+El sistema clasifica cada inmueble en uno de tres regímenes según el residual del modelo hedónico ($r_i = \ln P_i - \widehat{\ln P_i}$), bandeado por la mediana del error absoluto del modelo:
+
+\begin{itemize}
+    \item \textbf{Sobrevalorado}: $r_i > +\text{mediana}|r|$ (precio mayor del esperado)
+    \item \textbf{Coherente}: $|r_i| \leq \text{mediana}|r|$
+    \item \textbf{Subvalorado}: $r_i < -\text{mediana}|r|$
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\caption{Distribución de inmuebles por régimen de precio según el residual hedónico.}
+\label{tab:market_summary}
+\small
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+\textbf{Tipo} & $n$ & \textbf{Sobreval.} & \textbf{Coherente} & \textbf{Subval.} & \textbf{Mejor modelo} & $R^2_{CV}$ \\
+\midrule
+Apartamento & 1\,669 & 548 (32.8\,\%) & 540 (32.4\,\%) & 581 (34.8\,\%) & Ridge      & 0.424 \\
+Casa        & 1\,679 & 581 (34.6\,\%) & 442 (26.3\,\%) & 656 (39.1\,\%) & Lasso      & 0.493 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Lectura}: las casas presentan mayor proporción de inmuebles subvalorados (39\,\%) que los apartamentos (35\,\%), consistente con el COD de 27.6\,\% del modelo Casa frente a 21.3\,\% en Apartamentos: el segmento de casas es estructuralmente menos eficiente y, por tanto, más rico en oportunidades de arbitraje.
+
+\begin{table}[H]
+\centering
+\caption{Métricas IAAO de calidad estadística del modelo (estándares internacionales de avalúo masivo, IAAO 2013).}
+\label{tab:iaao_res}
+\small
+\begin{tabular}{@{}lccccl@{}}
+\toprule
+\textbf{Tipo} & \textbf{COD\,(\%)} & \textbf{PRD} & \textbf{PRB} & \textbf{Ratio mediano} & \textbf{Veredicto} \\
+\midrule
+Apartamento & 21.25 & 1.078 & $-0.588$ & 1.004 & Aceptable; PRD>1.03 (regresividad leve) \\
+Casa        & 27.57 & 1.354 & $-0.526$ & 1.028 & COD y PRD fuera de rango (mercado ineficiente) \\
+\midrule
+\multicolumn{6}{l}{\footnotesize Estándares IAAO: COD entre 5--15\,\%, PRD entre 0.98--1.03, PRB entre $\pm 0.05$} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Los ratios medianos cercanos a 1.00 confirman ausencia de sesgo sistemático: el modelo, en promedio, no infla ni deprime los precios. Los COD elevados (21--28\,\%) indican que la dispersión inter-inmueble es alta incluso entre propiedades estructuralmente similares; en términos prácticos, dos casas idénticas en estrato y área pueden tener precios que difieren en 30\,\% o más por razones que el modelo no observa (acabados, antigüedad real, vista). Esta varianza residual es precisamente el espacio donde el $\IUG$ aporta lectura complementaria, separando las desviaciones aleatorias de las desviaciones explicadas por calidad urbana objetiva.
+
+
+% ============================================================
+\section{Acceso al Sistema}\label{sec:acceso}
+% ============================================================
+
+Como complemento de la analítica espacial, los hallazgos del estudio se exponen al usuario final a través de un mapa coroplético interactivo y un asistente conversacional que traduce los indicadores estadísticos a lenguaje natural. Esta capa permite que un actor sin formación cuantitativa pueda explorar oportunidades como \emph{``apartamentos en Chapinero con alto $\IUG$ y precio bajo''} sin necesidad de manipular bases de datos ni interpretar tablas. La descripción detallada de la plataforma web ---interfaz, flujo conversacional del asistente y esquemas de presentación--- se documenta en el Anexo~\ref{ax:plataforma}. Este capítulo se enfoca en los hallazgos cuantitativos del análisis, no en su capa de presentación.
+
+
+% ============================================================
+% CAPÍTULO 5: VALIDEZ DE USO DEL IUG
+% ============================================================
+
+\chapter{Validez de Uso del IUG}\label{ch:validez_uso}
+
+Los Capítulos~\ref{ch:resultados}~y~siguientes presentan el $\IUG$ y los modelos hedónicos como instrumentos paralelos. Este capítulo aborda la pregunta que conecta ambos: \emph{¿bajo qué criterios el $\IUG$ es un indicador estadísticamente válido para sustentar decisiones de inversión inmobiliaria?} La respuesta requiere un cambio de marco. La tradición de la valoración hedónica evalúa un indicador por su capacidad predictiva sobre el precio observado; en cambio, un indicador de \emph{calidad urbana} ---propósito declarado del $\IUG$--- se evalúa por su capacidad de \textbf{detectar desviaciones} entre la calidad fundamental de una zona y el precio que el mercado le asigna. Ambos marcos producen veredictos opuestos sobre el mismo conjunto de datos.
+
+A continuación se ejecutan ocho pruebas estadísticas sobre los datos reales del estudio (\num{6050} inmuebles tras filtros de calidad, \num{19} localidades agregables) y se contrastan los hallazgos contra los umbrales OECD para indicadores compuestos \citep{nardo2008}. La metodología sigue el protocolo de validación cruzada propio de la teoría de indicadores compuestos: una primera batería evalúa la \emph{bondad de ajuste y la descomposición de varianza}, una segunda controla la \emph{robustez estadística} de los resultados frente a remuestreo, especificación funcional y heterogeneidad espacial, y una tercera examina la \emph{validez de uso} en los términos del marco de \emph{mispricing} \citep{shiller2015}.
+
+% ============================================================
+\section{De la predicción a la decisión: cambio de marco}\label{sec:cambio_marco}
+% ============================================================
+
+La crítica común al $\IUG$ ---que su correlación con el precio observado es débil ($\rho_{\text{Spearman}} = -0.194$, $p < 10^{-58}$, $n = \num{6775}$)--- se reformula como \emph{condición de posibilidad} bajo un marco de validez de uso. Un indicador de calidad urbana que correlacionara fuertemente con el precio sería redundante con la información que el mercado ya cotiza; su valor incremental tendería a cero. La ortogonalidad con el precio es, por tanto, un requisito necesario para que el $\IUG$ aporte señal nueva.
+
+\begin{table}[H]
+\centering
+\caption{Cambio de marco para evaluar el $\IUG$.}
+\label{tab:cambio_marco}
+\small
+\begin{tabular}{@{}p{3.2cm}p{5.2cm}p{5.2cm}@{}}
+\toprule
+\textbf{Dimensión} & \textbf{Marco predictivo clásico} & \textbf{Marco de validez de uso (este trabajo)} \\
+\midrule
+Pregunta clave & ¿Predice bien el precio observado? & ¿Identifica desviaciones precio-calidad? \\
+Métrica primaria & $R^2$ fuera de muestra & $\rho$(IUG, residual hedónico) \\
+Resultado deseado & Correlación alta con precio & Ortogonalidad con precio \\
+Criterio de validez & Baja varianza del error & Cuadrantes balanceados en matriz 2$\times$2 \\
+Aplicación natural & Avalúo masivo (CAMA) & Detección de oportunidades de arbitraje \\
+Referencia & Rosen (1974), IAAO (2013) & Shiller (2015), Nardo et al.\ (2008) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+El marco que se desarrolla a continuación no descarta los modelos hedónicos del Capítulo~\ref{ch:resultados}; los reposiciona como \textbf{benchmark de referencia} sobre el cual construir el residual que el $\IUG$ interpretará. La cadena lógica es: el modelo hedónico predice el precio esperado dado las características físicas; el residual mide cuánto se aparta el precio observado de ese esperado; el $\IUG$ explica si esa desviación se sustenta en calidad urbana objetiva. Sin modelo hedónico no hay residual, y sin residual no hay matriz de decisión.
+
+
+% ============================================================
+\section{Bondad de ajuste y descomposición de varianza}\label{sec:bondad_validez}
+% ============================================================
+
+Las primeras cuatro pruebas evalúan si el $\IUG$ agregado preserva la información de los cinco subíndices o si su agregación introduce pérdida sustantiva.
+
+\subsection{Comparación de modelos anidados}
+
+Se contrastan dos especificaciones sobre $\ln(\text{Precio}/m^2)$:
+\begin{align}
+    \text{Modelo A (reducido):} \quad & y = \alpha + \beta_0 \IUG + \sum_{k} \gamma_k C_k + \varepsilon \\
+    \text{Modelo B (completo):} \quad & y = \alpha + \sum_{k=1}^{5} \beta_k I_k + \sum_{k} \gamma_k C_k + \varepsilon
+\end{align}
+donde $C_k$ son controles hedónicos (\'area, habitaciones, ba\~nos, estrato).
+
+\begin{table}[H]
+\centering
+\caption{Comparación entre el $\IUG$ agregado y los cinco subíndices ($n = \num{6050}$).}
+\label{tab:nested_validez}
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Métrica} & \textbf{Modelo A (IUG)} & \textbf{Modelo B (subíndices)} & $\boldsymbol{\Delta}$ \\
+\midrule
+$R^2$              & 0.4925 & 0.5454 & $+0.0529$ \\
+$R^2$ ajustado     & 0.4921 & 0.5447 & $+0.0526$ \\
+AIC                & 11\,069.4 & 10\,411.8 & $-657.6$ \\
+BIC                & 11\,116.3 & 10\,485.6 & $-630.8$ \\
+Likelihood Ratio   & --- & $\chi^2(4) = 665.6$ & $p = 9.7 \cdot 10^{-143}$ \\
+F-test anidado     & --- & $F(4; 6\,040) = 175.6$ & $p = 1.6 \cdot 10^{-142}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Lectura}: los subíndices por separado explican 5.3 puntos porcentuales más de varianza que el $\IUG$ agregado, con significancia estadística absoluta. En un marco predictivo estricto este resultado es una evidencia desfavorable para el $\IUG$. Bajo el marco de uso, sin embargo, esta pérdida es esperable: el promedio simple no preserva la estructura multidimensional, lo cual es \emph{deseable} cuando el objetivo es síntesis para comunicación al usuario final, no predicción óptima del precio.
+
+\subsection{Análisis de comunalidad}
+
+La descomposición de varianza de \citet{nimon2013} separa el $R^2$ total del modelo completo en la varianza \'unica que aporta cada subíndice (calculada como $R^2_{\text{total}} - R^2_{\text{sin } i}$) y la varianza \emph{común} compartida entre subíndices.
+
+\begin{table}[H]
+\centering
+\caption{Descomposición de varianza por subíndice ($n = \num{6775}$, $R^2$ total $= 0.211$).}
+\label{tab:commonality_validez}
+\small
+\begin{tabular}{@{}lrr@{}}
+\toprule
+\textbf{Componente} & \textbf{Varianza única} & \textbf{\% del total} \\
+\midrule
+$\IHED$ & 0.2050 & 97.3\,\% \\
+$\IACC$ & 0.0048 & 2.3\,\% \\
+$\IDOT$ & 0.0030 & 1.4\,\% \\
+$\IPNU$ & 0.0024 & 1.1\,\% \\
+$\ISEG$ & 0.0014 & 0.7\,\% \\
+\midrule
+Varianza común & 0.0000 & \textbf{0.0\,\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Ningún subíndice presenta varianza única negativa por colinealidad, lo que confirma que la descomposición aproximada por eliminación es robusta para este conjunto de datos, sin necesidad de ejecutar el análisis completo sobre $2^5 = 32$ subconjuntos \citep{nimon2013}. La conclusión sustantiva es que los cinco subíndices son aproximadamente \emph{ortogonales}: cada uno aporta información independiente sobre el precio. Esta ortogonalidad valida el diseño multidimensional, pues si los subíndices fueran colineales el $\IUG$ sería equivalente a cualquiera de ellos y el indicador no tendría justificación teórica. La dominancia del 97\,\% de $\IHED$ refleja que en el conjunto de datos analizado las características físicas (área, habitaciones, baños) explican la mayor parte de la varianza del precio, consistente con la evidencia clásica de modelos hedónicos.
+
+\subsection{Estabilidad de ranking bajo perturbación}
+
+Se perturban los pesos $w_k$ con ruido uniforme $\pm 20\,\%$, se renormalizan a $\sum w_k = 1$ y se recalcula el $\IUG$ agregado por localidad. Sobre $N = \num{1000}$ simulaciones Monte Carlo se mide la correlación de Spearman entre el ranking base y el perturbado.
+
+\begin{table}[H]
+\centering
+\caption{Robustez del ranking de localidades bajo perturbación de pesos.}
+\label{tab:ranking_validez}
+\small
+\begin{tabular}{@{}lc@{}}
+\toprule
+\textbf{Métrica} & \textbf{Valor} \\
+\midrule
+$\rho_{\text{Spearman}}$ mediana & 0.995 \\
+IC 90\,\% de $\rho_{\text{Spearman}}$ & $[0.984;\ 1.000]$ \\
+\% zonas que cambian más de 5 posiciones & 0.0\,\% \\
+Umbral OECD para ranking robusto & $\rho > 0.90$ y $< 10\,\%$ cambios \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Lectura}: el ranking de localidades es \emph{altamente} robusto. Bajo perturbaciones de $\pm 20\,\%$ en los pesos ---un rango deliberadamente amplio para un análisis de sensibilidad--- el ordenamiento permanece prácticamente idéntico. Este resultado sustenta el uso del $\IUG$ como herramienta descriptiva: las decisiones derivadas del ranking no dependen de la elección particular de pesos uniformes y serían las mismas bajo esquemas alternativos de ponderación dentro del rango analizado.
+
+\subsection{Validación cruzada espacial}
+
+La validación cruzada estándar puede sobreestimar el $R^2$ cuando vecinos espaciales caen en folds distintos (\emph{data leakage} espacial). Se ejecuta CV aleatorio con \num{5} folds y se contrasta contra GroupKFold por localidad, donde cada localidad pertenece a un único fold.
+
+\begin{table}[H]
+\centering
+\caption{$R^2$ in-sample, CV aleatorio y CV espacial ($n = \num{3171}$, 19 grupos).}
+\label{tab:cv_validez}
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Modelo} & $R^2$ \textbf{aleatorio} & $R^2$ \textbf{espacial} & \textbf{Leakage \%} \\
+\midrule
+A (IUG)        & $0.524 \pm 0.19$ & $0.489 \pm 0.11$ & $+7.1\,\%$ \\
+B (subíndices) & $0.580 \pm 0.18$ & $0.519 \pm 0.10$ & $+11.7\,\%$ \\
+$\Delta$ (B$-$A) & $+0.056$ & $+0.030$ & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Lectura}: el leakage espacial es moderado ($<15\,\%$, dentro del umbral aceptable de \citet{roberts2017}). Una vez controlado, la ventaja del modelo completo se reduce de $+0.056$ a $+0.030$ puntos de $R^2$. Esto confirma que parte de la aparente superioridad de los subíndices in-sample es \emph{optimismo} estadístico, no señal real generalizable a zonas no vistas.
+
+
+% ============================================================
+\section{Robustez estadística}\label{sec:robustez}
+% ============================================================
+
+Las siguientes tres pruebas evalúan si los resultados de la sección anterior son artefactos de remuestreo, especificación funcional o heterogeneidad oculta.
+
+\subsection{Intervalos de confianza bootstrap}
+
+Se ejecutan $B = \num{1000}$ remuestreos con reposición sobre $n = \num{6050}$, recalculando $R^2$ y AIC de ambos modelos en cada réplica.
+
+\begin{table}[H]
+\centering
+\caption{Intervalos de confianza bootstrap al 95\,\% para las diferencias B$-$A.}
+\label{tab:bootstrap_validez}
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Métrica} & \textbf{Mediana} & \textbf{IC 95\,\%} & \textbf{Excluye 0} \\
+\midrule
+$\Delta R^2$ (B$-$A) & $+0.0521$ & $[+0.0392;\ +0.0636]$ & sí \\
+$\Delta$AIC (B$-$A)  & $-666.3$ & $[-828.0;\ -474.0]$ & sí \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+La totalidad de las \num{1000} réplicas produjo estimaciones finitas, sin remuestreos degenerados que pudieran sesgar el intervalo. La diferencia favorable a B es estadísticamente significativa con holgura, pero la magnitud absoluta ($+0.05$ en $R^2$) es pequeña y debe interpretarse como \emph{eficiencia marginal}, no como evidencia de redundancia del $\IUG$.
+
+\subsection{Test de especificación funcional (Ramsey RESET)}
+
+Evalúa si la forma funcional lineal es adecuada al probar si potencias de la predicción $(\hat{y}^2, \hat{y}^3)$ aportan significancia adicional sobre los regresores originales.
+       
+\begin{table}[H]
+\centering
+\caption{Test RESET de Ramsey para la forma funcional ($n = \num{6050}$).}
+\label{tab:ramsey_validez}
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Modelo} & \textbf{F-stat} & $p$\textbf{-valor} & \textbf{Veredicto} \\
+\midrule
+A (IUG $+$ controles lineales)        & 605.5 & $2 \cdot 10^{-240}$ & rechaza H$_0$ \\
+B (subíndices $+$ controles lineales) & 519.1 & $9 \cdot 10^{-209}$ & rechaza H$_0$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Lectura}: ambos modelos presentan forma funcional insuficiente. La fuente principal del problema se identifica en la siguiente prueba: la transformación $\log(\text{\'area})$ ---ausente de la especificación lineal básica--- captura la elasticidad constante tamaño-precio que la literatura hedónica documenta desde \citet{rosen1974}.
+
+\subsection{Comparación de especificaciones funcionales}
+
+Se contrastan cinco variantes del modelo completo:
+
+\begin{table}[H]
+\centering
+\caption{Cinco especificaciones del modelo hedónico ($n = \num{6050}$).}
+\label{tab:specs_validez}
+\small
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Modelo} & $R^2$ & $\Delta R^2$ \textbf{vs M1} & $\Delta$AIC & \textbf{Ramsey} $p$ & \textbf{Veredicto} \\
+\midrule
+M1 base lineal & 0.5454 & --- & --- & $9 \cdot 10^{-209}$ & baseline \\
+M2 $+ \log(\text{\'area})$ & \textbf{0.7278} & \textbf{$+0.183$} & $-3\,102$ & $3 \cdot 10^{-37}$ & gran mejora \\
+M3 $+$ cuadráticos $I_k^2$ & 0.5465 & $+0.001$ & $-11$ & $2 \cdot 10^{-211}$ & irrelevante \\
+M4 $+$ interacciones & 0.5946 & $+0.049$ & $-687$ & $7 \cdot 10^{-189}$ & moderada \\
+M5 todo combinado & \textbf{0.7312} & \textbf{$+0.186$} & $-3\,167$ & $2 \cdot 10^{-36}$ & ganador \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Hallazgo central}: la transformación $\log(\text{\'area})$ es la decisión funcional más importante del modelo, elevando el $R^2$ de 0.55 a 0.73 ($+18$ puntos porcentuales). Los términos cuadráticos no aportan, las interacciones aportan moderadamente. Para el análisis de mispricing posterior, los residuales del modelo M5 ofrecen una base más limpia que los del modelo lineal básico utilizado en el Capítulo~\ref{ch:resultados}; esta diferencia se discute como recomendación operativa al final del capítulo.
+
+
+% ============================================================
+\section{Validez convergente y discriminante}\label{sec:convergente}
+% ============================================================
+
+La validez convergente es el grado en que un instrumento correlaciona con otros que miden el mismo constructo. Para un indicador de calidad urbana, los benchmarks naturales son el estrato socioeconómico (que el sistema de estratificación bogotano usa como \emph{proxy} de calidad agregada del entorno) y el precio por metro cuadrado.
+
+\begin{table}[H]
+\centering
+\caption{Validez convergente y discriminante del $\IUG$ ($n = \num{6775}$).}
+\label{tab:convergente_validez}
+\small
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Prueba} & \textbf{Valor} & \textbf{Umbral esperado} \\
+\midrule
+$\rho_{\text{Spearman}}$($\IUG$, estrato) & $-0.070$ ($p = 8 \cdot 10^{-9}$) & $> +0.30$ \\
+$\rho_{\text{Spearman}}$($\IUG$, precio/m$^2$) & $-0.194$ ($p < 10^{-58}$) & $> +0.30$ \\
+ANOVA: $F$ del $\IUG$ por estrato & 17.7 & significativo \\
+$\eta^2$ (tamaño de efecto) & 0.013 & $> 0.10$ \\
+AUC del $\IUG$ como clasificador estrato $\geq 4$ & 0.480 & $> 0.70$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Lectura clásica}: el $\IUG$ \emph{falla} los tests de validez convergente. Su correlación con estrato es despreciable (incluso ligeramente negativa), su correlación con precio/m$^2$ es negativa y significativa, y su AUC como clasificador binario de estrato alto es indistinguible del azar.
+
+\textbf{Lectura reformulada}: este resultado es \emph{condición necesaria} para la validez de uso. Un indicador alternativo de calidad urbana fuertemente correlacionado con estrato no aportaría información incremental sobre el dato de estratificación pública; uno fuertemente correlacionado con precio sería redundante con el precio observado. La ortogonalidad ---técnicamente, la divergencia de los benchmarks tradicionales--- es el mecanismo que permite que el $\IUG$ identifique \emph{desviaciones} entre calidad y precio. La siguiente sección formaliza esta lectura.
+
+
+% ============================================================
+\section{Análisis de mispricing y matriz de decisión}\label{sec:matriz_decision}
+% ============================================================
+
+Se ajusta un modelo hedónico de referencia con \emph{únicamente} características físicas:
+\begin{equation}
+    \ln(P/m^2) = \alpha + \beta_1 \text{\'area} + \beta_2 \text{habs} + \beta_3 \text{ba\~nos} + \beta_4 \text{estrato} + \varepsilon
+\end{equation}
+con $R^2 = 0.492$ sobre $n = \num{6050}$. El residual $\varepsilon_i = \ln P_i - \widehat{\ln P_i}$ representa la desviación del precio observado respecto al precio esperado por atributos físicos. Valores positivos indican \textbf{sobrevaloración}; negativos, \textbf{subvaloración} relativa al modelo.
+
+\subsection{Discriminación por cuartiles}
+
+\begin{table}[H]
+\centering
+\caption{Residual hedónico medio por cuartil del $\IUG$.}
+\label{tab:cuartiles_residual}
+\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Cuartil $\IUG$} & $n$ & $\IUG$ \textbf{medio} & \textbf{Residual medio} & \textbf{Residual mediana} \\
+\midrule
+Q1 (IUG bajo)  & \num{1523} & 1.55 & $+0.012$ & $-0.112$ \\
+Q2             & \num{1502} & 2.02 & $+0.108$ & $+0.072$ \\
+Q3             & \num{1514} & 2.97 & $-0.128$ & $-0.172$ \\
+Q4 (IUG alto)  & \num{1511} & 3.81 & $+0.008$ & $-0.043$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+La correlación de Spearman global $\rho(\IUG, \varepsilon) = -0.008$ ($p = 0.56$) es modesta, pero la estructura por cuartiles revela una relación no lineal: Q3 y Q4 (mayor calidad urbana) presentan residuales medianos negativos, mientras Q2 los presenta positivos. El test de Mann-Whitney comparando los residuales de Q4 contra Q1 ---no paramétrico y robusto a no linealidad--- arroja diferencia de medianas $+0.068$ con $p = 0.0007$. El $\IUG$, por tanto, sí discrimina entre regímenes de mispricing, aunque su firma no es lineal.
+
+\subsection{Matriz 2$\times$2 de decisión}
+
+La herramienta operativa del marco es la matriz que cruza dos clasificaciones binarias: $\IUG$ por encima/debajo de su mediana ($2.31$) y residual por encima/debajo de cero.
+
+\begin{table}[H]
+\centering
+\caption{Matriz de decisión IUG $\times$ mispricing ($n = \num{6050}$).}
+\label{tab:matriz_validez}
+\small
+\begin{tabular}{@{}llrrrrr@{}}
+\toprule
+\textbf{Cuadrante} & \textbf{Acción} & $n$ & \textbf{\%} & $\IUG$ & \textbf{\$/m$^2$} & \textbf{Residual} \\
+\midrule
+$\IUG$ alto $+$ subvalorado     & \textsc{comprar}    & \num{1859} & 30.7\,\% & 3.33 & \$5.9\,M  & $-0.34$ \\
+$\IUG$ alto $+$ sobrevalorado   & \textsc{conservar}  & \num{1166} & 19.3\,\% & 3.48 & \$7.4\,M  & $+0.39$ \\
+$\IUG$ bajo $+$ subvalorado     & \textsc{evitar}     & \num{1530} & 25.3\,\% & 1.75 & \$6.9\,M  & $-0.40$ \\
+$\IUG$ bajo $+$ sobrevalorado   & \textsc{vender}     & \num{1495} & 24.7\,\% & 1.82 & \$11.5\,M & $+0.53$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+El test Kolmogorov-Smirnov contrastando las distribuciones de precio/m$^2$ del cuadrante \textsc{comprar} contra el cuadrante \textsc{conservar} arroja $D = 0.24$, $p = 1.95 \cdot 10^{-37}$: las distribuciones son estadísticamente distintas al nivel más exigente.
+
+\textbf{Hallazgos operativos}:
+
+\begin{enumerate}
+    \item El cuadrante \textsc{comprar} concentra el 30.7\,\% del mercado y exhibe el precio/m$^2$ más \emph{bajo} (\$5.9\,M), un 37\,\% inferior al cuadrante \textsc{conservar} (\$7.4\,M). Estos inmuebles tienen calidad urbana objetiva alta y precio por debajo del esperado: son la frontera operativa de oportunidades de inversión.
+    \item El cuadrante \textsc{vender} concentra 24.7\,\% del mercado y exhibe el precio/m$^2$ más \emph{alto} (\$11.5\,M), pese a tener el $\IUG$ promedio más bajo (1.82). Son inmuebles cuyo precio no se sustenta en calidad urbana objetiva.
+    \item El 55.4\,\% del mercado se distribuye en cuadrantes \emph{accionables} (\textsc{comprar} $+$ \textsc{vender}), masa suficiente para construir portafolios reales y para detectar señales agregadas de sobre-valoración o sub-valoración a escala de barrio.
+\end{enumerate}
+
+
+% ============================================================
+\section{Tabla consolidada y veredicto}\label{sec:tabla_validez}
+% ============================================================
+
+\begin{table}[H]
+\centering
+\caption{Resumen de las 11 pruebas estadísticas ejecutadas sobre datos reales.}
+\label{tab:consolidada_validez}
+\small
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Prueba} & \textbf{Valor} & \textbf{Estado} \\
+\midrule
+\multicolumn{3}{l}{\textit{Bondad de ajuste y descomposición:}} \\
+$\Delta R^2$ in-sample (B$-$A) & $+0.053$ & subíndices dominan \\
+$\Delta$AIC in-sample          & $-658$ & subíndices dominan \\
+Varianza común (commonality)   & $0.0\,\%$ & ortogonalidad confirmada \\
+$\rho_{\text{Spearman}}$ ranking & $0.995$ & robusto \\
+\% zonas que cambian $> 5$ pos & $0.0\,\%$ & robusto \\
+\addlinespace
+\multicolumn{3}{l}{\textit{Robustez:}} \\
+$\Delta R^2$ CV espacial       & $+0.030$ & optimismo controlado \\
+IC 95\,\% bootstrap $\Delta R^2$ & $[0.039;\ 0.064]$ & excluye 0, significativo \\
+Ramsey RESET (ambos modelos)   & $p < 10^{-200}$ & forma funcional insuficiente \\
+CV del $R^2$ por localidad     & $0.13$ & modelo homogéneo \\
+M5 mejor especificación        & $R^2 = 0.73$ & $+18$ pp con $\log(\text{\'area})$ \\
+\addlinespace
+\multicolumn{3}{l}{\textit{Validez convergente (lectura tradicional):}} \\
+$\rho$($\IUG$, estrato)        & $-0.070$ & convergencia débil \\
+$\rho$($\IUG$, precio/m$^2$)   & $-0.194$ & convergencia débil \\
+AUC clasificador estrato       & $0.480$ & azar \\
+\addlinespace
+\multicolumn{3}{l}{\textit{Validez de uso (marco propuesto):}} \\
+Mann-Whitney Q4 vs.\ Q1 residual & $p = 0.0007$ & discrimina mispricing \\
+\% cuadrante \textsc{comprar}  & $30.7\,\%$ & masa accionable \\
+\% cuadrante \textsc{vender}   & $24.7\,\%$ & masa accionable \\
+KS \textsc{comprar} vs.\ \textsc{conservar} & $p < 10^{-37}$ & distribuciones distintas \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+El conjunto de pruebas precedente sustenta una lectura articulada del aporte del \IUG{}. En primer lugar, el indicador \emph{sí} amplía el poder explicativo del modelo hedónico sobre el precio observado: el $\Delta R^2$ de $+0.053$ in-sample, sostenido bajo validación cruzada espacial ($\Delta R^2 = +0.030$) y respaldado por un intervalo bootstrap del 95\,\% de $[0.039;\ 0.064]$ que excluye el cero, indica que los subíndices urbanos contienen información estructural que las variables generales del modelo —área, estrato, número de habitaciones, baños— no capturan por sí solas. Este resultado, paradójicamente, no convierte al \IUG{} en un predictor: lo posiciona como una capa de información complementaria que ayuda a \emph{explicar} el precio sin pretender \emph{inferirlo}. La distinción importa porque define el plano analítico en el que se ubica el aporte.
+
+Sobre ese plano, la débil correlación convergente entre \IUG{}, estrato y precio ($\rho \approx -0.07$ a $-0.19$; AUC $\approx 0.48$) podría leerse como limitación si se exigiera del indicador una función predictiva. Bajo el marco aquí propuesto, sin embargo, esa ortogonalidad es justamente la condición que sostiene su utilidad: un indicador alineado con los \emph{benchmarks} habituales sería redundante con la información que ya entrega el mercado; uno ortogonal añade información incremental. La salida operativa de esa independencia se materializa en la matriz $2 \times 2$ de decisión, que distribuye el $30.7\,\%$ de la oferta en el cuadrante \textsc{comprar} ---con precio por metro cuadrado $37\,\%$ inferior al cuadrante consolidado--- y un $24.7\,\%$ adicional en \textsc{vender}, con distribuciones de \IUG{} y precio significativamente distintas (KS, $p < 10^{-37}$). El sistema, en consecuencia, no responde ``¿cuánto vale este inmueble?''; responde ``¿el mercado está pagando por este territorio lo que su calidad urbana sugiere?''. Es una pregunta distinta y no compite con los Modelos de Valoración Automática consolidados.
+
+La robustez del ordenamiento territorial refuerza esta lectura descriptivo-comparativa. Bajo perturbación Monte Carlo de los pesos en un rango de $\pm 20\,\%$, el ranking de localidades preserva una correlación de Spearman de $0.995$ sin que ninguna zona se desplace más de cinco posiciones. El resultado no es un artefacto de la calibración elegida sino una propiedad estable del territorio bogotano, lo cual habilita el uso del \IUG{} como instrumento descriptivo para comparar entornos urbanos sin necesidad de adoptar una ponderación específica.
+
+Conviene, no obstante, situar honestamente el alcance del trabajo. Esta tesis no constituye una solución definitiva al problema de la valoración inmobiliaria ni pretende sustituir las metodologías profesionales y regulatorias ya establecidas. Se posiciona, más bien, como un \textbf{acercamiento académico} que articula cinco metodologías heterogéneas ---modelo gravitacional de accesibilidad, indicador tridimensional de seguridad, scoring hedónico mediante PCA, proximidad acumulada a equipamientos y scoring normativo del POT--- en una herramienta-perspectiva replicable, abierta y validada estadísticamente. Su contribución es habilitadora: ofrece una base metodológica y operativa sobre la cual estudios posteriores puedan extender, refinar o cuestionar las conclusiones aquí presentadas. La muestra de $6\,418$ inmuebles, aunque suficiente para sustentar las propiedades estadísticas reportadas, es una fotografía instantánea de la oferta. La escala natural en la que esta línea de trabajo alcanza su pleno potencial es la del \emph{Big Data urbano}: registros transaccionales históricos, datos catastrales individualizados, observaciones longitudinales de oferta y demanda, y series temporales que permitan capturar la dinámica del mercado y no solo su corte transversal. Con datasets de mayor profundidad temporal y cobertura transaccional, las mismas técnicas aquí desarrolladas podrían producir un indicador con poder discriminativo superior y aplicabilidad operativa directa, sin alterar la arquitectura conceptual del \IUG{}.
+
+En esa línea de continuidad, el análisis de especificación funcional señala una recomendación concreta para la siguiente iteración. El modelo M5, que incorpora la transformación $\log(\text{\'area})$ sobre la especificación lineal básica del Capítulo~\ref{ch:resultados}, eleva el $R^2$ del \emph{benchmark} de $0.55$ a $0.73$ con un único cambio funcional. Los residuales que produce M5 son una base más limpia sobre la cual el \IUG{} puede operar como señal de \emph{mispricing}, y su sustitución por el modelo lineal básico es la línea de trabajo prioritaria de la próxima versión del sistema.
+
+
+
+% ============================================================
+% CAPÍTULO 6: IUG vs REGRESIÓN — DISCUSIÓN
+% ============================================================
+
+\chapter{IUG versus Regresión: Tres Lecturas Complementarias}\label{ch:comparacion}
+
+El modelo hedónico responde \emph{¿cuánto cuesta?} descomponiendo el precio en variables observables. El $\IUG$ responde \emph{¿qué tan bien se vive aquí?} midiendo dimensiones que el precio refleja solo parcialmente. La aparente tensión entre ambos enfoques se resuelve con tres lecturas que coexisten sobre el mismo conjunto de datos.
+
+\section{Lectura optimista: el estrato como \emph{proxy} agregado}
+
+El coeficiente del estrato explica 26.8\,\% del log-precio en apartamentos y 44.9\,\% en casas (Tabla~\ref{tab:coefs_res}). El estrato es un buen \emph{proxy} de la calidad agregada del entorno (servicios, infraestructura, educación, seguridad), y el mercado lo reconoce y lo capitaliza. Bajo esta lectura, los subíndices del $\IUG$ aportan información que el estrato ya resume; el $\IUG$ funciona como desagregación pedagógica de un fenómeno que los modelos tradicionales ya capturan en una variable ordinal.
+
+\section{Lectura crítica: el cuestionamiento de redundancia}
+
+La dominancia del estrato sobre los cinco subíndices ($|\beta| < 0.10$ para $\IACC$, $\ISEG$, $\IHED$, $\IDOT$, $\IPNU$ en presencia del estrato) sugiere que el modelo hedónico tradicional ya internaliza las dimensiones del $\IUG$ vía el estrato. En un marco estrictamente predictivo, el $\IUG$ aportaría valor \emph{marginal}. Esta lectura es la que motiva la recomendación, frecuente en la literatura de avalúo masivo, de no incorporar indicadores compuestos como predictores adicionales en modelos donde el estrato ya está presente.
+
+\section{Lectura reformulada: la ortogonalidad como condición de utilidad}
+
+Los hallazgos del Capítulo~\ref{ch:validez_uso} cambian radicalmente la interpretación. Que el $\IUG$ \emph{no} correlacione con precio/m$^2$ ($\rho = -0.194$) ni con estrato (AUC $= 0.48$) no es debilidad sino \emph{condición necesaria} para su utilidad como señal de arbitraje. Un indicador que predice bien el precio es \emph{redundante} con el precio; uno ortogonal mide información que el mercado no ha incorporado. Esta ortogonalidad es la que explica que el cuadrante \textsc{comprar} de la matriz IUG$\times$mispricing contenga 30.7\,\% del stock con un precio/m$^2$ 37\,\% inferior al cuadrante \textsc{conservar} (\$5.9\,M vs.\ \$7.4\,M).
+
+\bigskip
+
+La síntesis de las tres lecturas, en términos de \citet{shiller2015} y la literatura de \emph{mispricing} inmobiliario, es la siguiente: el residual del modelo hedónico es la señal de interés para el inversionista, y el $\IUG$ es la herramienta para interpretarlo. Si el residual es negativo \emph{y} el $\IUG$ es alto, la subvaloración se sustenta en fundamentales urbanos objetivos. Si el residual es negativo y el $\IUG$ es bajo, la subvaloración refleja una razón de mercado (inseguridad, mala dotación) que conviene evitar. La Tabla~\ref{tab:contraste_res} ya anticipaba esta lectura: inmuebles con $\IUG = 0.23$ se cotizan a precios comparables a los de $\IUG = 4.82$, y es justamente en ese desajuste donde el indicador aporta su contribución.
+
+\textbf{Recomendación de política}: el $\IUG$ debe reportarse siempre acompañado del residual hedónico, no aisladamente como variable independiente que compita con el estrato. La unidad operativa del sistema es el par $(\IUG, \varepsilon)$ y la salida natural es la matriz de decisión 2$\times$2. El sistema, con sus \num{47258} registros históricos de scraping, sienta además las bases para análisis longitudinales: la trayectoria temporal del precio por barrio permitiría construir señales predictivas de valorización que ningún modelo hedónico de corte transversal puede abordar. La incorporación futura de regresión espacial (Spatial Lag, GWR), la calibración empírica de los pesos del $\IUG$ y el cruce del $\IACC$ con la expansión del metro de Bogotá son líneas naturales que la arquitectura PostGIS del sistema ya soporta.
+
+
+
+% ============================================================
+% ANEXOS
+% ============================================================
+\appendix
+
+\chapter{Arquitectura Técnica e Infraestructura}\label{ax:tecnico}
+
+Este anexo documenta los componentes técnicos del sistema cuya descripción detallada se omitió del cuerpo principal por mantener la narrativa enfocada en la lógica metodológica. Toda la pila es reproducible mediante \texttt{docker compose up} desde el repositorio del proyecto.
+
+\section*{Disponibilidad del código y reproducibilidad}
+
+El código fuente completo del sistema descrito en este anexo, junto con los archivos de configuración, scripts de migración y documentación técnica detallada, está disponible públicamente en:
+
+\begin{center}
+\fbox{\parbox{0.85\textwidth}{\centering
+\textbf{Repositorio permanente:}\\[0.4em]
+\large\url{https://github.com/neylinsomne/indice-urbano-global-bogota}\\[0.6em]
+\textbf{Documento fuente (LaTeX):}\\[0.2em]
+\url{https://github.com/neylinsomne/indice-urbano-global-bogota/blob/main/Doc_final.tex}\\[0.6em]
+\textbf{Plataforma desplegada:}\\[0.2em]
+\url{https://inmu.vara-alta.lat}
+}}
+\end{center}
+
+El repositorio incluye instrucciones de despliegue local mediante \texttt{docker compose}, datos de muestra suficientes para reproducir las métricas reportadas, capturas representativas y enlaces al despliegue en vivo de la plataforma. La consulta del repositorio constituye el medio formal de verificación del trabajo aquí documentado.
+
+\begin{remark}[\textbf{Sobre la persistencia de los enlaces}]
+El enlace al repositorio (\url{https://github.com/neylinsomne/indice-urbano-global-bogota}) es permanente. El enlace al despliegue en vivo (\url{https://inmu.vara-alta.lat}) estuvo activo a la fecha de sustentación de este trabajo (mayo de 2026); en caso de no estar disponible al momento de consulta, el repositorio conserva el código fuente completo, capturas representativas del sistema en operación, y las instrucciones para levantar la plataforma localmente con \texttt{docker compose up}.
+\end{remark}
+
+\section{Arquitectura del pipeline de datos}\label{sec:anexo_pipeline}
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+    node distance=1.5cm, auto,
+    block/.style={rectangle, draw, fill=white, text width=2.5cm, align=center, rounded corners, minimum height=1.2cm, drop shadow},
+    cloud/.style={draw, ellipse, fill=myblue!10, node distance=3cm, minimum height=1em},
+]
+
+\node [cloud] (internet) {Datos Abiertos \& Portales};
+\node [block, right=1cm of internet, fill=myred!10] (scraping) {\textbf{Ingesta}\\Selenium Cluster};
+\node [block, right=1cm of scraping, fill=yellow!10] (raw) {\textbf{Staging}\\MongoDB (JSON)};
+\node [block, right=1cm of raw, fill=green!10] (process) {\textbf{Procesamiento}\\Limpieza \& Geo};
+
+\node [block, above right=1cm and 1cm of process, fill=blue!10] (sql) {\textbf{Analítica}\\PostGIS (SQL)};
+\node [block, below right=1cm and 1cm of process, fill=purple!10] (vec) {\textbf{Chatbot RAG}\\PgVector (Embeddings)};
+
+\node [cloud, right=1cm of sql] (bi) {IUG / Mapas};
+\node [cloud, right=1cm of vec] (chat) {Asistente IA};
+
+\draw [->, thick] (internet) -- (scraping);
+\draw [->, thick] (scraping) -- (raw);
+\draw [->, thick] (raw) -- (process);
+\draw [->, thick] (process) -| node[near start, font=\tiny]{Estructurado} (sql);
+\draw [->, thick] (process) -| node[near start, font=\tiny]{Vectorizado} (vec);
+\draw [->, dashed] (sql) -- (bi);
+\draw [->, dashed] (vec) -- (chat);
+\end{tikzpicture}}
+\caption{Arquitectura del pipeline: integración de analítica espacial y módulo cognitivo (chatbot).}
+\label{fig:pipeline_anexo}
+\end{figure}
+
+El pipeline orquesta tres etapas: \textbf{ingesta} (web scraping con Selenium contra portales inmobiliarios y descarga de datos abiertos), \textbf{procesamiento} (limpieza, geocodificación, asignación a barrios y localidades vía operadores PostGIS \texttt{ST\_Within} y \texttt{ST\_Distance}) y \textbf{ramificación} en dos almacenes especializados: PostGIS para consultas espaciales estructuradas y PgVector para búsquedas semánticas sobre \emph{embeddings} densos.
+
+La automatización mensual se ejecuta vía GitHub Actions sobre un \emph{runner} self-hosted, que dispara secuencialmente los \emph{scrapers} de FincaRaíz y Habi, ejecuta el ETL completo (\texttt{POST /pipeline/complete}), recalcula los indicadores mediante triggers PostgreSQL (\texttt{f\_recalcular\_indicadores}) y notifica el resumen por correo. La cadencia es del día 15 de cada mes a las 03:00 hora Colombia, con tareas Windows complementarias (\texttt{WakeForScraping}, \texttt{StartDockerForScraping}) que garantizan disponibilidad del runner sin intervención manual.
+
+\section{Modelo de datos y volumetría}\label{sec:anexo_volumetria}
+
+\begin{table}[H]
+\centering
+\caption{Volumetría del sistema de base de datos geoespacial.}
+\label{tab:volumetria_anexo}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llrr}
+\toprule
+\textbf{Entidad} & \textbf{Naturaleza} & \textbf{Actual} & \textbf{Proyectado} \\
+\midrule
+Inmuebles & Espacial (POINT) & 6\,418 & $\approx$ 10\,600 \\
+Características de inmueble & Relacional (EAV) & 87\,117 & $\approx$ 140\,000 \\
+Historial de scrapeos & Relacional (JSONB) & 47\,258 & $\approx$ 80\,000 \\
+\addlinespace
+Indicadores de transporte & Espacial (gravity) & 3\,867 & $\approx$ 10\,600 \\
+Indicadores de seguridad & Espacial (gravity) & 4\,665 & $\approx$ 10\,600 \\
+Indicadores de dotación & Espacial (gravity) & 5\,289 & $\approx$ 10\,600 \\
+\addlinespace
+Localidades & MULTIPOLYGON & 20 & 20 \\
+Barrios legalizados & MULTIPOLYGON & 1\,721 & 1\,721 \\
+\addlinespace
+Tratamientos urbanísticos (POT 555) & POLYGON & 5\,703 & 5\,703 \\
+Edificabilidad & POLYGON & 2\,748 & 2\,748 \\
+Áreas de actividad & POLYGON & 1\,135 & 1\,135 \\
+UPL & POLYGON & 33 & 33 \\
+\addlinespace
+Dotaciones POI unificadas & POINT & 8\,434 & 10\,881 \\
+Universidades & POINT & 583 & 583 \\
+Estaciones TransMilenio & POINT & 149 & 149 \\
+Paraderos SITP (OSM) & POINT & 7\,693 & 7\,693 \\
+\addlinespace
+CAI de Policía & POINT & 599 & 599 \\
+Sectores priorizados & POLYGON & 44 & 44 \\
+Criminalidad por localidad & POLYGON & 20 & 20 \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+El esquema gestiona aproximadamente \num{180000} entidades georreferenciadas distribuidas en 30 tablas. La tabla \texttt{iug.inmueble} concentra la información transaccional (precio, fecha, atributos físicos) y los seis subíndices calculados; las tablas espaciales auxiliares (POT, dotaciones, transporte, seguridad) se actualizan ocasionalmente desde fuentes oficiales (IDECA, Datos Abiertos Bogotá), mientras que las tablas de transacciones (\texttt{inmueble\_scrapeo}, \texttt{inmueble\_historial}) crecen mensualmente con cada ejecución del pipeline.
+
+\section{Entorno computacional reproducible}\label{sec:anexo_docker}
+
+El sistema completo se encapsula en una pila Docker Compose con seis servicios: \texttt{postgres} (PostgreSQL 16 con PostGIS y pgvector), \texttt{redis} (cache + cola), \texttt{api} (FastAPI), \texttt{frontend} (React + Vite), \texttt{scraper-finca}, \texttt{scraper-habi} y servicios auxiliares de monitoreo (Prometheus, Grafana, exporters). Las migraciones de esquema se aplican vía Flyway sobre un volumen versionado, lo que garantiza que el orden de aplicación es determinístico y auditable. La versión actual del esquema es V118.
+
+La pila completa se levanta con:
+\begin{verbatim}
+docker compose up -d postgres flyway redis
+docker compose up -d api frontend
+docker compose --profile finca run --rm scraper-finca
+\end{verbatim}
+
+El despliegue público se realiza tras un Cloudflare Tunnel desde un \emph{runner} self-hosted en Windows, permitiendo exponer la aplicación sin abrir puertos en el firewall doméstico. Las credenciales y secretos (\texttt{MONGO\_URI}, \texttt{PIPELINE\_SECRET}, \texttt{JWT\_SECRET}, \texttt{GOOGLE\_API\_KEY}) se gestionan vía GitHub Actions Secrets y se inyectan como variables de entorno en el momento del despliegue.
+
+
+
+\chapter{Plataforma Web y Asistente Conversacional}\label{ax:plataforma}
+
+Este anexo documenta la capa de presentación del sistema: el frontend interactivo y el asistente conversacional basado en RAG.
+
+\section{Frontend: mapa coroplético y panel de indicadores}
+
+El frontend está desarrollado en React (Vite) con Leaflet para la cartografía interactiva. Expone tres niveles de resolución espacial: \textbf{localidades} (vista agregada con 20 polígonos coloreados por $\IUG$ promedio), \textbf{barrios} (1\,721 polígonos con la heterogeneidad interna), e \textbf{inmuebles individuales} (puntos con \emph{popup} que muestra el desglose de los cinco subíndices, el residual hedónico y el cuadrante de decisión). Cada vista incluye un panel lateral con los valores agregados, el ranking de zonas y filtros por tipo de inmueble, rango de precio y umbrales de los subíndices.
+
+\section{Asistente conversacional (RAG)}
+
+El asistente inteligente se implementa como una arquitectura RAG (\emph{Retrieval-Augmented Generation}) que conecta el modelo de lenguaje Gemini con la base de datos vectorial PgVector. La información no estructurada de cada inmueble (descripción textual, ubicación, características y subíndices) se transforma en \emph{embeddings} densos que habilitan búsquedas semánticas, superando las limitaciones de los filtros SQL convencionales.
+
+El usuario interactúa mediante lenguaje natural. La Figura~\ref{fig:chatbot_conv} muestra un ejemplo representativo: un usuario solicita ``un apartamento cerca al TransMilenio'' y añade que vive con su abuela, por lo que necesita un hospital cercano. El asistente no se limita a ejecutar un filtro: interpreta el contexto, solicita precisión sobre el hospital de referencia y pregunta proactivamente si se requiere ascensor, demostrando la capacidad del sistema para comprender necesidades compuestas que un buscador convencional de portales inmobiliarios no podría resolver.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{chatbot_conversacion.jpg}
+\caption{Diálogo conversacional del asistente RAG. El usuario formula una consulta compuesta (cercanía a TransMilenio + hospital) y el sistema solicita precisión contextual antes de buscar, demostrando comprensión semántica del requerimiento.}
+\label{fig:chatbot_conv}
+\end{figure}
+
+Una vez refinada la búsqueda, el sistema recupera los inmuebles semánticamente más relevantes de la base vectorial y los presenta como tarjetas visuales con precio, ubicación, tipología y \emph{score} $\IUG$ (Figura~\ref{fig:chatbot_resultados}). En el ejemplo, la consulta ``Mejores oportunidades de inversión con alto $\IUG$'' retorna apartamentos en Santa Fe con $\IUG$ entre 3.63 y 3.73, ordenados por calidad urbanística.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{chatbot_rag.jpg}
+\caption{Resultados del asistente: tarjetas de inmuebles con precio, área, localidad y \emph{score} $\IUG$. La interfaz permite navegar entre resultados y lanzar nuevas conversaciones.}
+\label{fig:chatbot_resultados}
+\end{figure}
+
+Este módulo cumple el objetivo de democratización del acceso planteado en la Sección~\ref{ch:intro}: un usuario sin conocimiento técnico puede explorar el $\IUG$, identificar oportunidades y comparar entornos urbanos sin necesidad de consultar bases de datos directamente ni interpretar tablas estadísticas.
+
+\section{Generación de cotizaciones (ACM)}\label{sec:cotizaciones}
+
+Como cierre operativo del sistema, la plataforma incluye un módulo de generación automatizada de Análisis Comparativos de Mercado (ACM) en formato PDF. Dado un inmueble objetivo, el sistema selecciona comparables mediante similitud espacial y estructural, calcula intervalos de confianza con distribución $t$-Student de acuerdo con el protocolo descrito en la Sección~\ref{subsec:lectura_rlm}, y genera un documento profesional que sintetiza el desglose de los cinco subíndices del $\IUG$, el residual hedónico, el cuadrante de decisión asignado y la valoración estimada con su banda de confianza al 90\,\%.
+
+Este módulo materializa la transición \emph{indicador} $\to$ \emph{documento operativo}: el resultado del análisis no se queda en una pantalla sino que se entrega en un formato auditable, archivable y alineado con las prácticas del sector inmobiliario profesional. Se cierra así el bucle conceptual que organiza el sistema: \emph{datos} $\to$ \emph{indicador} $\to$ \emph{decisión} $\to$ \emph{documento operativo}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.65\textwidth]{cotizacion_sample.png}
+\caption{Cotización ACM generada por el sistema. Incluye comparables seleccionados, desglose del $\IUG$ por subíndices, residual hedónico, intervalo de confianza al 90\,\% (distribución $t$-Student) y cuadrante de decisión.}
+\label{fig:cotizacion_sample}
+\end{figure}
+
+El PDF generado es portable, no requiere conexión persistente al sistema, y puede ser entregado como anexo a un avalúo profesional, soporte para una decisión de inversión o documentación interna de un fondo inmobiliario. Un sample real generado a partir de un inmueble del dataset se encuentra disponible en el repositorio del proyecto bajo \texttt{samples/cotizacion\_ejemplo.pdf}.
+
+
+
+\begin{thebibliography}{99}
+\addcontentsline{toc}{chapter}{Referencias}
+
+% -- Referencias Clásicas y Teóricas --
+
+\bibitem[Rosen(1974)]{rosen1974}
+Rosen, S. (1974).
+Hedonic prices and implicit markets: product differentiation in pure competition.
+\textit{Journal of Political Economy, 82}(1), 34--55.
+\href{https://doi.org/10.1086/260169}{https://doi.org/10.1086/260169}
+
+\bibitem[Hansen(1959)]{hansen1959}
+Hansen, W. G. (1959).
+How Accessibility Shapes Land Use.
+\textit{Journal of the American Institute of Planners, 25}(2), 73--76.
+\href{https://doi.org/10.1080/01944365908978307}{https://doi.org/10.1080/01944365908978307}
+
+\bibitem[Anselin(1995)]{anselin1995}
+Anselin, L. (1995).
+Local Indicators of Spatial Association—LISA.
+\textit{Geographical Analysis, 27}(2), 93--115.
+\href{https://doi.org/10.1111/j.1538-4632.1995.tb00900.x}{https://doi.org/10.1111/j.1538-4632.1995.tb00900.x}
+
+\bibitem[Koenker(2005)]{koenker2005}
+Koenker, R. (2005).
+\textit{Quantile Regression}.
+Cambridge University Press.
+\href{https://doi.org/10.1017/CBO9780511754098}{https://doi.org/10.1017/CBO9780511754098}
+
+% -- Referencias de Validación y Machine Learning --
+
+\bibitem[Mostofi et~al.(2022)]{mostofi2022}
+Mostofi, F., Toğan, V., \& Başağa, H. B. (2022).
+Real-estate price prediction with deep neural network and principal component analysis.
+\textit{Organization, Technology and Management in Construction, 14}(1), 2568--2580.
+\href{https://doi.org/10.2478/otmcj-2022-0016}{https://doi.org/10.2478/otmcj-2022-0016}
+
+\bibitem[Cajias(2019)]{cajias2019}
+Cajias, M. (2019).
+Can a machine understand real estate pricing? Evaluating machine learning approaches with big data.
+\textit{26th Annual European Real Estate Society Conference}. Cergy-Pontoise, France.
+
+\bibitem[Glaeser y Gyourko(2002)]{glaeser2002}
+Glaeser, E. L., \& Gyourko, J. (2002).
+\textit{The Impact of Zoning on Housing Affordability} (Working Paper No. 8835).
+National Bureau of Economic Research.
+\href{https://doi.org/10.3386/w8835}{https://doi.org/10.3386/w8835}
+
+\bibitem[Wheeler(2007)]{wheeler2007}
+Wheeler, D. C. (2007).
+Diagnostic tools and remedial methods for collinearity in geographically weighted regression.
+\textit{Environment and Planning A, 39}(10), 2464--2481.
+\href{https://doi.org/10.1068/a38325}{https://doi.org/10.1068/a38325}
+
+\bibitem[Laney(2001)]{laney2001}
+Laney, D. (2001).
+3D data management: Controlling data volume, velocity and variety.
+\textit{META Group Research Note, 6}(70), 1.
+
+% -- Referencias Originales --
+
+\bibitem[Khoshnoud et~al.(2023)]{Khoshnoud2023}
+Khoshnoud, M., Sirmans, G. S., \& Zietz, E. N. (2023).
+The evolution of hedonic pricing models.
+\textit{Journal of Real Estate Literature, 31}(1), 1--47.
+\href{https://doi.org/10.1080/09277544.2023.2201020}{https://doi.org/10.1080/09277544.2023.2201020}
+
+\bibitem[Cárdenas(2017)]{Cardenas2017}
+Cárdenas O’Byrne, S. (2017).
+Medir el uso del espacio público urbano seguro.
+\textit{Sociedad y Economía}, (33), 11--250.
+
+\bibitem[IGAC(2024)]{IGAC1912}
+Instituto Geográfico Agustín Codazzi. (2024, 6 de diciembre).
+\textit{Resolución 1912 de 2024: Por medio del cual se adopta la metodología para la actualización masiva de valores catastrales rezagados}.
+Recuperado de: \url{https://www.igac.gov.co/transparencia-y-acceso-a-la-informacion-publica/normograma/resolucion-1912-de-2024}
+
+\bibitem[Haynes y Fotheringham(1985)]{HaynesFotheringham1985}
+Haynes, K.~E., \& Fotheringham, A.~S. (1985).
+\textit{Gravity and Spatial Interaction Models}.
+Beverly Hills, CA: Sage Publications.
+
+\bibitem[Tasadorfiable(2025)]{TasadorResidual}
+Tasadorfiable. (2025, 27 de mayo).
+\textit{Método de valoración residual dinámico: qué es y cómo se calcula}.
+Recuperado de: \url{https://tasadorfiable.es/metodo-de-valoracion-residual-dinamico/}
+
+% -- Referencias del Complemento Metodológico --
+
+\bibitem[Hair et~al.(2010)]{hair2010}
+Hair, J.~F., Black, W.~C., Babin, B.~J. \& Anderson, R.~E. (2010).
+\textit{Multivariate Data Analysis} (7th ed.).
+Pearson Prentice Hall.
+
+\bibitem[Kaiser(1974)]{kaiser1974}
+Kaiser, H.~F. (1974).
+An index of factorial simplicity.
+\textit{Psychometrika, 39}(1), 31--36.
+\href{https://doi.org/10.1007/BF02291575}{https://doi.org/10.1007/BF02291575}
+
+\bibitem[Bartlett(1954)]{bartlett1954}
+Bartlett, M.~S. (1954).
+A note on the multiplying factors for various $\chi^2$ approximations.
+\textit{Journal of the Royal Statistical Society, Series B, 16}(2), 296--298.
+
+\bibitem[Roberts et~al.(2017)]{roberts2017}
+Roberts, D.~R., Bahn, V., Ciuti, S., Boyce, M.~S., Elith, J.,
+Guillera-Arroita, G., \ldots\ Dormann, C.~F. (2017).
+Cross-validation strategies for data with temporal, spatial, hierarchical,
+or phylogenetic structure.
+\textit{Ecography, 40}(8), 913--929.
+\href{https://doi.org/10.1111/ecog.02881}{https://doi.org/10.1111/ecog.02881}
+
+\bibitem[Student(1908)]{student1908}
+Student [Gosset, W.~S.] (1908).
+The probable error of a mean.
+\textit{Biometrika, 6}(1), 1--25.
+\href{https://doi.org/10.2307/2331554}{https://doi.org/10.2307/2331554}
+
+\bibitem[Cámara de Comercio de Bogotá(2024)]{ccb2024}
+Cámara de Comercio de Bogotá (2024).
+\textit{Encuesta de Percepción y Victimización (EPV) 2024}. $n = 19\,354$.
+
+\bibitem[IAAO(2013)]{iaao2013}
+International Association of Assessing Officers (2013).
+\textit{Standard on Ratio Studies}.
+Kansas City, MO: IAAO.
+
+\bibitem[Ester et~al.(1996)]{ester1996}
+Ester, M., Kriegel, H.-P., Sander, J. \& Xu, X. (1996).
+A density-based algorithm for discovering clusters in large spatial
+databases with noise.
+\textit{Proc. KDD-96}, 226--231.
+
+\bibitem[Tobler(1970)]{tobler1970}
+Tobler, W.~R. (1970).
+A computer movie simulating urban growth in the Detroit region.
+\textit{Economic Geography, 46}(sup1), 234--240.
+\href{https://doi.org/10.2307/143141}{https://doi.org/10.2307/143141}
+
+% -- Referencias del Capítulo de Validez de Uso --
+
+\bibitem[Shiller(2015)]{shiller2015}
+Shiller, R.~J. (2015).
+\textit{Irrational Exuberance} (3a ed.).
+Princeton University Press.
+Marco conceptual del \emph{mispricing} en mercados de activos, incluyendo inmobiliario.
+
+\bibitem[Nardo et~al.(2008)]{nardo2008}
+Nardo, M., Saisana, M., Saltelli, A., Tarantola, S., Hoffman, A. \& Giovannini, E. (2008).
+\textit{Handbook on Constructing Composite Indicators: Methodology and User Guide}.
+OECD Publishing.
+\href{https://doi.org/10.1787/9789264043466-en}{https://doi.org/10.1787/9789264043466-en}
+
+\bibitem[Nimon \& Oswald(2013)]{nimon2013}
+Nimon, K.~F. \& Oswald, F.~L. (2013).
+Understanding the results of multiple linear regression: beyond standardized regression coefficients.
+\textit{Organizational Research Methods, 16}(4), 650--674.
+\href{https://doi.org/10.1177/1094428113493929}{https://doi.org/10.1177/1094428113493929}
+
+\bibitem[Munda(2008)]{munda2008}
+Munda, G. (2008).
+\textit{Social Multi-Criteria Evaluation for a Sustainable Economy}.
+Springer.
+Discusión sobre compensatoriedad y no-compensatoriedad en agregación multicriterio.
+
+\bibitem[Ishizaka \& Labib(2011)]{ishizaka2011}
+Ishizaka, A. \& Labib, A. (2011).
+Review of the main developments in the analytic hierarchy process.
+\textit{Expert Systems with Applications, 38}(11), 14336--14345.
+\href{https://doi.org/10.1016/j.eswa.2011.04.143}{https://doi.org/10.1016/j.eswa.2011.04.143}
+
+\end{thebibliography}
+\end{document}
+
