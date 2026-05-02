@@ -4,7 +4,7 @@ Ejemplos representativos del output del sistema.
 
 ## Cotizaciones (ACM)
 
-- `cotizacion_ejemplo.pdf` — *(pendiente: generar desde la plataforma con un inmueble real)*
+- [`cotizacion_ejemplo.pdf`](cotizacion_ejemplo.pdf) — Análisis Comparativo de Mercado del **Apto 5700 (Puente Largo, Chapinero)**, el mismo inmueble que aparece en la Ficha del Capítulo 4 de la tesis. Generado por `scripts/generar_cotizacion_sample.py`.
 
 Para generar una nueva cotización:
 
