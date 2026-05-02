@@ -297,6 +297,14 @@ La metodología integra cuatro componentes analíticos articulados, cada uno res
 
 \end{enumerate}
 
+\paragraph{Reproducibilidad y código abierto.} El código fuente, la documentación técnica detallada, las instrucciones de despliegue local y las capturas representativas del sistema están disponibles públicamente en el repositorio del proyecto:
+
+\begin{center}
+\url{https://github.com/neylinsomne/indice-urbano-global-bogota}
+\end{center}
+
+\noindent La plataforma desplegada es accesible en \url{https://inmu.vara-alta.lat}. El detalle técnico completo se documenta en el Anexo~\ref{ax:tecnico}.
+
 % ==========================================
 % CAPÍTULO 2: MARCO TEÓRICO Y CONCEPTUAL
 % ==========================================
@@ -601,9 +609,62 @@ Aunque la meta de recolección es de 10,600 registros para maximizar la cobertur
 
 \section{Arquitectura del Pipeline de Datos}\label{sec:pipeline}
 
-Para orquestar la ingesta y el procesamiento de información, se diseñó un pipeline automatizado con dos ramas que comparten origen pero alimentan funciones distintas: una \textbf{rama analítica espacial} sobre PostGIS, encargada del cálculo de los indicadores y los modelos econométricos, y una \textbf{rama vectorial} sobre PgVector que sustenta el asistente conversacional. Ambas se nutren de los mismos datos crudos almacenados en MongoDB, tras una etapa común de limpieza y geocodificación. La rama vectorial transforma la información no estructurada de los inmuebles en representaciones densas (\emph{embeddings}), habilitando consultas en lenguaje natural (e.g., \emph{``apartamentos cerca a parques seguros''}) que las consultas SQL convencionales no resuelven.
+Para sostener un análisis poblacional sobre miles de inmuebles y decenas de capas oficiales, fue necesario diseñar un \emph{pipeline} automatizado capaz de ingerir, limpiar, georreferenciar, integrar y servir información heterogénea de forma reproducible. La lógica del pipeline se organiza en tres etapas secuenciales que aíslan responsabilidades: \textbf{ingesta} de datos crudos, \textbf{procesamiento} y enriquecimiento espacial, y \textbf{distribución} hacia dos almacenes especializados.
 
-El detalle técnico de la arquitectura ---diagrama del pipeline, modelo de datos completo, volumetría por tabla, contenedores y orquestación de tareas--- se documenta en el Anexo~\ref{ax:tecnico} para mantener este capítulo enfocado en la lógica metodológica del estudio.
+La etapa de \textbf{ingesta} concentra dos flujos de origen distinto. Por un lado, los anuncios de oferta inmobiliaria se recolectan mediante \emph{web scraping} programado contra portales de alta penetración en el mercado bogotano; por otro, las capas oficiales (POT 555, dotaciones IDECA, criminalidad por localidad, EPV 2024, paraderos de transporte público) se descargan periódicamente desde los portales de datos abiertos. La heterogeneidad de formatos resultantes (HTML, GeoJSON, SHP, CSV, JSONB) se preserva en una etapa de \emph{staging} sobre MongoDB, lo que permite reprocesar el pipeline sin tener que volver a recolectar la fuente original.
+
+La etapa de \textbf{procesamiento} normaliza atributos, depura registros mediante DBSCAN para detectar outliers, geocodifica los anuncios y los asigna espacialmente a barrios, localidades y polígonos del POT vía operadores PostGIS de tipo \texttt{ST\_Within} y \texttt{ST\_Distance}. Es en este punto donde un anuncio textual ---``apartamento amplio en el norte''--- se convierte en un registro georreferenciado con coordenadas, barrio asignado y un perfil de proximidad a equipamientos urbanos.
+
+Tras el procesamiento, el pipeline \textbf{distribuye} la información hacia dos almacenes con propósitos complementarios. La \textbf{rama analítica espacial}, sobre PostGIS, alimenta el cálculo de los cinco subíndices y los modelos econométricos del Capítulo~\ref{ch:resultados}; aquí residen las consultas SQL parametrizadas que el frontend invoca para construir el mapa coroplético y las tablas de ranking. La \textbf{rama vectorial}, sobre PgVector, transforma la información no estructurada de los inmuebles (descripciones textuales, atributos, contexto de barrio) en representaciones densas (\emph{embeddings}) que habilitan consultas semánticas del tipo \emph{``apartamentos cerca a parques seguros''} ---imposibles de resolver con un filtro SQL convencional pero naturales para un asistente conversacional basado en RAG.
+
+La separación entre ambas ramas es deliberada: la analítica exige consistencia, trazabilidad y auditoría sobre cada cifra reportada; la vectorial exige flexibilidad semántica y tolerancia a la ambigüedad del lenguaje natural. Compartir el origen pero diversificar el almacén permite atender las dos demandas sin compromisos cruzados.
+
+El detalle técnico exhaustivo ---diagrama completo del pipeline, modelo de datos por tabla, volumetría, configuración de contenedores Docker y orquestación de tareas mediante GitHub Actions--- se documenta en el Anexo~\ref{ax:tecnico}; este capítulo conserva la mirada metodológica para que el lector pueda evaluar las decisiones de diseño sin perderse en su implementación.
+
+\subsection{Metodologías, tecnologías y herramientas}
+\label{subsec:stack}
+
+El sistema se construyó sobre un \emph{stack} abierto y reproducible. La Tabla~\ref{tab:stack} sintetiza las herramientas seleccionadas y la responsabilidad concreta de cada una dentro del pipeline.
+
+\begin{table}[H]
+\centering
+\caption{Stack tecnológico del proyecto.}
+\label{tab:stack}
+\small
+\begin{tabular}{@{}p{3.5cm} p{4.5cm} p{6.0cm}@{}}
+\toprule
+\textbf{Capa} & \textbf{Herramienta} & \textbf{Responsabilidad} \\
+\midrule
+\multicolumn{3}{l}{\textit{Datos y persistencia}} \\
+Almacenamiento crudo & MongoDB & \emph{Staging} de anuncios y datos abiertos heterogéneos \\
+Analítica espacial & PostgreSQL 16 + PostGIS & Cálculo de indicadores, modelos hedónicos, agregaciones \\
+Búsqueda semántica & PgVector & Embeddings densos para asistente RAG \\
+Versionado de esquema & Flyway & Migraciones idempotentes y auditables \\
+Cache y cola & Redis & Sesiones, cache de consultas, jobs asíncronos \\
+\addlinespace
+\multicolumn{3}{l}{\textit{Procesamiento y modelos}} \\
+Web scraping & Scrapy + Playwright & Extracción de anuncios con renderizado JavaScript \\
+Modelado estadístico & scikit-learn, statsmodels & OLS, Ridge, Lasso, Elastic Net, PCA, DBSCAN \\
+Cómputo espacial & GeoPandas, Shapely & Geocodificación e intersecciones \\
+\addlinespace
+\multicolumn{3}{l}{\textit{API y frontend}} \\
+Backend & FastAPI (Python 3.12) & API REST + endpoints analíticos del Capítulo~\ref{ch:validez_uso} \\
+Frontend & React + Vite & Interfaz interactiva \\
+Cartografía & Leaflet + react-leaflet & Mapa coroplético multinivel \\
+LLM y RAG & Gemini & Asistente conversacional sobre PgVector \\
+\addlinespace
+\multicolumn{3}{l}{\textit{Despliegue y operación}} \\
+Contenedores & Docker Compose & Orquestación local y producción \\
+Túnel público & Cloudflare Tunnel & Exposición segura sin abrir puertos \\
+CI/CD y automatización & GitHub Actions (runner self-hosted) & Scraping mensual y recálculo de indicadores \\
+Monitoreo & Prometheus + Grafana & Métricas de pipeline y disponibilidad \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+La elección del \emph{stack} obedece a tres criterios articulados. Primero, \textbf{reproducibilidad}: cada componente es de código abierto y la pila completa puede levantarse con un único comando \texttt{docker compose up}, lo que blinda el trabajo frente a la obsolescencia de servicios propietarios. Segundo, \textbf{trazabilidad espacial}: PostGIS es el estándar \emph{de facto} para análisis geoespacial, y su combinación con PgVector en un mismo motor PostgreSQL evita la fragmentación de datos entre múltiples bases. Tercero, \textbf{escalabilidad metodológica}: el uso de Flyway garantiza que cualquier cambio en el cálculo de indicadores quede versionado y sea auditable, condición indispensable para que un trabajo académico sea verificable por terceros.
+
+El código fuente, las migraciones, los scripts de carga y la documentación técnica están disponibles públicamente en el repositorio del proyecto: \url{https://github.com/neylinsomne/indice-urbano-global-bogota}.
 
 \subsection{Protocolo de Validación PCA}
 \label{subsec:validacion_pca}
@@ -1399,7 +1460,7 @@ Los hallazgos del Capítulo~\ref{ch:validez_uso} cambian radicalmente la interpr
 
 La síntesis de las tres lecturas, en términos de \citet{shiller2015} y la literatura de \emph{mispricing} inmobiliario, es la siguiente: el residual del modelo hedónico es la señal de interés para el inversionista, y el $\IUG$ es la herramienta para interpretarlo. Si el residual es negativo \emph{y} el $\IUG$ es alto, la subvaloración se sustenta en fundamentales urbanos objetivos. Si el residual es negativo y el $\IUG$ es bajo, la subvaloración refleja una razón de mercado (inseguridad, mala dotación) que conviene evitar. La Tabla~\ref{tab:contraste_res} ya anticipaba esta lectura: inmuebles con $\IUG = 0.23$ se cotizan a precios comparables a los de $\IUG = 4.82$, y es justamente en ese desajuste donde el indicador aporta su contribución.
 
-\textbf{Recomendación de política}: el $\IUG$ debe reportarse siempre acompañado del residual hedónico, no aisladamente como variable independiente que compita con el estrato. La unidad operativa del sistema es el par $(\IUG, \varepsilon)$ y la salida natural es la matriz de decisión 2$\times$2. El sistema, con sus \num{47258} registros históricos de scraping, sienta además las bases para análisis longitudinales: la trayectoria temporal del precio por barrio permitiría construir señales predictivas de valorización que ningún modelo hedónico de corte transversal puede abordar. La incorporación futura de regresión espacial (Spatial Lag, GWR), la calibración empírica de los pesos del $\IUG$ y el cruce del $\IACC$ con la expansión del metro de Bogotá son líneas naturales que la arquitectura PostGIS del sistema ya soporta.
+\textbf{Recomendación de política}: el $\IUG$ debe reportarse siempre acompañado del residual hedónico, no aisladamente como variable independiente que compita con el estrato. La unidad operativa del sistema es el par $(\IUG, \varepsilon)$ y la salida natural es la matriz de decisión 2$\times$2. El sistema, con sus \num{47258} registros históricos de scraping, sienta además las bases para análisis longitudinales: la trayectoria temporal del precio por barrio permitiría construir señales predictivas de valorización que ningún modelo hedónico de corte transversal puede abordar. Como líneas naturales de extensión, la arquitectura PostGIS del sistema ya soporta la incorporación futura de regresión espacial (Spatial Lag, GWR), la calibración empírica de los pesos del $\IUG$ mediante AHP-PCA, y el enriquecimiento del subíndice de accesibilidad conforme la oferta de transporte masivo de la ciudad evolucione en el tiempo.
 
 
 
