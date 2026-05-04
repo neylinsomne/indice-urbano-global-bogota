@@ -164,15 +164,15 @@ class CotizacionPDF(FPDF):
 
     def __init__(self):
         super().__init__(orientation="P", unit="mm", format="A4")
-        self.set_auto_page_break(auto=True, margin=15)
-        self.set_margin(10)
+        self.set_auto_page_break(auto=True, margin=10)
+        self.set_margin(8)
 
     def footer(self):
-        self.set_y(-12)
-        self.set_font("Helvetica", "I", 7)
+        self.set_y(-9)
+        self.set_font("Helvetica", "I", 6.5)
         self.set_text_color(150, 150, 150)
         self.cell(
-            0, 10,
+            0, 8,
             f"INMU - Indice Urbano Global de Bogota | Pagina {self.page_no()} | "
             "MUESTRA ACADEMICA - Trabajo de Grado PUJ 2026",
             align="C",
@@ -181,99 +181,93 @@ class CotizacionPDF(FPDF):
     # ─── Header ──────────────────────────────────────────────────────
     def render_header(self):
         self.set_fill_color(*self.C_PRIMARY)
-        self.rect(0, 0, 210, 22, style="F")
-        self.set_xy(10, 5)
-        self.set_font("Helvetica", "B", 12)
+        self.rect(0, 0, 210, 16, style="F")
+        self.set_xy(8, 3)
+        self.set_font("Helvetica", "B", 11)
         self.set_text_color(*self.C_WHITE)
-        self.cell(190, 12, clean(
+        self.cell(194, 8, clean(
             "ANALISIS DE MERCADO Y PRECIO OBJETIVO DE VENTA"), align="C")
-        self.ln(18)
-        # Subtitulo institucional
-        self.set_xy(10, 24)
-        self.set_font("Helvetica", "I", 8)
-        self.set_text_color(*self.C_GRAY)
-        self.cell(190, 5, clean(
+        # Subtitulo institucional integrado
+        self.set_xy(8, 10)
+        self.set_font("Helvetica", "I", 7)
+        self.set_text_color(220, 220, 220)
+        self.cell(194, 4, clean(
             f"Generado el {date.today().strftime('%d/%m/%Y')} | "
             "Sistema INMU - Indice Urbano Global de Bogota"), align="C")
-        self.ln(8)
+        self.set_y(17)
 
     # ─── Banner de muestra academica ─────────────────────────────────
     def render_academic_banner(self):
         self.set_fill_color(*self.C_GOLD)
         self.set_draw_color(180, 150, 50)
         y = self.get_y()
-        self.rect(10, y, 190, 8, style="DF")
-        self.set_xy(10, y + 1)
-        self.set_font("Helvetica", "B", 8)
+        self.rect(8, y, 194, 5.5, style="DF")
+        self.set_xy(8, y + 0.5)
+        self.set_font("Helvetica", "B", 7.5)
         self.set_text_color(*self.C_DARK)
-        self.cell(190, 6, clean(
+        self.cell(194, 4.5, clean(
             "MUESTRA ACADEMICA - Datos del Apto 5700 (Capitulo 4 de la tesis)"),
             align="C")
-        self.ln(11)
+        self.ln(7)
 
     # ─── Ficha del sujeto ────────────────────────────────────────────
     def render_subject(self):
         y0 = self.get_y()
+        # Combinamos campos para reducir filas
         fields = [
-            ("ID inmueble", str(SUJETO["id"])),
-            ("Tipo", SUJETO["tipo"]),
+            ("ID / Tipo", f"{SUJETO['id']} - {SUJETO['tipo']}"),
             ("Barrio", SUJETO["barrio"]),
-            ("Localidad", SUJETO["localidad"]),
-            ("Ciudad", SUJETO["ciudad"]),
-            ("Estado", SUJETO["estado"]),
-            ("Antiguedad", SUJETO["edad"]),
+            ("Localidad / Ciudad", f"{SUJETO['localidad']} - {SUJETO['ciudad']}"),
+            ("Estado / Antiguedad", f"{SUJETO['estado']} / {SUJETO['edad']}"),
             ("Area construida", f"{SUJETO['area']} mt2"),
             ("Habitaciones / Banos", f"{SUJETO['habitaciones']} / {SUJETO['banos']}"),
             ("Estrato", str(SUJETO["estrato"])),
             ("Precio listado", cop(SUJETO["precio"])),
         ]
-        label_w, value_w, row_h = 38, 56, 6.2
+        label_w, value_w, row_h = 36, 58, 4.8
         for i, (lab, val) in enumerate(fields):
             y = y0 + i * row_h
-            self.set_xy(10, y)
-            self.set_font("Helvetica", "B", 8)
+            self.set_xy(8, y)
+            self.set_font("Helvetica", "B", 7.5)
             self.set_text_color(*self.C_DARK)
             self.set_fill_color(*self.C_LIGHT_GRAY)
             self.cell(label_w, row_h, clean(f" {lab}"), border=1, fill=True)
-            self.set_font("Helvetica", "", 8)
+            self.set_font("Helvetica", "", 7.5)
             self.set_text_color(*self.C_GRAY)
             self.cell(value_w, row_h, clean(f" {val}"), border=1)
 
         # Imagen placeholder (columna derecha)
-        img_x, img_y, img_w, img_h = 110, y0, 90, len(fields) * row_h
+        img_x, img_y, img_w, img_h = 110, y0, 92, len(fields) * row_h
         self.set_fill_color(235, 235, 235)
         self.rect(img_x, img_y, img_w, img_h, style="F")
         self.set_draw_color(180, 180, 180)
         self.rect(img_x, img_y, img_w, img_h)
-        # Marca de agua diagonal
-        self.set_xy(img_x, img_y + img_h / 2 - 8)
-        self.set_font("Helvetica", "B", 11)
+        # Marca de agua compacta
+        self.set_xy(img_x, img_y + img_h / 2 - 5)
+        self.set_font("Helvetica", "B", 9)
         self.set_text_color(170, 170, 170)
-        self.cell(img_w, 5, clean("MUESTRA ACADEMICA"), align="C")
-        self.set_xy(img_x, img_y + img_h / 2 - 1)
-        self.set_font("Helvetica", "I", 7)
+        self.cell(img_w, 4, clean("MUESTRA ACADEMICA"), align="C")
+        self.set_xy(img_x, img_y + img_h / 2)
+        self.set_font("Helvetica", "I", 6.5)
         self.set_text_color(150, 150, 150)
-        self.cell(img_w, 4, clean("Imagen del inmueble omitida por"), align="C")
+        self.cell(img_w, 3, clean("Imagen omitida por derechos de uso."), align="C")
         self.set_xy(img_x, img_y + img_h / 2 + 3)
-        self.cell(img_w, 4, clean("derechos de uso del anuncio original."), align="C")
-        self.set_xy(img_x, img_y + img_h / 2 + 7)
-        self.cell(img_w, 4, clean(
+        self.cell(img_w, 3, clean(
             "En produccion se incluye automaticamente."), align="C")
 
-        self.set_y(y0 + len(fields) * row_h + 4)
+        self.set_y(y0 + len(fields) * row_h + 2)
 
     # ─── Tabla de comparables ────────────────────────────────────────
     def render_comparables_table(self, comps_h: list[dict]):
-        self.set_y(self.get_y() + 2)
         # Subtitulo de seccion
-        self.set_font("Helvetica", "B", 9)
+        self.set_font("Helvetica", "B", 8)
         self.set_text_color(*self.C_PRIMARY)
-        self.set_x(10)
-        self.cell(190, 5, clean("Comparables del mercado"))
-        self.ln(6)
+        self.set_x(8)
+        self.cell(194, 4, clean("Comparables del mercado"))
+        self.ln(4.5)
         cols = [
-            ("#", 8),
-            ("Barrio / Edad", 36),
+            ("#", 7),
+            ("Barrio / Edad", 38),
             ("Fuente", 18),
             ("Fecha", 14),
             ("Valor", 26),
@@ -281,23 +275,23 @@ class CotizacionPDF(FPDF):
             ("Precio/m2", 22),
             ("F.Of.", 10),
             ("F.Cn.", 10),
-            ("Precio/m2\nHomolog.", 24),
+            ("Precio/m2 Hom.", 37),
         ]
         # Header
-        x = 10
+        x = 8
         y_h = self.get_y()
         self.set_fill_color(*self.C_PRIMARY)
         self.set_text_color(*self.C_WHITE)
         self.set_font("Helvetica", "B", 6.5)
         for name, w in cols:
             self.set_xy(x, y_h)
-            self.multi_cell(w, 4, clean(name), border=1, align="C", fill=True)
+            self.cell(w, 5, clean(name), border=1, align="C", fill=True)
             x += w
-        self.set_y(y_h + 8)
+        self.set_y(y_h + 5)
 
-        row_h = 7
+        row_h = 4.8
         for i, c in enumerate(comps_h):
-            x = 10
+            x = 8
             y_r = self.get_y()
             if i % 2 == 0:
                 self.set_fill_color(*self.C_WHITE)
@@ -324,51 +318,68 @@ class CotizacionPDF(FPDF):
                           border=1, align=al, fill=True)
                 x += w
             self.set_y(y_r + row_h)
-        self.ln(2)
+        self.ln(1.5)
 
     # ─── Estadisticas ────────────────────────────────────────────────
     def render_statistics(self, stats: dict):
-        self.set_font("Helvetica", "B", 9)
+        self.set_font("Helvetica", "B", 8)
         self.set_text_color(*self.C_PRIMARY)
-        self.set_x(10)
-        self.cell(190, 5, clean("Estadistica del estudio"))
-        self.ln(6)
+        self.set_x(8)
+        self.cell(194, 4, clean("Estadistica del estudio"))
+        self.ln(4.5)
         rows = [
-            ("Promedio aritmetico precio/m2", cop(stats["mean"])),
-            ("Desviacion tipica (muestral)", cop(stats["sd"])),
-            ("Coeficiente de variacion", f"{stats['cv']:.2f} %"),
+            ("Promedio precio/m2", cop(stats["mean"])),
+            ("Desviacion tipica", cop(stats["sd"])),
+            ("Coef. de variacion", f"{stats['cv']:.2f} %"),
+            ("N comparables", str(stats["n"])),
             ("Limite superior (IC 90%)", cop(stats["ci_high"])),
             ("Limite inferior (IC 90%)", cop(stats["ci_low"])),
             (f"t-Student (gl={stats['gl']})", f"{stats['t']:.4f}"),
-            ("N comparables", str(stats["n"])),
+            ("", ""),
         ]
-        label_w, value_w, row_h = 95, 95, 5.5
-        for lab, val in rows:
-            self.set_x(10)
-            self.set_font("Helvetica", "", 8)
+        # Dos columnas paralelas: filas 0-3 izquierda, 4-7 derecha
+        col_w_lab, col_w_val, row_h = 48, 49, 4.3
+        x_left, x_right = 8, 105
+        y_start = self.get_y()
+        for i in range(4):
+            y = y_start + i * row_h
+            # Columna izquierda
+            lab_l, val_l = rows[i]
+            self.set_xy(x_left, y)
+            self.set_font("Helvetica", "", 7.5)
             self.set_text_color(*self.C_DARK)
-            self.cell(label_w, row_h, clean(f" {lab}"), border=0, align="L")
-            self.set_font("Helvetica", "B", 8)
+            self.cell(col_w_lab, row_h, clean(f" {lab_l}"), border=0, align="L")
+            self.set_font("Helvetica", "B", 7.5)
             self.set_text_color(*self.C_PRIMARY)
-            self.cell(value_w, row_h, clean(val), border=0, align="R")
-            self.ln(row_h)
-        self.ln(2)
+            self.cell(col_w_val, row_h, clean(val_l), border=0, align="R")
+            # Columna derecha
+            lab_r, val_r = rows[i + 4]
+            if lab_r:
+                self.set_xy(x_right, y)
+                self.set_font("Helvetica", "", 7.5)
+                self.set_text_color(*self.C_DARK)
+                self.cell(col_w_lab, row_h, clean(f" {lab_r}"), border=0, align="L")
+                self.set_font("Helvetica", "B", 7.5)
+                self.set_text_color(*self.C_PRIMARY)
+                self.cell(col_w_val, row_h, clean(val_r), border=0, align="R")
+        self.set_y(y_start + 4 * row_h + 1)
 
     # ─── Bloque IUG (especifico de este sistema) ─────────────────────
     def render_iug_block(self):
-        self.set_font("Helvetica", "B", 9)
+        self.set_font("Helvetica", "B", 8)
         self.set_text_color(*self.C_PRIMARY)
-        self.set_x(10)
-        self.cell(190, 5, clean("Indice Urbano Global (IUG) del entorno"))
-        self.ln(7)
+        self.set_x(8)
+        self.cell(194, 4, clean("Indice Urbano Global (IUG) del entorno"))
+        self.ln(4.5)
 
-        # Caja con desglose
-        x0, y0, w_total = 10, self.get_y(), 190
+        # Caja con desglose (mas compacta)
+        x0, y0, w_total = 8, self.get_y(), 194
+        box_h = 18
         sub_w = w_total / 5
         self.set_fill_color(*self.C_LIGHT_GRAY)
-        self.rect(x0, y0, w_total, 26, style="F")
+        self.rect(x0, y0, w_total, box_h, style="F")
         self.set_draw_color(200, 200, 200)
-        self.rect(x0, y0, w_total, 26)
+        self.rect(x0, y0, w_total, box_h)
 
         labels = [
             ("Accesibilidad", SUJETO["iug_acc"]),
@@ -379,108 +390,107 @@ class CotizacionPDF(FPDF):
         ]
         for i, (lab, val) in enumerate(labels):
             x = x0 + i * sub_w
-            self.set_xy(x, y0 + 2)
-            self.set_font("Helvetica", "B", 7.5)
+            self.set_xy(x, y0 + 1)
+            self.set_font("Helvetica", "B", 7)
             self.set_text_color(*self.C_GRAY)
-            self.cell(sub_w, 4, clean(lab), align="C")
-            self.set_xy(x, y0 + 8)
-            self.set_font("Helvetica", "B", 14)
+            self.cell(sub_w, 3, clean(lab), align="C")
+            self.set_xy(x, y0 + 4.5)
+            self.set_font("Helvetica", "B", 12)
             self.set_text_color(*self.C_PRIMARY)
-            self.cell(sub_w, 8, f"{val:.2f}", align="C")
+            self.cell(sub_w, 6, f"{val:.2f}", align="C")
             # Mini barra
             bar_w = (val / 5.0) * (sub_w - 8)
             self.set_fill_color(*self.C_PRIMARY_LIGHT)
-            self.rect(x + 4, y0 + 19, bar_w, 3, style="F")
+            self.rect(x + 4, y0 + 13, bar_w, 2.2, style="F")
             self.set_draw_color(180, 180, 180)
-            self.rect(x + 4, y0 + 19, sub_w - 8, 3)
+            self.rect(x + 4, y0 + 13, sub_w - 8, 2.2)
 
-        self.set_y(y0 + 30)
+        self.set_y(y0 + box_h + 1.5)
 
         # IUG agregado y banda
-        self.set_x(10)
-        self.set_font("Helvetica", "B", 11)
+        self.set_x(8)
+        self.set_font("Helvetica", "B", 10)
         self.set_text_color(*self.C_PRIMARY)
-        self.cell(60, 7, clean(f"IUG agregado: {SUJETO['iug']:.2f} / 5.00"))
-        self.set_font("Helvetica", "", 9)
+        self.cell(60, 5, clean(f"IUG agregado: {SUJETO['iug']:.2f} / 5.00"))
+        self.set_font("Helvetica", "", 8)
         self.set_text_color(*self.C_GRAY)
-        self.cell(130, 7, clean(
+        self.cell(134, 5, clean(
             f"Banda de confianza al 90%: [{SUJETO['iug_banda_inf']:.2f}, "
             f"{SUJETO['iug_banda_sup']:.2f}]   |   "
             "Posicion: top 5% del sistema"))
-        self.ln(9)
+        self.ln(6)
 
     # ─── Bloque de mispricing y cuadrante ────────────────────────────
     def render_decision_block(self):
-        self.set_font("Helvetica", "B", 9)
+        self.set_font("Helvetica", "B", 8)
         self.set_text_color(*self.C_PRIMARY)
-        self.set_x(10)
-        self.cell(190, 5, clean("Diagnostico de mispricing y cuadrante de decision"))
-        self.ln(7)
+        self.set_x(8)
+        self.cell(194, 4, clean("Diagnostico de mispricing y cuadrante de decision"))
+        self.ln(4.5)
 
         # Caja con metricas
-        x0, y0 = 10, self.get_y()
+        x0, y0 = 8, self.get_y()
+        box_h = 14
         self.set_fill_color(248, 248, 248)
-        self.rect(x0, y0, 190, 22, style="F")
+        self.rect(x0, y0, 194, box_h, style="F")
         self.set_draw_color(200, 200, 200)
-        self.rect(x0, y0, 190, 22)
+        self.rect(x0, y0, 194, box_h)
 
-        col_w = 190 / 3
-        self.set_xy(x0 + 4, y0 + 2)
-        self.set_font("Helvetica", "B", 7.5)
+        col_w = 194 / 3
+        self.set_xy(x0 + 4, y0 + 1)
+        self.set_font("Helvetica", "B", 7)
         self.set_text_color(*self.C_GRAY)
-        self.cell(col_w - 4, 4, clean("Precio listado"), align="L")
-        self.set_xy(x0 + col_w, y0 + 2)
-        self.cell(col_w, 4, clean("Precio estimado (modelo hedonico)"), align="C")
-        self.set_xy(x0 + 2 * col_w, y0 + 2)
-        self.cell(col_w - 4, 4, clean("Residual"), align="R")
+        self.cell(col_w - 4, 3, clean("Precio listado"), align="L")
+        self.set_xy(x0 + col_w, y0 + 1)
+        self.cell(col_w, 3, clean("Precio estimado (modelo hedonico)"), align="C")
+        self.set_xy(x0 + 2 * col_w, y0 + 1)
+        self.cell(col_w - 4, 3, clean("Residual"), align="R")
 
-        self.set_xy(x0 + 4, y0 + 8)
-        self.set_font("Helvetica", "B", 12)
+        self.set_xy(x0 + 4, y0 + 5)
+        self.set_font("Helvetica", "B", 11)
         self.set_text_color(*self.C_DARK)
-        self.cell(col_w - 4, 8, clean(cop(SUJETO["precio"])), align="L")
-        self.set_xy(x0 + col_w, y0 + 8)
-        self.cell(col_w, 8, clean(cop(SUJETO["precio_estimado"])), align="C")
-        self.set_xy(x0 + 2 * col_w, y0 + 8)
+        self.cell(col_w - 4, 7, clean(cop(SUJETO["precio"])), align="L")
+        self.set_xy(x0 + col_w, y0 + 5)
+        self.cell(col_w, 7, clean(cop(SUJETO["precio_estimado"])), align="C")
+        self.set_xy(x0 + 2 * col_w, y0 + 5)
         residual_color = self.C_GREEN_OK if SUJETO["residual_pct"] < 0 else self.C_RED_WARN
         self.set_text_color(*residual_color)
-        self.cell(col_w - 4, 8, f"{SUJETO['residual_pct']:+.1f} %", align="R")
+        self.cell(col_w - 4, 7, f"{SUJETO['residual_pct']:+.1f} %", align="R")
 
-        self.set_y(y0 + 26)
+        self.set_y(y0 + box_h + 1)
 
-        # Cuadrante de decision (caja destacada)
-        x0, y0 = 10, self.get_y()
+        # Cuadrante de decision (caja destacada compacta)
+        x0, y0 = 8, self.get_y()
+        cuad_h = 11
         self.set_fill_color(*self.C_GREEN_OK)
-        self.rect(x0, y0, 190, 14, style="F")
-        self.set_xy(x0, y0 + 2)
-        self.set_font("Helvetica", "B", 14)
+        self.rect(x0, y0, 194, cuad_h, style="F")
+        self.set_xy(x0, y0 + 1.2)
+        self.set_font("Helvetica", "B", 12)
         self.set_text_color(*self.C_WHITE)
-        self.cell(190, 6, clean(
+        self.cell(194, 5, clean(
             f"CUADRANTE DE DECISION: {SUJETO['cuadrante']}"), align="C")
-        self.set_xy(x0, y0 + 8)
-        self.set_font("Helvetica", "I", 8)
-        self.cell(190, 4, clean(
-            "IUG alto (4.28) + precio listado por debajo del estimado (-21.3%) => "
+        self.set_xy(x0, y0 + 6)
+        self.set_font("Helvetica", "I", 7)
+        self.cell(194, 4, clean(
+            "IUG alto (4.28) + precio listado -21.3% bajo estimado => "
             "subvaloracion sustentada en calidad urbana objetiva."), align="C")
-        self.set_y(y0 + 18)
+        self.set_y(y0 + cuad_h + 1.5)
 
     # ─── Nota metodologica ───────────────────────────────────────────
     def render_methodological_note(self):
-        self.set_font("Helvetica", "I", 7)
+        self.set_font("Helvetica", "I", 6.5)
         self.set_text_color(*self.C_GRAY)
-        self.set_x(10)
+        self.set_x(8)
         text = clean(
             "Nota metodologica: el IUG es un indicador sintetico de calidad urbana "
-            "calculado de forma ortogonal al precio. No predice el precio de mercado; "
-            "lo contrasta con los fundamentales urbanos del territorio. La banda al "
-            "90% propaga incertidumbre desde GPS, EPV 2024 e ICSU. Los comparables "
-            "se seleccionan por similitud espacial y estructural; los factores de "
-            "homologacion siguen el protocolo IAAO 2013. Validez del indicador "
-            "verificada mediante un protocolo de 11 pruebas estadisticas (Capitulo 5 "
-            "de la tesis: bondad de ajuste, robustez, validez convergente, validez "
-            "de uso). Este reporte es una MUESTRA ACADEMICA generada con datos del "
-            "Apto 5700 que aparece en el cuerpo de la tesis."
+            "calculado de forma ortogonal al precio. No predice el precio; lo "
+            "contrasta con los fundamentales urbanos del territorio. La banda al 90% "
+            "propaga incertidumbre desde GPS, EPV 2024 e ICSU. Factores de "
+            "homologacion segun IAAO 2013. Validez verificada mediante 11 pruebas "
+            "estadisticas (Cap. 5 de la tesis). MUESTRA ACADEMICA con datos del "
+            "Apto 5700 del Capitulo 4."
         )
-        self.multi_cell(190, 3.5, text, align="J")
+        self.multi_cell(194, 3, text, align="J")
 
 
 # ─────────────────────────────────────────────────────────────────────

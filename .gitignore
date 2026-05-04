@@ -6,6 +6,10 @@
 *.key
 secrets/
 
+# Stitch design exports (binarios, no aportan al repo)
+stitch_extract/
+stitch_inmu_urban_data_saas.zip
+
 # LaTeX build artifacts
 *.aux
 *.log
