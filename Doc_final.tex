@@ -605,7 +605,7 @@ Oferta & Anuncios de Vivienda (Venta/Arriendo) & HTML (DOM) & Web Scraping \\
 }
 \end{table}
 
-Aunque la meta de recolección es de 10,600 registros para maximizar la cobertura espacial, la muestra consolidada de 6,418 inmuebles de vivienda ya permite inferencias estadísticas robustas. Según el Teorema del Límite Central, este volumen supera ampliamente los umbrales mínimos para la convergencia de los estimadores en los modelos de regresión hedónica planteados, garantizando que los resultados posean validez econométrica.
+Aunque la meta de recolección es de 10,600 registros para maximizar la cobertura espacial, la muestra consolidada de 6,418 inmuebles de vivienda\footnote{Cifra correspondiente al corte de redacción (\emph{v1.0}); el sistema vivo continuó ingiriendo datos posteriormente. La volumetría vigente del corpus se reporta en el Anexo~\ref{sec:anexo_volumetria} (tabla con columnas \emph{v1.0} y \emph{v2.0}) y en \texttt{CHANGELOG\_CORPUS.md} del repositorio. Las pruebas estadísticas re-ejecutadas sobre el corpus ampliado reproducen las conclusiones de este capítulo ($\Delta R^2 = +0{,}052$ vs. $+0{,}053$; $\rho_\text{Spearman} = 0{,}998$ vs. $0{,}995$).} ya permite inferencias estadísticas robustas. Según el Teorema del Límite Central, este volumen supera ampliamente los umbrales mínimos para la convergencia de los estimadores en los modelos de regresión hedónica planteados, garantizando que los resultados posean validez econométrica.
 
 \section{Arquitectura del Pipeline de Datos}\label{sec:pipeline}
 
@@ -692,7 +692,7 @@ Este capítulo presenta los hallazgos del estudio organizados en seis ejes: la m
 \paragraph{Fecha de corte y vigencia.}
 Los datos de mercado corresponden al corte mensual del pipeline automatizado vigente al cierre de abril de 2026, alimentado por el ciclo de \emph{scraping} programado el día 15 de cada mes. Las capas oficiales (POT 555, criminalidad por localidad, EPV 2024, dotaciones IDECA) corresponden a sus versiones públicas más recientes a esa misma fecha. El estudio admite replicación con cortes posteriores sin cambio metodológico: el resultado de cualquier mes futuro se obtiene re-ejecutando el \emph{pipeline} sobre el dataset actualizado.
 
-Tras la migración desde MongoDB Atlas y la asignación espacial mediante PostGIS, el dataset final comprende \textbf{6\,418 inmuebles} de vivienda en Bogotá: 3\,717 apartamentos (57.9\,\%) y 2\,701 casas (42.1\,\%), distribuidos en 19 localidades y 676 barrios legalizados.
+Tras la migración desde MongoDB Atlas y la asignación espacial mediante PostGIS, el dataset final comprende \textbf{6\,418 inmuebles}\footnote{Volumetría del corte de análisis (\emph{v1.0}). El sistema vivo, cuyo \emph{pipeline} se mantiene activo, alcanza \num{22677} inmuebles bogotanos válidos al cierre de mayo de 2026 (\emph{v2.0}); la totalidad multi-ciudad de la base es de \num{42928} registros. La trazabilidad completa se documenta en el Anexo~\ref{sec:anexo_volumetria} y en \texttt{CHANGELOG\_CORPUS.md}.} de vivienda en Bogotá: 3\,717 apartamentos (57.9\,\%) y 2\,701 casas (42.1\,\%), distribuidos en 19 localidades y 676 barrios legalizados.
 
 \begin{table}[H]
 \centering
