@@ -1536,20 +1536,21 @@ La automatización mensual se ejecuta vía GitHub Actions sobre un \emph{runner}
 
 \begin{table}[H]
 \centering
-\caption{Volumetría del sistema de base de datos geoespacial.}
+\caption{Volumetría del sistema de base de datos geoespacial. La columna \emph{v1.0} corresponde al corte usado para el análisis del Capítulo de Resultados; la columna \emph{v2.0} refleja el estado vigente tras la carga completa de POIs documentada en \texttt{CHANGELOG\_CORPUS.md} del repositorio.}
 \label{tab:volumetria_anexo}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{llrr}
 \toprule
-\textbf{Entidad} & \textbf{Naturaleza} & \textbf{Actual} & \textbf{Proyectado} \\
+\textbf{Entidad} & \textbf{Naturaleza} & \textbf{v1.0 (tesis)} & \textbf{v2.0 (vigente)} \\
 \midrule
-Inmuebles & Espacial (POINT) & 6\,418 & $\approx$ 10\,600 \\
+Inmuebles totales & Espacial (POINT) & 6\,418 & 45\,438 \\
+\quad de los cuales bogotanos (alcance) & & 6\,418 & 23\,761 \\
 Características de inmueble & Relacional (EAV) & 87\,117 & $\approx$ 140\,000 \\
 Historial de scrapeos & Relacional (JSONB) & 47\,258 & $\approx$ 80\,000 \\
 \addlinespace
-Indicadores de transporte & Espacial (gravity) & 3\,867 & $\approx$ 10\,600 \\
-Indicadores de seguridad & Espacial (gravity) & 4\,665 & $\approx$ 10\,600 \\
-Indicadores de dotación & Espacial (gravity) & 5\,289 & $\approx$ 10\,600 \\
+Indicadores de transporte & Espacial (gravity) & 3\,867 & 14\,749 \\
+Indicadores de seguridad & Espacial (gravity) & 4\,665 & 23\,761 \\
+Indicadores de dotación & Espacial (gravity) & 5\,289 & 16\,468 \\
 \addlinespace
 Localidades & MULTIPOLYGON & 20 & 20 \\
 Barrios legalizados & MULTIPOLYGON & 1\,721 & 1\,721 \\
@@ -1559,8 +1560,12 @@ Edificabilidad & POLYGON & 2\,748 & 2\,748 \\
 Áreas de actividad & POLYGON & 1\,135 & 1\,135 \\
 UPL & POLYGON & 33 & 33 \\
 \addlinespace
-Dotaciones POI unificadas & POINT & 8\,434 & 10\,881 \\
-Universidades & POINT & 583 & 583 \\
+Dotaciones POI unificadas & POINT & 8\,434 & 11\,610 \\
+\quad de las cuales colegios SED & & 0 & 2\,237 \\
+\quad de las cuales universidades & & 0 & 583 \\
+\quad de las cuales parques + escenarios IDRD & & 0 & 194 \\
+\quad de las cuales teatros y auditorios & & 0 & 134 \\
+Universidades (tabla auxiliar) & POINT & 583 & 583 \\
 Estaciones TransMilenio & POINT & 149 & 149 \\
 Paraderos SITP (OSM) & POINT & 7\,693 & 7\,693 \\
 \addlinespace
@@ -1570,6 +1575,9 @@ Criminalidad por localidad & POLYGON & 20 & 20 \\
 \bottomrule
 \end{tabular}}
 \end{table}
+
+\paragraph{Nota de versionado del corpus.}\label{nota:versionado}
+La columna \emph{v1.0 (tesis)} corresponde al estado del corpus al momento del análisis del Capítulo de Resultados. La columna \emph{v2.0 (vigente)} refleja el estado tras completar la carga de las cuatro categorías de dotación cuyas fuentes (Sec. Educación, IDRD, Sec. Cultura, SNIES) se documentan en este Anexo pero no se habían ingerido al momento del corte: colegios SED (\num{2237} sedes), universidades (\num{583} sedes), parques y escenarios deportivos del IDRD (\num{194} POIs) y teatros y auditorios de la Secretaría de Cultura (\num{134} POIs). El indicador de Dotación se construye por proximidad acumulada, lo que implica que el efecto de la ampliación es \textbf{monotónico no-decreciente}: la cota inferior reportada en este documento se preserva, las pruebas de validación re-ejecutadas sobre v2.0 reproducen las conclusiones cualitativas (ortogonalidad respecto al precio, $\Delta R^2 = +0{,}052$ vs. $+0{,}053$ en v1.0; $\rho_\text{Spearman} = 0{,}998$ vs. $0{,}995$ en v1.0). El detalle se documenta en \texttt{CHANGELOG\_CORPUS.md} del repositorio.
 
 El esquema gestiona aproximadamente \num{180000} entidades georreferenciadas distribuidas en 30 tablas. La tabla \texttt{iug.inmueble} concentra la información transaccional (precio, fecha, atributos físicos) y los seis subíndices calculados; las tablas espaciales auxiliares (POT, dotaciones, transporte, seguridad) se actualizan ocasionalmente desde fuentes oficiales (IDECA, Datos Abiertos Bogotá), mientras que las tablas de transacciones (\texttt{inmueble\_scrapeo}, \texttt{inmueble\_historial}) crecen mensualmente con cada ejecución del pipeline.
 
