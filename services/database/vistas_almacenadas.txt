@@ -1,0 +1,9 @@
+obtener_puntaje_ponderado ->
+parámetros:
+obtener_puntaje_ponderado(pesos JSON, columnas TEXT[], barrio TEXT)
+
+RETURNS TABLE(codigo_busqueda TEXT, geometry GEOMETRY, weighted_score FLOAT)
+
+buscar_puntos_mas_cercanos->
+parámetros:
+geometry , un punto geoespacial. colegio, centro comercial, etc...

@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Documentation (no necesario en runtime)
+*.md
+!README.md
+
+# Tests
+tests/
+*.test.py
+
+# Cache
+cache/
+*.pkl
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Env files (se pasan por docker-compose)
+.env
+*.env

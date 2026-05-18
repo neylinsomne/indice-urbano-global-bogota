@@ -1,0 +1,181 @@
+ITEM;Codigo Parque;Nombre Parque;Nombre Localidad;Nivel de Parque;Tipo Cancha;Superficie
+1;01-023;Servitá;01 Usaquén;ESTRUCTURANTE;Fútbol 11 - Rugby;SINTETICA
+2;01-023;Servitá;01 Usaquén;ESTRUCTURANTE;Fútbol 5;SINTETICA
+3;01-031;Cedritos;01 Usaquén;PROXIMIDAD;Fútbol 8;SINTETICA
+4;01-079;Toberin;01 Usaquén;PROXIMIDAD;Fútbol 11;SINTETICA
+5;01-189;Estrella norte;01 Usaquén;PROXIMIDAD;Fútbol 5;SINTETICA
+6;01-313;Verbenal;01 Usaquén;PROXIMIDAD;Fútbol 5;SINTETICA
+7;01-540;Urb. Calle 170 / Alameda;01 Usaquén;PROXIMIDAD;Fútbol 5;SINTETICA
+8;02-007;La Cabrera (Japon);02 Chapinero;PROXIMIDAD;Fútbol 5;SINTETICA
+9;03-036;Cruces;03 Santafé;ESTRUCTURANTE;Fútbol 5;SINTETICA
+10;03-085;Tercermilenio;03 Santafé;ESTRUCTURANTE;Fútbol 11 - Rugby;SINTETICA
+11;03-085;Tercermilenio;03 Santafé;ESTRUCTURANTE;Fútbol 5;SINTETICA
+12;03-085;Tercermilenio;03 Santafé;ESTRUCTURANTE;Fútbol 5;SINTETICA
+13;03-122;Desarrollo Lourdes;03 Santafé;PROXIMIDAD;Fútbol 5;SINTETICA
+14;03-148;Laches la mina;03 Santafé;ESTRUCTURANTE;Fútbol 8;SINTETICA
+15;04-038;Urb. Antioquia;04 San Cristóbal;PROXIMIDAD;Fútbol 5;SINTETICA
+16;04-103;Gaitán cortes;04 San Cristóbal;ESTRUCTURANTE;Fútbol 11;SINTETICA
+17;04-122;La Victoria;04 San Cristóbal;ESTRUCTURANTE;Fútbol 5;SINTETICA
+18;04-122;La Victoria;04 San Cristóbal;ESTRUCTURANTE;Fútbol 5;SINTETICA
+19;04-127;San Cristobal 1;04 San Cristóbal;ESTRUCTURANTE;Fútbol 11 - FA;SINTETICA
+20;04-127;San Cristobal 2;04 San Cristóbal;ESTRUCTURANTE;Fútbol 11;SINTETICA
+21;05-002;La Aurora II;05 Usme;ESTRUCTURANTE;Fútbol 11;SINTETICA
+22;05-003;Valles de Cafam;05 Usme;ESTRUCTURANTE;Fútbol 5;SINTETICA
+23;05-042;Miravalle;05 Usme;PROXIMIDAD;Fútbol 5;SINTETICA
+24;05-042;Miravalle;05 Usme;PROXIMIDAD;Fútbol 5;SINTETICA
+25;05-042;Miravalle;05 Usme;PROXIMIDAD;Fútbol 8;SINTETICA
+26;05-087;Villa Alemana;05 Usme;ESTRUCTURANTE;Fútbol 5;SINTETICA
+27;05-141;Alfonso Lopez;05 Usme;PROXIMIDAD;Fútbol 5;SINTETICA
+28;05-459;Nuevo Usme;05 Usme;PROXIMIDAD;Fútbol 5;SINTETICA
+29;05-476;Ciudad Nuevo Milenio I;05 Usme;PROXIMIDAD;Fútbol 5;SINTETICA
+30;05-476;Ciudad Nuevo Milenio I;05 Usme;PROXIMIDAD;Fútbol 5;SINTETICA
+31;06-005;Urbanizacion La Laguneta;06 Tunjuelito;PROXIMIDAD;Fútbol 8;SINTETICA
+32;06-006;Urbanizacion La Laguna (Venecia);06 Tunjuelito;PROXIMIDAD;Fútbol 5;SINTETICA
+33;06-006;Urbanizacion La Laguna (Venecia);06 Tunjuelito;PROXIMIDAD;Fútbol 5;SINTETICA
+34;06-012;Urb. Tunjuelito;06 Tunjuelito;PROXIMIDAD;Fútbol 11;SINTETICA
+35;06-017;Nuevo Muzu;06 Tunjuelito;ESTRUCTURANTE;Fútbol 8;SINTETICA
+36;06-063;El Tunal ;06 Tunjuelito;ESTRUCTURANTE;Fútbol 8;SINTETICA
+37;06-063;El Tunal ;06 Tunjuelito;ESTRUCTURANTE;Fútbol 8;SINTETICA
+38;06-063;El Tunal ;06 Tunjuelito;ESTRUCTURANTE;Fútbol 7;SINTETICA
+39;06-063;El Tunal (Alterna);06 Tunjuelito;ESTRUCTURANTE;Fútbol 11;SINTETICA
+40;07-035;Naranjos;07 Bosa;ESTRUCTURANTE;Fútbol 11;SINTETICA
+41;07-036;Timiza Villa del rio;07 Bosa;ESTRUCTURANTE;Fútbol 11 - Rugby;SINTETICA
+42;07-152;Autopista Sur (Pavco);07 Bosa;ESTRUCTURANTE;Fútbol 8;SINTETICA
+43;07-163;Clarelandia;07 Bosa;ESTRUCTURANTE;Fútbol 11;SINTETICA
+44;07-163;Clarelandia mini;07 Bosa;ESTRUCTURANTE;Fútbol 5;SINTETICA
+45;07-164;San jose maryland;07 Bosa;ESTRUCTURANTE;Fútbol 11;SINTETICA
+46;07-260;El  Recreo;07 Bosa;ESTRUCTURANTE;Fútbol 9;SINTETICA
+47;07-273;La Esperanza;07 Bosa;ESTRUCTURANTE;Fútbol 5;SINTETICA
+48;07-274;La Tingua Tibanica;07 Bosa;ESTRUCTURANTE;Fútbol 7;SINTETICA
+49;07-292;Urb. Chicala;07 Bosa;PROXIMIDAD;Fútbol 8;SINTETICA
+50;07-321;Santiago de Atalaya;07 Bosa;PROXIMIDAD;Fútbol 8;SINTETICA
+51;07-391;El Porvenir;07 Bosa;ESTRUCTURANTE;Fútbol 5;SINTETICA
+52;07-391;El Porvenir;07 Bosa;ESTRUCTURANTE;Fútbol 5;SINTETICA
+53;07-391;El Porvenir;07 Bosa;ESTRUCTURANTE;Fútbol 8;SINTETICA
+54;07-391;El Porvenir;07 Bosa;ESTRUCTURANTE;Fútbol 7;SINTETICA
+55;07-391;El Porvenir;07 Bosa;ESTRUCTURANTE;Fútbol 7;SINTETICA
+56;07-403;Portal del Sol;07 Bosa;PROXIMIDAD;Fútbol 11;SINTETICA
+57;07-436;Campo Verde;Por confirmar;ESTRUCTURANTE;Fútbol 8;SINTETICA
+58;07-436;Campo Verde;Por confirmar;ESTRUCTURANTE;Fútbol 8;SINTETICA
+59;07-436;Campo Verde;Por confirmar;ESTRUCTURANTE;Fútbol 5;SINTETICA
+60;08-040;Carvajal;08 Kennedy;PROXIMIDAD;Fútbol 11;SINTETICA
+61;08-065;Villa Alsacia;08 Kennedy;PROXIMIDAD;Fútbol 11 - FA;SINTETICA
+62;08-066;Marsella Sector Norte I Etapa ;08 Kennedy;ESTRUCTURANTE;Fútbol 5;SINTETICA
+63;08-066;Marsella Sector Norte I Etapa ;08 Kennedy;ESTRUCTURANTE;Fútbol 11;SINTETICA
+64;08-127;Américas Occidental;08 Kennedy;PROXIMIDAD;Fútbol 8;SINTETICA
+65;08-144;Dindalito;08 Kennedy;ESTRUCTURANTE;Fútbol 8;SINTETICA
+66;08-180;Villa de los Sauces;08 Kennedy;PROXIMIDAD;Fútbol 8;SINTETICA
+67;08-200;Castilla;08 Kennedy;ESTRUCTURANTE;Fútbol 8;SINTETICA
+68;08-212;La Igualdad;08 Kennedy;ESTRUCTURANTE;Fútbol 11;SINTETICA
+69;08-219;Timiza;08 Kennedy;ESTRUCTURANTE;Fútbol 11;SINTETICA
+70;08-219;Timiza;08 KENNEDY;ESTRUCTURANTE;Fútbol 8;SINTETICA
+71;08-241;Cayetano Cañizares;08 Kennedy;ESTRUCTURANTE;Fútbol 11;SINTETICA
+72;08-533;Las Luces y Villa Rica;08 Kennedy;PROXIMIDAD;Fútbol 8;SINTETICA
+73;08-552;Gilma f11;08 Kennedy;ESTRUCTURANTE;Fútbol 11;SINTETICA
+74;08-552;Gilma f8;08 Kennedy;ESTRUCTURANTE;Fútbol 8;SINTETICA
+75;08-552;Gilma f5;08 Kennedy;ESTRUCTURANTE;Fútbol 5;SINTETICA
+76;08-552;Gilma f5;08 Kennedy;ESTRUCTURANTE;Fútbol 5;SINTETICA
+77;08-568;La Alejandra;08 Kennedy;PROXIMIDAD;Fútbol 8;SINTETICA
+78;08-626;Lago Timiza I Etapa;08 Kennedy;PROXIMIDAD;Fútbol 8;SINTETICA
+79;08-770;Primavera;08 Kennedy;PROXIMIDAD;Fútbol 8;SINTETICA
+80;09-016;Modelia;09 Fontibon;PROXIMIDAD;Fútbol 5;SINTETICA
+81;09-026;Villa Helena Villemar;09 Fontibon;PROXIMIDAD;Fútbol 11;SINTETICA
+82;09-048;Carlos Lleras (El Fuego);09 Fontibon;PROXIMIDAD;Fútbol 8;SINTETICA
+83;09-200;Urb. Ciudad Hayuelos;09 Fontibon;PROXIMIDAD;Fútbol 5;SINTETICA
+84;09-200;Urb. Ciudad Hayuelos;09 Fontibon;PROXIMIDAD;Fútbol 8;SINTETICA
+85;10-002;Villas del Madrigal;10 Engativá;PROXIMIDAD;Fútbol 8;SINTETICA
+86;10-018;Villa Luz;10 Engativá;ESTRUCTURANTE;Fútbol 11 - Rugby;SINTETICA
+87;10-018;Villa Luz;10 Engativá;ESTRUCTURANTE;Fútbol 8;SINTETICA
+88;10-028;Florencia Los Tronquitos;10 Engativá;PROXIMIDAD;Fútbol 8;SINTETICA
+89;10-045;La Europa;10 Engativá;PROXIMIDAD;Fútbol 5;SINTETICA
+90;10-102;Villa de Granada;10 Engativá;ESTRUCTURANTE;Fútbol 11 - Rugby;SINTETICA
+91;10-117;Bachue;10 Engativá;PROXIMIDAD;Fútbol 11;SINTETICA
+92;10-153;Ciudad Honda;10 Engativá;PROXIMIDAD;Fútbol 8;SINTETICA
+93;10-169;El Carmelo;10 Engativá;ESTRUCTURANTE;Fútbol 8;SINTETICA
+94;10-169;El Carmelo;10 Engativá;ESTRUCTURANTE;Fútbol 11 - Rugby - FA;SINTETICA
+95;10-171;Juan Amarillo;10 Engativá;ESTRUCTURANTE;Fútbol 8;SINTETICA
+96;10-171;Juan Amarillo;10 Engativá;ESTRUCTURANTE;Fútbol 8;SINTETICA
+97;10-171;Juan Amarillo;10 Engativá;ESTRUCTURANTE;Fútbol 5;SINTETICA
+98;10-171;Juan Amarillo;10 Engativá;ESTRUCTURANTE;Fútbol 5;SINTETICA
+99;10-171;Juan Amarillo;10 Engativá;ESTRUCTURANTE;Fútbol 5;SINTETICA
+100;10-171;Juan Amarillo;10 Engativá;ESTRUCTURANTE;Fútbol 5;SINTETICA
+101;10-190;Normandia;10 Engativá;PROXIMIDAD;Fútbol 11 - Rugby;SINTETICA
+102;10-215;Bonanza;10 Engativá;ESTRUCTURANTE;Fútbol 11 - Rugby;SINTETICA
+103;10-234;San Andrés;10 Engativá;ESTRUCTURANTE;Fútbol 7;SINTETICA
+104;10-234;San Andrés;10 Engativá;ESTRUCTURANTE;Fútbol 11;SINTETICA
+105;10-249;Florencia;10 Engativá;PROXIMIDAD;Fútbol 8;SINTETICA
+106;10-290;UDS Unidad Deportiva El Salitre;10 Engativá;ESTRUCTURANTE;Fútbol 8;SINTETICA
+107;10-531;PTAR Salitre;10 Engativá;ESTRUCTURANTE;Fútbol 11;SINTETICA
+108;11-008;Ciudadela Cafam;11 Suba;PROXIMIDAD;Fútbol 5;SINTETICA
+109;11-015;Berlin;11 Suba;PROXIMIDAD;Fútbol 5;SINTETICA
+110;11-036;Desarrollo Cantalejo;11 Suba;PROXIMIDAD;Fútbol 5;SINTETICA
+111;11-052;Urbanizacion Lombardia (II Etapa);11 Suba;PROXIMIDAD;Fútbol 7;SINTETICA
+112;11-058;Urbanizacion Burgos (Britalia);11 Suba;PROXIMIDAD;Fútbol 5;SINTETICA
+113;11-058;Urbanizacion Burgos (Britalia);11 Suba;PROXIMIDAD;Fútbol 5;SINTETICA
+114;11-074;Bilbao;11 Suba;PROXIMIDAD;Fútbol 8;SINTETICA
+115;11-084;Urbanizacion Nueva Tibabuyes;11 Suba;PROXIMIDAD;Fútbol 8;SINTETICA
+116;11-084;Urbanizacion Nueva Tibabuyes;11 Suba;PROXIMIDAD;Fútbol 8;SINTETICA
+117;11-109;Prado Pinzón;11 Suba;PROXIMIDAD;Fútbol 8;SINTETICA
+118;11-161;Urbanizacion Mazuren I Sector;11 Suba;PROXIMIDAD;Fútbol 8;SINTETICA
+119;11-162;Victoria norte;11 Suba;PROXIMIDAD;Fútbol 5;SINTETICA
+120;11-204;Cometas;11 suba;ESTRUCTURANTE;Fútbol 8;SINTETICA
+121;11-205;La Gaitana;11 SUBA;ESTRUCTURANTE;Fútbol 8;SINTETICA
+122;11-309;Lindaraja;11 suba;PROXIMIDAD;Fútbol 5;SINTETICA
+123;11-668;Vilanova;11 suba;PROXIMIDAD;Fútbol 5;SINTETICA
+124;11-686;Valle de Refous;11 Suba;PROXIMIDAD;Fútbol 5;SINTETICA
+125;11-069;Casa Blanca;11 Suba ;ESTRUCTURANTE;Fútbol 9;SINTETICA
+126;11-1101;Cafam Suba II (Los Gavilanes);11 Suba ;ESTRUCTURANTE;Fútbol 11;SINTETICA
+127;11-368;Fontanar del Rio ;11 Suba ;ESTRUCTURANTE;Fútbol 11 ;SINTETICA
+128;11-368;Fontanar del Rio ;11 Suba ;ESTRUCTURANTE;Fútbol 5;SINTETICA
+129;12-023;Gimnasio del Norte;12 Barrios Unidos;ESTRUCTURANTE;Fútbol 5;SINTETICA
+130;12-035;Urb Metropolis;12 Barrios Unidos;PROXIMIDAD;Fútbol 5;SINTETICA
+131;12-091;Simon Bolivar PRD 1;12 Barrios Unidos;ESTRUCTURANTE;Fútbol 11 - Rugby - FA;SINTETICA
+132;12-091;Simon Bolivar PRD 2;12 Barrios Unidos;ESTRUCTURANTE;Fútbol 11 - Rugby;SINTETICA
+133;13-015;Santa Clara;13 Teusaquillo;PROXIMIDAD;Fútbol 8;SINTETICA
+134;13-016;Urb Salitre (Greco);13 Teusaquillo;PROXIMIDAD;Fútbol 8;SINTETICA
+135;13-192;Arena Movistar;13 Teusaquillo;PROXIMIDAD;Fútbol 5;SINTETICA
+136;13-192;Arena Movistar;13 Teusaquillo;PROXIMIDAD;Fútbol 5;SINTETICA
+137;14-008;Pepita;14 Mártires;PROXIMIDAD;Fútbol 5;SINTETICA
+138;14-030;Eduardo Santos;14 Mártires;ESTRUCTURANTE;Fútbol 5;SINTETICA
+139;15-021;Santa Isabel La Fragua;15 Antonio Nariño;PROXIMIDAD;Fútbol 8;SINTETICA
+140;15-021;Santa Isabel La Fragua;15 Antonio Nariño;PROXIMIDAD;Fútbol 5;SINTETICA
+141;15-029;Luna Park;15 Antonio Nariño;PROXIMIDAD;Fútbol 5;SINTETICA
+142;15-036;Villa Mayor;15 Antonio Nariño;ESTRUCTURANTE;Fútbol 11;SINTETICA
+143;15-040;Fragua;15 Antonio Nariño;ESTRUCTURANTE;Fútbol 11;SINTETICA
+144;16-012;Champion Primavera;16 Pte Aranda;PROXIMIDAD;Fútbol 11;SINTETICA
+145;16-099;Milenta tejar san eusebio;16 Pte Aranda;ESTRUCTURANTE;Fútbol 11 - Rugby;SINTETICA
+146;16-112;Montes 1;16 Pte Aranda;ESTRUCTURANTE;Fútbol 5;SINTETICA
+147;16-112;Montes2;16 Pte Aranda;ESTRUCTURANTE;Fútbol 5;SINTETICA
+148;16-126;Gorgonzola;16 Pte Aranda;PROXIMIDAD;Fútbol 8;SINTETICA
+149;16-153;Pradera sur;16 Pte Aranda;PROXIMIDAD;Fútbol 5;SINTETICA
+150;16-204;Jazmín;16 Pte Aranda;ESTRUCTURANTE;Fútbol 11 - FA;SINTETICA
+151;16-415;Parque Industrial (El Nectar) ;16 Pte Aranda;PROXIMIDAD;Fútbol 11;SINTETICA
+152;16-416;Parque Industrial (El Nectar Polideportivo) ;16 Pte Aranda;ESTRUCTURANTE;Fútbol 5;SINTETICA
+153;17-028;La Catedral;17 La Candelaria;PROXIMIDAD;Fútbol 5;SINTETICA
+154;18-009;Urb. Gustavo Restrepot;18 Rafael Uribe;PROXIMIDAD;Fútbol 5;SINTETICA
+155;18-028;Bosque San Carlos;18 Rafael Uribe;ESTRUCTURANTE;Fútbol 8;SINTETICA
+156;18-035;Palermo  Sur;18 Rafael Uribe;PROXIMIDAD;Fútbol 5;SINTETICA
+157;18-041;Marruecos;18 Rafael Uribe;PROXIMIDAD;Fútbol 8;SINTETICA
+158;18-055;Molinos;18 Rafael Uribe;PROXIMIDAD;Fútbol 11;SINTETICA
+159;18-073;Santa Lucia;18 Rafael Uribe;ESTRUCTURANTE;Fútbol 8;SINTETICA
+160;18-073;Santa Lucia;18 Rafael Uribe;ESTRUCTURANTE;Fútbol 8;SINTETICA
+161;18-090;Pijaos;18 Rafael Uribe;ESTRUCTURANTE;Fútbol 11;SINTETICA
+162;18-207;Parque Olaya Herrera;18 Rafael Uribe;ESTRUCTURANTE;Fútbol 11;SINTETICA
+163;18-429;San José  ;18 Rafael Uribe;PROXIMIDAD;Fútbol 5;SINTETICA
+164;19-032;Domingo Lain;19 Ciudad Bolívar;PROXIMIDAD;Fútbol 5;SINTETICA
+165;19-058;Arborizadora Alta;19 Ciudad Bolívar;ESTRUCTURANTE;Fútbol 5;SINTETICA
+166;19-115;La Coruña;19 Ciudad Bolívar;PROXIMIDAD;Fútbol 8;SINTETICA
+167;19-190;Sierra Morena;19 Ciudad Bolívar;ESTRUCTURANTE;Fútbol 5;SINTETICA
+168;19-190;Sierra Morena;19 Ciudad Bolívar;ESTRUCTURANTE;Fútbol 5;SINTETICA
+169;19-231;Estancia;19 Ciudad Bolívar;ESTRUCTURANTE;Fútbol 5;SINTETICA
+170;19-346;Illimani (Paraíso);19 Ciudad Bolívar;ESTRUCTURANTE;Fútbol 11;SINTETICA
+171;19-346;Ilimani;19 Ciudad Bolívar;ESTRUCTURANTE;Fútbol 5;SINTETICA
+172;19-347;Buenavista- Porvenir ;19 Ciudad Bolívar;ESTRUCTURANTE;Fútbol 7;SINTETICA
+173;19-348;El Taller- El Ensueño;19 Ciudad Bolívar;ESTRUCTURANTE;Fútbol 7;SINTETICA
+174;19-349;La Joya;19 Ciudad Bolívar;ESTRUCTURANTE;Fútbol 5;SINTETICA
+175;19-490;Paraiso;19 Ciudad Bolívar;PROXIMIDAD;Fútbol 5;SINTETICA
+176;19-710;Caracoli;19 Ciudad Bolívar;PROXIMIDAD;Fútbol 5;SINTETICA
+177;19-750;Balmora Guadalupe;19 Ciudad Bolívar;PROXIMIDAD;Fútbol 5;SINTETICA
+178;19-756;Altos de la Estancia;19 Ciudad Bolívar;ESTRUCTURANTE;Fútbol 5;SINTETICA
+179;19-756;Altos de la Estancia;19 Ciudad Bolívar;ESTRUCTURANTE;Fútbol 5;SINTETICA
+180;19-788;Mirador de Illimani;19 Ciudad Bolívar;ESTRUCTURANTE;Fútbol 5;SINTETICA

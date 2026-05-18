@@ -1,0 +1,684 @@
+{
+  "metadata": {
+    "nombre": "Indicador Compuesto de Seguridad Urbana (ICSU)",
+    "metodologia": "PCA — OECD/JRC Handbook (2008)",
+    "fuentes": [
+      "DAILoc.geojson — Criminalidad 2024 (Secretaria de Seguridad)",
+      "EPV 2024 — Encuesta Percepcion y Victimizacion (CCB, 19,354 encuestas Bogota)"
+    ],
+    "n_localidades": 18,
+    "variables_dim1_objetiva": [
+      "Homicidios / km2",
+      "Lesiones personales / km2",
+      "Hurto personas / km2",
+      "Hurto residencias / km2",
+      "Hurto automotores / km2",
+      "Delitos sexuales / km2",
+      "Violencia intrafamiliar / km2"
+    ],
+    "variables_dim2_subjetiva": [
+      "% Barrio inseguro",
+      "Score barrio (invertido, mayor=peor)",
+      "% Victima de delito",
+      "% Testigo de delito",
+      "% Percibe aumento inseguridad",
+      "Score inseg. espacios publicos (invertido)",
+      "Score policia (invertido, mayor=peor)",
+      "% Hogar victima"
+    ],
+    "escala": "0-5 (0=mas seguro, 5=mas inseguro)"
+  },
+  "tests_adecuacion": {
+    "dim1_kmo": 0.744,
+    "dim1_bartlett_chi2": 192.21,
+    "dim1_bartlett_pvalue": 0.0,
+    "dim2_kmo": 0.6453,
+    "dim2_bartlett_chi2": 67.84,
+    "dim2_bartlett_pvalue": 1.2e-05,
+    "correlacion_dimensiones": 0.3174
+  },
+  "pca_resultados": {
+    "dim1_varianza_explicada_pct": 78.6,
+    "dim1_componentes_retenidos": 1,
+    "dim1_pesos": {
+      "homicidios_km2": 0.133,
+      "lesiones_km2": 0.1771,
+      "hurto_pers_km2": 0.1538,
+      "hurto_resid_km2": 0.124,
+      "hurto_auto_km2": 0.087,
+      "delitos_sex_km2": 0.1636,
+      "violencia_intraf_km2": 0.1614
+    },
+    "dim2_varianza_explicada_pct": 69.1,
+    "dim2_componentes_retenidos": 2,
+    "dim2_pesos": {
+      "pct_barrio_inseguro": 0.1252,
+      "score_barrio_inv": 0.1644,
+      "pct_victima_delito": 0.153,
+      "pct_testigo_delito": 0.1442,
+      "pct_inseg_aumento": 0.1035,
+      "score_espacios_pub": 0.117,
+      "score_policia_inv": 0.1155,
+      "pct_hogar_victima": 0.0773
+    },
+    "peso_global_dim_objetiva": 0.5,
+    "peso_global_dim_subjetiva": 0.5
+  },
+  "eigenvalues": {
+    "dim1": [
+      5.4993,
+      0.8255,
+      0.4441,
+      0.1799,
+      0.0273,
+      0.0189,
+      0.0049
+    ],
+    "dim2": [
+      3.0854,
+      2.4425,
+      0.969,
+      0.564,
+      0.4393,
+      0.244,
+      0.1663,
+      0.0895
+    ]
+  },
+  "ranking": [
+    {
+      "posicion": 1,
+      "localidad_id": 14,
+      "localidad": "Los Martires",
+      "icsu_score": 5.0,
+      "dim_objetiva_z": 3.1029,
+      "dim_subjetiva_z": 0.7333,
+      "cluster": 3,
+      "datos_objetivos": {
+        "homicidios": 40.0,
+        "hurto_personas": 11052.0,
+        "delitos_sexuales": 952.0,
+        "lesiones_personales": 996.0
+      },
+      "datos_subjetivos": {
+        "pct_barrio_inseguro": 71.8,
+        "pct_victima_delito": 16.0,
+        "pct_testigo_delito": 47.2,
+        "score_policia": 2.47
+      },
+      "ipi_anterior": 3.58
+    },
+    {
+      "posicion": 2,
+      "localidad_id": 7,
+      "localidad": "Bosa",
+      "icsu_score": 2.705,
+      "dim_objetiva_z": 0.3066,
+      "dim_subjetiva_z": 0.5189,
+      "cluster": 4,
+      "datos_objetivos": {
+        "homicidios": 107.0,
+        "hurto_personas": 4937.0,
+        "delitos_sexuales": 576.0,
+        "lesiones_personales": 1267.0
+      },
+      "datos_subjetivos": {
+        "pct_barrio_inseguro": 70.3,
+        "pct_victima_delito": 17.0,
+        "pct_testigo_delito": 45.7,
+        "score_policia": 2.62
+      },
+      "ipi_anterior": 3.59
+    },
+    {
+      "posicion": 3,
+      "localidad_id": 10,
+      "localidad": "Engativa",
+      "icsu_score": 2.52,
+      "dim_objetiva_z": 0.0405,
+      "dim_subjetiva_z": 0.5278,
+      "cluster": 4,
+      "datos_objetivos": {
+        "homicidios": 56.0,
+        "hurto_personas": 11495.0,
+        "delitos_sexuales": 639.0,
+        "lesiones_personales": 1233.0
+      },
+      "datos_subjetivos": {
+        "pct_barrio_inseguro": 72.7,
+        "pct_victima_delito": 15.9,
+        "pct_testigo_delito": 46.9,
+        "score_policia": 2.51
+      },
+      "ipi_anterior": 3.55
+    },
+    {
+      "posicion": 4,
+      "localidad_id": 6,
+      "localidad": "Tunjuelito",
+      "icsu_score": 2.364,
+      "dim_objetiva_z": -0.0388,
+      "dim_subjetiva_z": 0.4428,
+      "cluster": 4,
+      "datos_objetivos": {
+        "homicidios": 25.0,
+        "hurto_personas": 2164.0,
+        "delitos_sexuales": 196.0,
+        "lesiones_personales": 494.0
+      },
+      "datos_subjetivos": {
+        "pct_barrio_inseguro": 71.0,
+        "pct_victima_delito": 16.1,
+        "pct_testigo_delito": 47.2,
+        "score_policia": 2.52
+      },
+      "ipi_anterior": 3.57
+    },
+    {
+      "posicion": 5,
+      "localidad_id": 8,
+      "localidad": "Kennedy",
+      "icsu_score": 2.358,
+      "dim_objetiva_z": 0.5114,
+      "dim_subjetiva_z": 0.0901,
+      "cluster": 2,
+      "datos_objetivos": {
+        "homicidios": 159.0,
+        "hurto_personas": 11084.0,
+        "delitos_sexuales": 791.0,
+        "lesiones_personales": 2290.0
+      },
+      "datos_subjetivos": {
+        "pct_barrio_inseguro": 73.7,
+        "pct_victima_delito": 16.1,
+        "pct_testigo_delito": 36.8,
+        "score_policia": 2.62
+      },
+      "ipi_anterior": 3.5
+    },
+    {
+      "posicion": 6,
+      "localidad_id": 12,
+      "localidad": "Barrios Unidos",
+      "icsu_score": 2.322,
+      "dim_objetiva_z": 0.0436,
+      "dim_subjetiva_z": 0.3543,
+      "cluster": 4,
+      "datos_objetivos": {
+        "homicidios": 18.0,
+        "hurto_personas": 4820.0,
+        "delitos_sexuales": 185.0,
+        "lesiones_personales": 447.0
+      },
+      "datos_subjetivos": {
+        "pct_barrio_inseguro": 68.7,
+        "pct_victima_delito": 18.3,
+        "pct_testigo_delito": 43.6,
+        "score_policia": 2.56
+      },
+      "ipi_anterior": 3.55
+    },
+    {
+      "posicion": 7,
+      "localidad_id": 4,
+      "localidad": "San Cristobal",
+      "icsu_score": 2.263,
+      "dim_objetiva_z": -0.6209,
+      "dim_subjetiva_z": 0.7234,
+      "cluster": 4,
+      "datos_objetivos": {
+        "homicidios": 52.0,
+        "hurto_personas": 2988.0,
+        "delitos_sexuales": 417.0,
+        "lesiones_personales": 1024.0
+      },
+      "datos_subjetivos": {
+        "pct_barrio_inseguro": 71.0,
+        "pct_victima_delito": 15.0,
+        "pct_testigo_delito": 41.2,
+        "score_policia": 2.39
+      },
+      "ipi_anterior": 3.51
+    },
+    {
+      "posicion": 8,
+      "localidad_id": 15,
+      "localidad": "Antonio Narino",
+      "icsu_score": 2.1,
+      "dim_objetiva_z": 0.4012,
+      "dim_subjetiva_z": -0.063,
+      "cluster": 2,
+      "datos_objetivos": {
+        "homicidios": 12.0,
+        "hurto_personas": 2072.0,
+        "delitos_sexuales": 137.0,
+        "lesiones_personales": 307.0
+      },
+      "datos_subjetivos": {
+        "pct_barrio_inseguro": 65.0,
+        "pct_victima_delito": 10.8,
+        "pct_testigo_delito": 37.6,
+        "score_policia": 2.41
+      },
+      "ipi_anterior": 3.18
+    },
+    {
+      "posicion": 9,
+      "localidad_id": 18,
+      "localidad": "Rafael Uribe Uribe",
+      "icsu_score": 1.947,
+      "dim_objetiva_z": 0.5753,
+      "dim_subjetiva_z": -0.3054,
+      "cluster": 2,
+      "datos_objetivos": {
+        "homicidios": 51.0,
+        "hurto_personas": 3122.0,
+        "delitos_sexuales": 490.0,
+        "lesiones_personales": 991.0
+      },
+      "datos_subjetivos": {
+        "pct_barrio_inseguro": 75.8,
+        "pct_victima_delito": 11.2,
+        "pct_testigo_delito": 36.7,
+        "score_policia": 2.45
+      },
+      "ipi_anterior": 3.28
+    },
+    {
+      "posicion": 10,
+      "localidad_id": 1,
+      "localidad": "Usaquen",
+      "icsu_score": 1.873,
+      "dim_objetiva_z": -0.6232,
+      "dim_subjetiva_z": 0.388,
+      "cluster": 4,
+      "datos_objetivos": {
+        "homicidios": 45.0,
+        "hurto_personas": 8057.0,
+        "delitos_sexuales": 430.0,
+        "lesiones_personales": 742.0
+      },
+      "datos_subjetivos": {
+        "pct_barrio_inseguro": 64.4,
+        "pct_victima_delito": 15.4,
+        "pct_testigo_delito": 48.0,
+        "score_policia": 2.45
+      },
+      "ipi_anterior": 3.36
+    },
+    {
+      "posicion": 11,
+      "localidad_id": 19,
+      "localidad": "Ciudad Bolivar",
+      "icsu_score": 1.737,
+      "dim_objetiva_z": -0.6591,
+      "dim_subjetiva_z": 0.2936,
+      "cluster": 4,
+      "datos_objetivos": {
+        "homicidios": 208.0,
+        "hurto_personas": 4441.0,
+        "delitos_sexuales": 936.0,
+        "lesiones_personales": 2102.0
+      },
+      "datos_subjetivos": {
+        "pct_barrio_inseguro": 72.1,
+        "pct_victima_delito": 12.9,
+        "pct_testigo_delito": 33.3,
+        "score_policia": 2.4
+      },
+      "ipi_anterior": 3.33
+    },
+    {
+      "posicion": 12,
+      "localidad_id": 16,
+      "localidad": "Puente Aranda",
+      "icsu_score": 1.59,
+      "dim_objetiva_z": 0.0336,
+      "dim_subjetiva_z": -0.2712,
+      "cluster": 2,
+      "datos_objetivos": {
+        "homicidios": 23.0,
+        "hurto_personas": 5162.0,
+        "delitos_sexuales": 284.0,
+        "lesiones_personales": 681.0
+      },
+      "datos_subjetivos": {
+        "pct_barrio_inseguro": 72.5,
+        "pct_victima_delito": 12.7,
+        "pct_testigo_delito": 40.1,
+        "score_policia": 2.45
+      },
+      "ipi_anterior": 3.26
+    },
+    {
+      "posicion": 13,
+      "localidad_id": 11,
+      "localidad": "Suba",
+      "icsu_score": 1.51,
+      "dim_objetiva_z": -0.5885,
+      "dim_subjetiva_z": 0.0534,
+      "cluster": 4,
+      "datos_objetivos": {
+        "homicidios": 71.0,
+        "hurto_personas": 12017.0,
+        "delitos_sexuales": 822.0,
+        "lesiones_personales": 1520.0
+      },
+      "datos_subjetivos": {
+        "pct_barrio_inseguro": 66.2,
+        "pct_victima_delito": 16.9,
+        "pct_testigo_delito": 46.0,
+        "score_policia": 2.6
+      },
+      "ipi_anterior": 3.4
+    },
+    {
+      "posicion": 14,
+      "localidad_id": 5,
+      "localidad": "Usme",
+      "icsu_score": 0.975,
+      "dim_objetiva_z": -0.9292,
+      "dim_subjetiva_z": -0.1938,
+      "cluster": 2,
+      "datos_objetivos": {
+        "homicidios": 87.0,
+        "hurto_personas": 2197.0,
+        "delitos_sexuales": 608.0,
+        "lesiones_personales": 915.0
+      },
+      "datos_subjetivos": {
+        "pct_barrio_inseguro": 64.1,
+        "pct_victima_delito": 14.0,
+        "pct_testigo_delito": 38.6,
+        "score_policia": 2.56
+      },
+      "ipi_anterior": 3.22
+    },
+    {
+      "posicion": 15,
+      "localidad_id": 9,
+      "localidad": "Fontibon",
+      "icsu_score": 0.928,
+      "dim_objetiva_z": -0.4379,
+      "dim_subjetiva_z": -0.544,
+      "cluster": 1,
+      "datos_objetivos": {
+        "homicidios": 32.0,
+        "hurto_personas": 7617.0,
+        "delitos_sexuales": 312.0,
+        "lesiones_personales": 605.0
+      },
+      "datos_subjetivos": {
+        "pct_barrio_inseguro": 63.3,
+        "pct_victima_delito": 12.7,
+        "pct_testigo_delito": 41.6,
+        "score_policia": 2.66
+      },
+      "ipi_anterior": 3.14
+    },
+    {
+      "posicion": 16,
+      "localidad_id": 3,
+      "localidad": "Santa Fe",
+      "icsu_score": 0.89,
+      "dim_objetiva_z": -0.5758,
+      "dim_subjetiva_z": -0.4903,
+      "cluster": 2,
+      "datos_objetivos": {
+        "homicidios": 81.0,
+        "hurto_personas": 8429.0,
+        "delitos_sexuales": 469.0,
+        "lesiones_personales": 646.0
+      },
+      "datos_subjetivos": {
+        "pct_barrio_inseguro": 58.7,
+        "pct_victima_delito": 9.6,
+        "pct_testigo_delito": 34.8,
+        "score_policia": 2.43
+      },
+      "ipi_anterior": 2.87
+    },
+    {
+      "posicion": 17,
+      "localidad_id": 13,
+      "localidad": "Teusaquillo",
+      "icsu_score": 0.746,
+      "dim_objetiva_z": 0.0528,
+      "dim_subjetiva_z": -1.0114,
+      "cluster": 1,
+      "datos_objetivos": {
+        "homicidios": 9.0,
+        "hurto_personas": 7038.0,
+        "delitos_sexuales": 360.0,
+        "lesiones_personales": 470.0
+      },
+      "datos_subjetivos": {
+        "pct_barrio_inseguro": 53.3,
+        "pct_victima_delito": 15.8,
+        "pct_testigo_delito": 50.6,
+        "score_policia": 2.69
+      },
+      "ipi_anterior": 3.01
+    },
+    {
+      "posicion": 18,
+      "localidad_id": 2,
+      "localidad": "Chapinero",
+      "icsu_score": 0.0,
+      "dim_objetiva_z": -0.5947,
+      "dim_subjetiva_z": -1.2463,
+      "cluster": 1,
+      "datos_objetivos": {
+        "homicidios": 18.0,
+        "hurto_personas": 10229.0,
+        "delitos_sexuales": 343.0,
+        "lesiones_personales": 516.0
+      },
+      "datos_subjetivos": {
+        "pct_barrio_inseguro": 48.7,
+        "pct_victima_delito": 11.7,
+        "pct_testigo_delito": 34.9,
+        "score_policia": 2.49
+      },
+      "ipi_anterior": 2.71
+    }
+  ],
+  "sensibilidad": [
+    {
+      "localidad": "Los Martires",
+      "rank_medio": 1.0,
+      "rank_mediana": 1,
+      "rank_min": 1,
+      "rank_max": 1,
+      "estable": "SI"
+    },
+    {
+      "localidad": "Bosa",
+      "rank_medio": 2.0,
+      "rank_mediana": 2,
+      "rank_min": 2,
+      "rank_max": 2,
+      "estable": "SI"
+    },
+    {
+      "localidad": "Engativa",
+      "rank_medio": 3.057,
+      "rank_mediana": 3,
+      "rank_min": 3,
+      "rank_max": 4,
+      "estable": "SI"
+    },
+    {
+      "localidad": "Tunjuelito",
+      "rank_medio": 4.655,
+      "rank_mediana": 5,
+      "rank_min": 4,
+      "rank_max": 6,
+      "estable": "SI"
+    },
+    {
+      "localidad": "Kennedy",
+      "rank_medio": 5.082,
+      "rank_mediana": 5,
+      "rank_min": 3,
+      "rank_max": 7,
+      "estable": "SI"
+    },
+    {
+      "localidad": "Barrios Unidos",
+      "rank_medio": 5.982,
+      "rank_mediana": 6,
+      "rank_min": 5,
+      "rank_max": 6,
+      "estable": "SI"
+    },
+    {
+      "localidad": "San Cristobal",
+      "rank_medio": 6.573,
+      "rank_mediana": 7,
+      "rank_min": 4,
+      "rank_max": 9,
+      "estable": "PARCIAL"
+    },
+    {
+      "localidad": "Antonio Narino",
+      "rank_medio": 7.853,
+      "rank_mediana": 8,
+      "rank_min": 7,
+      "rank_max": 9,
+      "estable": "SI"
+    },
+    {
+      "localidad": "Rafael Uribe Uribe",
+      "rank_medio": 9.402,
+      "rank_mediana": 9,
+      "rank_min": 8,
+      "rank_max": 11,
+      "estable": "SI"
+    },
+    {
+      "localidad": "Usaquen",
+      "rank_medio": 9.582,
+      "rank_mediana": 10,
+      "rank_min": 8,
+      "rank_max": 11,
+      "estable": "SI"
+    },
+    {
+      "localidad": "Ciudad Bolivar",
+      "rank_medio": 11.001,
+      "rank_mediana": 11,
+      "rank_min": 10,
+      "rank_max": 12,
+      "estable": "SI"
+    },
+    {
+      "localidad": "Puente Aranda",
+      "rank_medio": 12.033,
+      "rank_mediana": 12,
+      "rank_min": 10,
+      "rank_max": 13,
+      "estable": "SI"
+    },
+    {
+      "localidad": "Suba",
+      "rank_medio": 12.78,
+      "rank_mediana": 13,
+      "rank_min": 12,
+      "rank_max": 13,
+      "estable": "SI"
+    },
+    {
+      "localidad": "Usme",
+      "rank_medio": 14.631,
+      "rank_mediana": 14,
+      "rank_min": 14,
+      "rank_max": 17,
+      "estable": "SI"
+    },
+    {
+      "localidad": "Fontibon",
+      "rank_medio": 14.728,
+      "rank_mediana": 15,
+      "rank_min": 14,
+      "rank_max": 16,
+      "estable": "SI"
+    },
+    {
+      "localidad": "Santa Fe",
+      "rank_medio": 15.985,
+      "rank_mediana": 16,
+      "rank_min": 15,
+      "rank_max": 17,
+      "estable": "SI"
+    },
+    {
+      "localidad": "Teusaquillo",
+      "rank_medio": 16.656,
+      "rank_mediana": 17,
+      "rank_min": 14,
+      "rank_max": 17,
+      "estable": "SI"
+    },
+    {
+      "localidad": "Chapinero",
+      "rank_medio": 18.0,
+      "rank_mediana": 18,
+      "rank_min": 18,
+      "rank_max": 18,
+      "estable": "SI"
+    }
+  ],
+  "clusters": [
+    {
+      "cluster": 1,
+      "perfil": "Baja criminalidad + Baja percepcion inseg.",
+      "score_obj_medio": -0.3628,
+      "score_sub_medio": -1.6421,
+      "localidades": [
+        "Chapinero",
+        "Fontibon",
+        "Teusaquillo"
+      ]
+    },
+    {
+      "cluster": 2,
+      "perfil": "Alta criminalidad + Baja percepcion inseg.",
+      "score_obj_medio": 0.0031,
+      "score_sub_medio": -0.3615,
+      "localidades": [
+        "Antonio Narino",
+        "Kennedy",
+        "Puente Aranda",
+        "Rafael Uribe Uribe",
+        "Santa Fe",
+        "Usme"
+      ]
+    },
+    {
+      "cluster": 3,
+      "perfil": "Alta criminalidad + Alta percepcion inseg.",
+      "score_obj_medio": 3.4465,
+      "score_sub_medio": 1.2894,
+      "localidades": [
+        "Los Martires"
+      ]
+    },
+    {
+      "cluster": 4,
+      "perfil": "Baja criminalidad + Alta percepcion inseg.",
+      "score_obj_medio": -0.2971,
+      "score_sub_medio": 0.7257,
+      "localidades": [
+        "Barrios Unidos",
+        "Bosa",
+        "Ciudad Bolivar",
+        "Engativa",
+        "San Cristobal",
+        "Suba",
+        "Tunjuelito",
+        "Usaquen"
+      ]
+    }
+  ]
+}

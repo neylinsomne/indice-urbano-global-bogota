@@ -1,0 +1,16 @@
+pandas
+geopandas
+shapely
+scikit-learn
+pymongo
+numpy
+matplotlib
+ahpy
+python-dotenv
+sqlalchemy
+docker
+scrapy>=2.14.0
+scrapy-playwright>=0.0.46
+psycopg2-binary
+requests
+pysocks>=1.7.1

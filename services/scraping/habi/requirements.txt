@@ -1,0 +1,7 @@
+selenium
+webdriver_manager
+pymongo
+python-dotenv
+unidecode
+psycopg2-binary
+requests

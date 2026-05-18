@@ -1,0 +1,5 @@
+pymongo>=4.0
+python-dotenv
+requests
+selenium
+beautifulsoup4

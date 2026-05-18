@@ -1,0 +1,15 @@
+# =========================================
+# Dependencias del Orquestador de Carga de Datos
+# =========================================
+
+# PostgreSQL driver (binary version, no requiere compilación)
+psycopg2-binary==2.9.9
+
+# Variables de entorno
+python-dotenv==1.0.0
+
+# Procesamiento de Shapefiles (SITP)
+pyshp==2.3.1
+
+# Transformación de coordenadas (CarMAGBOG → WGS84)
+pyproj>=3.6.0

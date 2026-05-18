@@ -1,0 +1,44 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# standard python imports
+
+from app.db import db
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+class User(BaseModel):
+    name: str
+    descrip_wanted: dict[str, float | str] | None = None
+    price: float
+    tax: float | None = None
+
+
+class ItemModel(db.Model):
+    __tablename__ = 'items'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80))
+    price = db.Column(db.Float(precision=2))
+
+    store_id = db.Column(db.Integer, db.ForeignKey('stores.id'))
+    store = db.relationship('StoreModel')
+
+    def __init__(self, name, price, store_id):
+        self.name = name
+        self.price = price
+        self.store_id = store_id
+
+    def json(self):
+        return {'name': self.name, 'price': self.price, 'store_id': self.store_id}
+
+    @classmethod
+    def find_by_name(cls, name):
+        return cls.query.filter_by(name=name).first()  # simple TOP 1 select
+
+    def save_to_db(self):  # Upserting data
+        db.session.add(self)
+        db.session.commit()  # Balla
+
+    def delete_from_db(self):
+        db.session.delete(self)
+        db.session.commit()

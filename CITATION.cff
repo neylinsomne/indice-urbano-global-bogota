@@ -1,0 +1,49 @@
+# Citation File Format · https://citation-file-format.github.io
+# Si usas este proyecto en tu investigación, por favor cítalo así.
+
+cff-version: 1.2.0
+message: "Si usas este software o la metodología del IUG en tu trabajo, por favor cítalo."
+title: "Índice Urbano Global de Bogotá (IUG): una métrica multidimensional ortogonal al precio inmobiliario"
+abstract: >-
+  El Índice Urbano Global (IUG) sintetiza la calidad urbana de un punto de
+  Bogotá en una sola métrica derivada de cinco dimensiones independientes:
+  accesibilidad al transporte (I_ACC), seguridad (I_SEG), valoración hedónica
+  (I_HED), dotación pública (I_DOT) y marco normativo del POT (I_PNU). El IUG
+  se construye vía PCA sobre las dimensiones y se valida estadísticamente como
+  ortogonal al precio, demostrando que aporta información incremental sobre
+  modelos hedónicos clásicos (ΔR² ≈ +0.05, ρ_Spearman ≈ 0.998, ΔAIC <-1500).
+type: software
+authors:
+  - family-names: Peñuela Bernate
+    given-names: Neyl
+    affiliation: "Pontificia Universidad Javeriana — Facultad de Ciencias — Ciencia de Datos"
+    email: neylbernate@gmail.com
+license: PolyForm-Noncommercial-1.0.0
+repository-code: "https://github.com/neylinsomne/indice-urbano-global-bogota"
+url: "https://github.com/neylinsomne/indice-urbano-global-bogota"
+keywords:
+  - "índice urbano"
+  - "Bogotá"
+  - "PostGIS"
+  - "modelo hedónico"
+  - "PCA"
+  - "RAG"
+  - "FastAPI"
+  - "real estate analytics"
+  - "spatial data science"
+  - "open data Colombia"
+date-released: 2026-05-17
+version: "1.0.0"
+
+preferred-citation:
+  type: thesis
+  title: "Índice Urbano Global de Bogotá (IUG): construcción metodológica y validación empírica"
+  authors:
+    - family-names: Peñuela Bernate
+      given-names: Neyl
+  thesis-type: "Trabajo de grado · Pregrado en Ciencia de Datos"
+  institution:
+    name: "Pontificia Universidad Javeriana"
+    address: "Bogotá D.C., Colombia"
+  year: 2026
+  url: "https://github.com/neylinsomne/indice-urbano-global-bogota"

@@ -1,0 +1,62 @@
+[
+  {
+    "estrato": 1,
+    "encuestas": 1807,
+    "pct_barrio_inseguro": 68.5,
+    "score_barrio_1a5": 2.28,
+    "pct_victima": 12.7,
+    "pct_testigo": 36.4,
+    "pct_inseg_aumento": 68.5,
+    "score_policia": 2.46
+  },
+  {
+    "estrato": 2,
+    "encuestas": 6929,
+    "pct_barrio_inseguro": 69.6,
+    "score_barrio_1a5": 2.31,
+    "pct_victima": 14.1,
+    "pct_testigo": 39.9,
+    "pct_inseg_aumento": 69.5,
+    "score_policia": 2.5
+  },
+  {
+    "estrato": 3,
+    "encuestas": 7600,
+    "pct_barrio_inseguro": 67.5,
+    "score_barrio_1a5": 2.47,
+    "pct_victima": 14.5,
+    "pct_testigo": 43.0,
+    "pct_inseg_aumento": 70.0,
+    "score_policia": 2.51
+  },
+  {
+    "estrato": 4,
+    "encuestas": 2194,
+    "pct_barrio_inseguro": 56.1,
+    "score_barrio_1a5": 2.88,
+    "pct_victima": 15.5,
+    "pct_testigo": 47.7,
+    "pct_inseg_aumento": 65.3,
+    "score_policia": 2.68
+  },
+  {
+    "estrato": 5,
+    "encuestas": 506,
+    "pct_barrio_inseguro": 54.0,
+    "score_barrio_1a5": 2.84,
+    "pct_victima": 16.2,
+    "pct_testigo": 48.4,
+    "pct_inseg_aumento": 64.8,
+    "score_policia": 2.46
+  },
+  {
+    "estrato": 6,
+    "encuestas": 318,
+    "pct_barrio_inseguro": 50.3,
+    "score_barrio_1a5": 2.68,
+    "pct_victima": 13.5,
+    "pct_testigo": 39.0,
+    "pct_inseg_aumento": 50.6,
+    "score_policia": 2.5
+  }
+]

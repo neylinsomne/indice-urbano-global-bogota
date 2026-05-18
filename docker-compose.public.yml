@@ -1,0 +1,308 @@
+# ============================================================================
+# docker-compose.public.yml — Versión pública del backend (sin frontend ni
+# servicios privados como Cloudflare Tunnel o WhatsApp).
+#
+# Levanta el stack mínimo para correr el API y reproducir la metodología
+# del Índice Urbano Global (IUG) en tu máquina:
+#
+#   docker compose -f docker-compose.public.yml up -d                  # infra (postgres + redis + flyway)
+#   docker compose -f docker-compose.public.yml --profile api up -d    # +api
+#   docker compose -f docker-compose.public.yml --profile monitoring up -d  # +grafana+prometheus
+#   docker compose -f docker-compose.public.yml --profile scraping up -d    # scrapers
+#   docker compose -f docker-compose.public.yml --profile data run --rm data-loader  # carga datos abiertos
+#
+# Una vez arriba, la API queda en  http://localhost:8000
+# Swagger UI interactivo:           http://localhost:8000/docs
+# OpenAPI raw:                      http://localhost:8000/openapi.json
+# ============================================================================
+
+services:
+  # ──────────────────────────────────────────────────────────────────────────
+  # PostgreSQL 16 + PostGIS — base de datos principal (datos espaciales,
+  # indicadores, usuarios, favoritos). Volumen persistente.
+  # ──────────────────────────────────────────────────────────────────────────
+  postgres:
+    build:
+      context: ./services/database
+      dockerfile: Dockerfile.postgres
+    image: iug-postgres
+    container_name: iug-postgres
+    environment:
+      POSTGRES_USER: ${PG_USER:-postgres}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_DB: ${PG_DB:-postgres}
+    ports:
+      - "127.0.0.1:${PG_PORT:-5434}:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks: [app-network]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Flyway — corre las migraciones SQL en orden V1, V2, V3... al arrancar.
+  # Se autodestruye al terminar (exit 0). Re-ejecutable, idempotente.
+  # ──────────────────────────────────────────────────────────────────────────
+  flyway:
+    image: flyway/flyway:10
+    container_name: iug-flyway
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./services/database/migrations:/flyway/sql
+    environment:
+      - FLYWAY_URL=jdbc:postgresql://postgres:5432/${PG_DB:-postgres}
+      - FLYWAY_USER=${PG_USER:-postgres}
+      - FLYWAY_PASSWORD=${PG_PASSWORD}
+      - FLYWAY_SCHEMAS=iug
+    networks: [app-network]
+    command: migrate
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Redis — cache de búsquedas + memoria conversacional del asistente RAG.
+  # ──────────────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: iug-redis
+    command: >
+      redis-server
+      --requirepass ${REDIS_PASSWORD:-changeme_redis_pwd}
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+    ports:
+      - "127.0.0.1:6379:6379"
+    networks: [app-network]
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-changeme_redis_pwd}", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 300M
+    profiles: [api, monitoring]
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # API — FastAPI 0.115 + asyncpg + redis-asyncio. Endpoints REST + WebSocket
+  # documentados automáticamente vía OpenAPI en /docs.
+  # ──────────────────────────────────────────────────────────────────────────
+  api:
+    build: ./services/api
+    container_name: iug-api
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql://${APP_PG_USER:-app_user}:${APP_PG_PASSWORD}@postgres:5432/${PG_DB:-postgres}
+      - PG_HOST=postgres
+      - PG_PORT=5432
+      - PG_DB=${PG_DB:-postgres}
+      - PG_USER=${APP_PG_USER:-app_user}
+      - PG_PASSWORD=${APP_PG_PASSWORD}
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-changeme_redis_pwd}@redis:6379
+      - JWT_SECRET=${JWT_SECRET}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ENV=${ENV:-development}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:3000,http://localhost:5173}
+      - PIPELINE_SECRET=${PIPELINE_SECRET:-}
+      - SMTP_HOST=${SMTP_HOST:-}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASSWORD=${SMTP_PASSWORD:-}
+      - SMTP_FROM=${SMTP_FROM:-}
+      - MONGO_URI=${MONGO_URI:-}
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - api_uploads:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks: [app-network]
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+    profiles: [api]
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # SCRAPERS — corren on-demand con `--profile scraping`. Persisten datos
+  # crudos en MongoDB (no incluido por defecto — usa MongoDB Atlas free tier
+  # o levanta un mongo local agregando un servicio).
+  # ──────────────────────────────────────────────────────────────────────────
+  scraper-finca:
+    build:
+      context: ./services/scraping/finca_raiz
+      dockerfile: finca/Dockerfile
+    container_name: scraper-finca-raiz
+    env_file: .env
+    environment:
+      - POSTGRES_URI=postgresql://${PG_USER:-postgres}:${PG_PASSWORD}@postgres:5432/${PG_DB:-postgres}
+      - MONGO_URI=${MONGO_URI}
+      - API_URL=http://api:8000
+      - PIPELINE_SECRET=${PIPELINE_SECRET:-}
+      - RUN_MODE=${SCRAPE_MODE:-matrix}
+      - TXS=${SCRAPE_TXS:-venta,arriendo}
+      - TIPOS=${SCRAPE_TIPOS:-apartamentos,casas}
+      - SECTORES=${SCRAPE_SECTORES:-bogota}
+      - SCRAPER_PROXIES=${SCRAPER_PROXIES:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [app-network]
+    profiles: [scraping]
+
+  scraper-habi:
+    build: ./services/scraping/habi
+    container_name: scraper-habi
+    env_file: .env
+    environment:
+      - POSTGRES_URI=postgresql://${PG_USER:-postgres}:${PG_PASSWORD}@postgres:5432/${PG_DB:-postgres}
+      - MONGO_URI=${MONGO_URI}
+      - API_URL=http://api:8000
+      - SELENIUM_URLS=http://selenium:4444/wd/hub
+    depends_on:
+      selenium:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    networks: [app-network]
+    profiles: [scraping]
+
+  scraper-properati:
+    build: ./services/scraping/properati
+    container_name: scraper-properati
+    env_file: .env
+    environment:
+      - MONGO_URI=${MONGO_URI}
+      - API_URL=http://api:8000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [app-network]
+    profiles: [scraping]
+
+  selenium:
+    image: selenium/standalone-chrome:latest
+    container_name: selenium-grid
+    shm_size: '2gb'
+    ports:
+      - "127.0.0.1:4444:4444"
+    networks: [app-network]
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:4444/wd/hub/status || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    profiles: [scraping]
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # MONITORING — Grafana + Prometheus + exporters. Útil para inspeccionar
+  # latencia de queries, hit-rate de Redis, etc. Opcional.
+  # ──────────────────────────────────────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:v2.51.0
+    container_name: iug-prometheus
+    volumes:
+      - ./services/monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    ports:
+      - "127.0.0.1:9090:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.retention.time=30d'
+    networks: [app-network]
+    restart: unless-stopped
+    profiles: [monitoring]
+
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:v0.15.0
+    container_name: iug-pg-exporter
+    environment:
+      DATA_SOURCE_NAME: "postgresql://${PG_USER:-postgres}:${PG_PASSWORD}@postgres:5432/${PG_DB:-postgres}?sslmode=disable"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [app-network]
+    profiles: [monitoring]
+
+  redis-exporter:
+    image: oliver006/redis_exporter:v1.58.0
+    container_name: iug-redis-exporter
+    environment:
+      REDIS_ADDR: "redis://redis:6379"
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-changeme_redis_pwd}
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks: [app-network]
+    profiles: [monitoring]
+
+  grafana:
+    image: grafana/grafana:10.4.1
+    container_name: iug-grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-changeme}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      PG_PASSWORD: ${PG_PASSWORD}
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./services/monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./services/monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on: [prometheus]
+    networks: [app-network]
+    restart: unless-stopped
+    profiles: [monitoring]
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # DATA LOADER — corre el ETL one-shot que carga GeoJSON de POI/POT/etc.
+  # ──────────────────────────────────────────────────────────────────────────
+  data-loader:
+    build: ./services/database
+    container_name: data-loader
+    env_file: .env
+    environment:
+      - PG_HOST=postgres
+      - PG_PORT=5432
+      - PG_DB=${PG_DB:-postgres}
+      - PG_USER=${PG_USER:-postgres}
+      - PG_PASSWORD=${PG_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./services/database/archivos:/app/archivos:ro
+    networks: [app-network]
+    profiles: [data]
+
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  pg_data:
+    name: iug_postgres_data
+  prometheus_data:
+    name: iug_prometheus_data
+  grafana_data:
+    name: iug_grafana_data
+  api_uploads:
+    name: iug_api_uploads

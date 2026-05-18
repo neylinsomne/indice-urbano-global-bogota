@@ -1,0 +1,50 @@
+services:
+  scraper:
+    build:
+      context: .
+      dockerfile: finca/Dockerfile
+    container_name: fincaraiz-scraper
+    env_file:
+      - .env # Variables de entorno locales
+    environment:
+      # Modo de ejecución: single, matrix, test, migrate
+      - RUN_MODE=${RUN_MODE:-single}
+      - SPIDER=loco
+      # Parámetros del scraper
+      - TX=${TX:-venta}
+      - TIPO=${TIPO:-apartamentos}
+      - SECTOR=${SECTOR:-bogota}
+      - USAR_PREVIOS=${USAR_PREVIOS:-n}
+      # MongoDB (heredado de .env: MONGO_URI)
+      # PostgreSQL - conectar al contenedor de Base_relacional
+      - POSTGRES_URI=postgresql://postgres:${PG_PASSWORD:-xd}@iug-postgres:5432/postgres
+      # Path para guardar resultados
+      - RESULTS_PATH=/app/logs/resultados.json
+    volumes:
+      # Persistir logs y resultados
+      - ./logs:/app/logs
+    shm_size: '2gb'
+    healthcheck:
+      test: [ "CMD", "python", "-c", "print('ok')" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - gisnet # Red compartida con PostgreSQL
+
+  # Servicio para probar selectores
+  test-selectors:
+    build:
+      context: .
+      dockerfile: finca/Dockerfile
+    container_name: fincaraiz-test
+    entrypoint: [ "python", "test_selectors.py" ]
+    shm_size: '2gb'
+    profiles:
+      - test
+    networks:
+      - gisnet
+
+networks:
+  gisnet:
+    external: true # Red creada por Base_relacional

@@ -1,0 +1,201 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "links": [],
+  "panels": [
+    {
+      "title": "Inmuebles Totales",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 0 },
+      "datasource": "PostgreSQL",
+      "targets": [{
+        "rawSql": "SELECT COUNT(*) AS total FROM iug.inmueble;",
+        "format": "table"
+      }],
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": { "steps": [
+            { "color": "#5FA8D3", "value": null },
+            { "color": "#52B788", "value": 5000 }
+          ]}
+        }
+      }
+    },
+    {
+      "title": "Inmuebles por Tipo",
+      "type": "piechart",
+      "gridPos": { "h": 8, "w": 8, "x": 4, "y": 0 },
+      "datasource": "PostgreSQL",
+      "targets": [{
+        "rawSql": "SELECT t.nombre AS tipo, COUNT(*) AS cantidad FROM iug.inmueble i JOIN iug.tipo_inmueble t ON i.id_tipo = t.id_tipo GROUP BY t.nombre ORDER BY cantidad DESC;",
+        "format": "table"
+      }]
+    },
+    {
+      "title": "Inmuebles por Fuente",
+      "type": "piechart",
+      "gridPos": { "h": 8, "w": 8, "x": 12, "y": 0 },
+      "datasource": "PostgreSQL",
+      "targets": [{
+        "rawSql": "SELECT COALESCE(fuente, 'desconocido') AS fuente, COUNT(*) AS cantidad FROM iug.inmueble GROUP BY fuente ORDER BY cantidad DESC;",
+        "format": "table"
+      }]
+    },
+    {
+      "title": "Usuarios Registrados",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 0 },
+      "datasource": "PostgreSQL",
+      "targets": [{
+        "rawSql": "SELECT COUNT(*) AS total FROM iug.users;",
+        "format": "table"
+      }],
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "fixed", "fixedColor": "#E8C96A" }
+        }
+      }
+    },
+    {
+      "title": "Inserciones por Día (últimos 30 días)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "datasource": "PostgreSQL",
+      "targets": [{
+        "rawSql": "SELECT DATE(created_at) AS time, COUNT(*) AS inserciones FROM iug.inmueble WHERE created_at >= NOW() - INTERVAL '30 days' GROUP BY DATE(created_at) ORDER BY time;",
+        "format": "time_series"
+      }],
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "fixed", "fixedColor": "#5FA8D3" },
+          "custom": {
+            "drawStyle": "bars",
+            "fillOpacity": 60,
+            "gradientMode": "scheme"
+          }
+        }
+      }
+    },
+    {
+      "title": "Precio Promedio por Tipo (COP)",
+      "type": "bargauge",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "datasource": "PostgreSQL",
+      "targets": [{
+        "rawSql": "SELECT t.nombre AS tipo, ROUND(AVG(i.precio)::numeric, 0) AS precio_promedio FROM iug.inmueble i JOIN iug.tipo_inmueble t ON i.id_tipo = t.id_tipo WHERE i.precio > 0 GROUP BY t.nombre ORDER BY precio_promedio DESC LIMIT 8;",
+        "format": "table"
+      }],
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": { "steps": [
+            { "color": "#5FA8D3", "value": null },
+            { "color": "#E8C96A", "value": 500000000 },
+            { "color": "#ef5350", "value": 1000000000 }
+          ]},
+          "unit": "currencyCOP"
+        }
+      }
+    },
+    {
+      "title": "Distribución por Estrato",
+      "type": "barchart",
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 16 },
+      "datasource": "PostgreSQL",
+      "targets": [{
+        "rawSql": "SELECT estrato, COUNT(*) AS cantidad FROM iug.inmueble WHERE estrato IS NOT NULL AND estrato BETWEEN 1 AND 6 GROUP BY estrato ORDER BY estrato;",
+        "format": "table"
+      }],
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" }
+        }
+      }
+    },
+    {
+      "title": "Top 10 Localidades",
+      "type": "barchart",
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 16 },
+      "datasource": "PostgreSQL",
+      "targets": [{
+        "rawSql": "SELECT l.nombre AS localidad, COUNT(*) AS cantidad FROM iug.inmueble i JOIN iug.localidad l ON i.id_localidad = l.id_localidad GROUP BY l.nombre ORDER BY cantidad DESC LIMIT 10;",
+        "format": "table"
+      }]
+    },
+    {
+      "title": "Modelos de Regresión - R²",
+      "type": "gauge",
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 16 },
+      "datasource": "PostgreSQL",
+      "targets": [{
+        "rawSql": "SELECT tipo_inmueble || ' - ' || modelo AS metrica, r2 * 100 AS valor FROM iug.regression_market_summary ORDER BY r2 DESC LIMIT 12;",
+        "format": "table"
+      }],
+      "fieldConfig": {
+        "defaults": {
+          "min": 0, "max": 100,
+          "unit": "percent",
+          "thresholds": { "steps": [
+            { "color": "#ef5350", "value": null },
+            { "color": "#E8C96A", "value": 30 },
+            { "color": "#52B788", "value": 60 }
+          ]}
+        }
+      }
+    },
+    {
+      "title": "PostgreSQL - Conexiones Activas",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 24 },
+      "datasource": "Prometheus",
+      "targets": [{
+        "expr": "pg_stat_activity_count",
+        "legendFormat": "{{datname}} - {{state}}"
+      }]
+    },
+    {
+      "title": "PostgreSQL - Tuplas Insertadas/s",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 24 },
+      "datasource": "Prometheus",
+      "targets": [
+        { "expr": "rate(pg_stat_user_tables_n_tup_ins_total{schemaname='iug'}[5m])", "legendFormat": "INSERT {{relname}}" },
+        { "expr": "rate(pg_stat_user_tables_n_tup_upd_total{schemaname='iug'}[5m])", "legendFormat": "UPDATE {{relname}}" },
+        { "expr": "rate(pg_stat_user_tables_n_tup_del_total{schemaname='iug'}[5m])", "legendFormat": "DELETE {{relname}}" }
+      ]
+    },
+    {
+      "title": "PostgreSQL - Tamaño de Tablas (MB)",
+      "type": "table",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 32 },
+      "datasource": "PostgreSQL",
+      "targets": [{
+        "rawSql": "SELECT schemaname || '.' || tablename AS tabla, pg_size_pretty(pg_total_relation_size(schemaname || '.' || tablename)) AS tamano, pg_total_relation_size(schemaname || '.' || tablename) AS bytes FROM pg_tables WHERE schemaname = 'iug' ORDER BY bytes DESC;",
+        "format": "table"
+      }]
+    },
+    {
+      "title": "Redis - Memoria Usada",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 32 },
+      "datasource": "Prometheus",
+      "targets": [
+        { "expr": "redis_memory_used_bytes", "legendFormat": "Usada" },
+        { "expr": "redis_memory_max_bytes", "legendFormat": "Máxima" }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "bytes" }
+      }
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": ["inmobiliario", "postgres", "redis"],
+  "templating": { "list": [] },
+  "time": { "from": "now-7d", "to": "now" },
+  "title": "Estudio Inmobiliario - Overview",
+  "uid": "iug-overview",
+  "version": 1
+}

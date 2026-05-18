@@ -1,0 +1,1084 @@
+% =============================================================
+% Presentación de Trabajo de Grado · INMU / Índice Urbano Global
+% Pontificia Universidad Javeriana · 2026
+%
+% Compilación recomendada:
+%   En Overleaf: compilador pdfLaTeX (configuración por defecto).
+%
+% Estructura:
+%   - Beamer con tema metropolis (debería estar pre-instalado en Overleaf).
+%   - Bibliografía manual con thebibliography (no usa .bib externo).
+%   - Slots para gráficas vía \figslot{descripción}{ruta}; si el PDF
+%     existe en figs/ se inserta, si no, muestra un placeholder.
+%
+% Carpetas esperadas:
+%   figs/    ← coloca aquí tus gráficas hechas a mano (PNG/PDF).
+% =============================================================
+\documentclass[aspectratio=169,11pt]{beamer}
+
+% ---- Paquetes esenciales ---------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs, array}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta}   % <-- necesario para "right=...of..."
+\usepackage{xcolor}
+\usepackage{multicol}
+\usepackage{hyperref}
+\usepackage{appendixnumberbeamer}
+% NOTA: NO usar biblatex aquí. Usamos thebibliography clásico con \cite{...}.
+%       Si más adelante migras a .bib, reemplaza la sección de Referencias
+%       por \printbibliography y carga \usepackage{biblatex} + \addbibresource.
+
+% ---- Tema y paleta INMU ----------------------------------------
+\usetheme{metropolis}
+\usecolortheme{default}
+
+\definecolor{inmuPrimary}{HTML}{0A2540}
+\definecolor{inmuGreen}{HTML}{15803D}
+\definecolor{inmuGreenLight}{HTML}{22C55E}
+\definecolor{inmuSurface}{HTML}{F8FAFC}
+\definecolor{inmuMuted}{HTML}{64748B}
+
+\setbeamercolor{normal text}{fg=inmuPrimary, bg=white}
+\setbeamercolor{frametitle}{fg=white, bg=inmuPrimary}
+\setbeamercolor{title}{fg=inmuPrimary}
+\setbeamercolor{author}{fg=inmuMuted}
+\setbeamercolor{date}{fg=inmuMuted}
+\setbeamercolor{alerted text}{fg=inmuGreen}
+\setbeamercolor{block title}{fg=white, bg=inmuGreen}
+\setbeamercolor{block body}{fg=inmuPrimary, bg=inmuSurface}
+\setbeamercolor{itemize item}{fg=inmuGreen}
+\setbeamercolor{itemize subitem}{fg=inmuGreen}
+
+\metroset{progressbar=frametitle, sectionpage=progressbar}
+
+% ====================================================================
+% NOTAS DEL EXPOSITOR
+% --------------------------------------------------------------------
+%  Cada frame tiene un \note{...} con las CITAS exactas + puntos clave
+%  para sustentación. Por defecto las notas NO se ven en el PDF de los
+%  slides (queda limpio para proyectar). Para verlas, descomenta UNA
+%  de las siguientes opciones según el modo que necesites:
+%
+%   - Solo slides limpios (DEFAULT — para sustentar):
+%     ↓ no descomentes nada
+%
+%   - Slides + notas en páginas alternadas (para imprimir):
+%     \setbeameroption{show notes}
+%
+%   - PDF widescreen con slide a la izquierda + nota a la derecha
+%     (ideal para abrir en el laptop mientras proyecta el slide):
+%     \setbeameroption{show notes on second screen=right}
+%
+%   - Solo notas (sin slides):
+%     \setbeameroption{show only notes}
+% ====================================================================
+\setbeamertemplate{note page}{%
+  \insertnote
+}
+
+% ---- Metadatos -------------------------------------------------
+\title{Índice Urbano Global de Bogotá (IUG)}
+\subtitle{Mide la calidad urbana antes de mirar el precio}
+\author{Neyl Peñuela Bernate \\ \small Director: Vladimir Moreno G.}
+\institute{Pontificia Universidad Javeriana \\ Programa de Ciencia de Datos}
+\date{Sustentación · Mayo 2026}
+
+% ---- Helpers ---------------------------------------------------
+% IMPORTANTE: \dim ya está reservado en LaTeX (operador matemático),
+%             usamos \hi (highlight) y \hl (highlight-light) en su lugar.
+\newcommand{\hi}[1]{\textcolor{inmuGreen}{\textbf{#1}}}
+\newcommand{\hl}[1]{\textcolor{inmuGreen}{#1}}
+
+% Slot para gráfico: si compilas con \includegraphics y el archivo no
+% existe, pdfLaTeX falla. Por eso usamos un placeholder visible — basta
+% reemplazarlo manualmente por \includegraphics cuando tengas la figura.
+\newcommand{\figslot}[2]{%
+  \begin{center}
+    \fbox{\begin{minipage}{0.85\linewidth}\centering
+      \vspace{2em}\textit{[ Aquí va: #1 ]}\\\small\texttt{#2}\vspace{2em}
+    \end{minipage}}
+  \end{center}
+}
+
+% Nota al pie del slide con citas — se ancla abajo a la izquierda en
+% gris suave. Se usa al final del frame y enumera las referencias clave
+% que sustentan la metodología expuesta arriba.
+\newcommand{\framenote}[1]{%
+  \vfill
+  {\scriptsize\color{inmuMuted}\textbf{Fundamento metodológico:}\ #1}%
+}
+
+\begin{document}
+
+% ================================================================
+% Portada
+% ================================================================
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+% ================================================================
+\section{Motivación}
+% ================================================================
+
+\begin{frame}{El problema: el precio NO mide calidad urbana}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.55\textwidth}
+      \begin{itemize}
+        \item En Bogotá, \hl{el precio inmobiliario refleja una mezcla} de
+              ubicación, atributos físicos, inercia del mercado, percepción
+              subjetiva, y \textit{shocks} especulativos.
+        \item Los hogares y compradores carecen de una \hi{métrica objetiva}
+              de la calidad del entorno urbano que no esté ya contaminada por
+              el precio.
+        \item Las herramientas comerciales asumen que ``más caro = mejor zona''
+              --- un círculo lógico.
+      \end{itemize}
+    \column{0.4\textwidth}
+      \includegraphics[width=\linewidth]{figs/intro_mapa.png}
+  \end{columns}
+\end{frame}
+\note{\scriptsize
+\textbf{Citas:} Khoshnoud et al. (2023); Shiller (2015).\par
+\textbf{Puntos a mencionar:}
+\begin{itemize}\itemsep0pt
+  \item Arrancar la sustentación con la observación del problema: comprar/invertir en Bogotá se basa hoy en precios sin trazabilidad.
+  \item ``Caro = bueno'' es un círculo lógico que el mercado refuerza con su propia inercia.
+  \item Shiller (\textit{Irrational Exuberance}) discute justamente la falla de eficiencia cuando los fundamentales se desconectan del precio observado.
+  \item Anticipar: vamos a construir una métrica que rompa el círculo.
+\end{itemize}
+}
+
+\begin{frame}{Pregunta de investigación}
+  \begin{block}{Hipótesis central}
+    ¿Es posible construir una métrica \hi{ortogonal al precio} que sintetice
+    la calidad urbana de Bogotá a partir de \textbf{datos oficiales abiertos},
+    y que permita detectar \textit{mispricing} entre el valor de mercado y
+    los fundamentales del entorno?
+  \end{block}
+
+  \vspace{0.8em}
+  \begin{itemize}
+    \item \textbf{Objetivo:} construir el Índice Urbano Global (IUG), una métrica
+          \hi{[0, 5]} que combine 5 dimensiones del entorno urbano sin usar
+          datos de mercado.
+    \item \textbf{Aporte:} marco metodológico replicable + plataforma
+          operacional + validación estadística completa.
+  \end{itemize}
+\end{frame}
+\note{\scriptsize
+\textbf{Citas:} Rosen (1974); Nardo et al. (2008).\par
+\textbf{Puntos a mencionar:}
+\begin{itemize}\itemsep0pt
+  \item ``Ortogonalidad al precio'' es la clave: el indicador NO usa precio como insumo, así que tampoco lo predice trivialmente. Eso lo distingue del modelo hedónico clásico de Rosen.
+  \item Tres entregables: metodología (defendible), plataforma (visible), validación (estadística).
+  \item No es solo un score: es un objeto académico replicable porque sus insumos son datos abiertos oficiales.
+\end{itemize}
+}
+
+% ================================================================
+\section{Marco teórico}
+% ================================================================
+
+\begin{frame}{Bases conceptuales}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.5\textwidth}
+      \textbf{Precios hedónicos.} Los atributos del bien explican parcialmente
+      su precio; el resto se atribuye al entorno~\cite{rosen1974, Khoshnoud2023}.
+
+      \vspace{0.5em}
+      \textbf{Accesibilidad como masa potencial.} El acceso al transporte se
+      modela como un sumatorio gravitacional~\cite{hansen1959, HaynesFotheringham1985}.
+
+      \vspace{0.5em}
+      \textbf{Indicadores compuestos.} OECD propone una metodología paso a
+      paso (selección $\to$ normalización $\to$ ponderación $\to$
+      validación)~\cite{nardo2008}.
+
+    \column{0.5\textwidth}
+      \textbf{Análisis espacial.} \textit{Everything is related to everything
+      else, but near things are more related}~\cite{tobler1970}.
+      Soporta el uso de buffers caminables (400/800~m) en
+      el subíndice de dotación.
+
+      \vspace{0.5em}
+      \textbf{Multicolinealidad y commonality.} Los subíndices pueden compartir
+      varianza; reportarla previene sobre-interpretación~\cite{nimon2013}.
+
+      \vspace{0.5em}
+      \textbf{Validación cruzada espacial.} Bloques espaciales evitan el
+      ``optimism bias'' del CV aleatorio~\cite{roberts2017}.
+  \end{columns}
+\end{frame}
+\note{\scriptsize
+\textbf{Citas en este slide:} Rosen (1974); Khoshnoud et al. (2023);
+Hansen (1959); Haynes \& Fotheringham (1985); Nardo et al. (2008);
+Tobler (1970); Nimon \& Oswald (2013); Roberts et al. (2017).\par
+\textbf{Discurso:}
+\begin{itemize}\itemsep0pt
+  \item Cada pilar teórico justifica UNA decisión del proyecto: hedonic justifica el modelo de precios, gravity justifica el cálculo de I\_ACC, OECD justifica la equiponderación, Tobler justifica los buffers caminables, commonality justifica reportar ortogonalidad, CV espacial justifica cómo validamos.
+  \item Si el jurado pregunta ``¿por qué hicieron X?'', cada X aparece aquí con su soporte.
+  \item Tobler 1970: la primera ley de geografía. Probablemente la cita más conocida en análisis espacial.
+\end{itemize}
+}
+
+\begin{frame}{Brecha en la literatura}
+  \begin{itemize}
+    \item Modelos hedónicos clásicos: tratan al entorno como una variable
+          de control, no como objeto de estudio.
+    \item Indicadores compuestos urbanos: pocos se calculan a escala
+          \textbf{de inmueble} (la mayoría a escala de barrio o localidad).
+    \item Plataformas comerciales colombianas: precios sin trazabilidad
+          metodológica.
+    \item \hi{INMU} llena el espacio: indicador compuesto, a nivel de
+          inmueble, ortogonal al precio, calculado con datos oficiales,
+          servido vía API y validado estadísticamente.
+  \end{itemize}
+\end{frame}
+\note{\scriptsize
+\textbf{Puntos a mencionar:}
+\begin{itemize}\itemsep0pt
+  \item Los hedónicos miden \emph{coeficientes}, no construyen un indicador.
+  \item Indicadores urbanos suelen ser a escala de barrio (CCB) o ciudad (ONU-Habitat). A escala de INMUEBLE es lo nuevo.
+  \item Plataformas comerciales (Metrocuadrado, FincaRaíz) NO publican metodología — sus precios son ``de mercado'', no fundamentales.
+  \item INMU = único proyecto que combina las cuatro cosas: a nivel de inmueble, abierto, validado, operacional.
+\end{itemize}
+}
+
+% ================================================================
+\section{Metodología · Las 5 dimensiones del IUG}
+% ================================================================
+
+\begin{frame}{Estructura del IUG}
+  \[
+    \mathrm{IUG}_i \;=\; w_{\text{acc}} \, I_{\text{ACC},i}
+                  \,+\, w_{\text{seg}} \, I_{\text{SEG},i}
+                  \,+\, w_{\text{hed}} \, I_{\text{HED},i}
+                  \,+\, w_{\text{dot}} \, I_{\text{DOT},i}
+                  \,+\, w_{\text{pnu}} \, I_{\text{PNU},i}
+  \]
+  \begin{center}
+    \footnotesize Cada subíndice $I_{\bullet,i} \in [0, 5]$ tras
+    \textit{rank min-max} y pesos equiponderados por defecto (0.20 c/u).
+  \end{center}
+  \vspace{0.4em}
+  \begin{block}{Premisa}
+    Los datos de entrada son \emph{independientes} de la oferta inmobiliaria:
+    DANE, IDECA, SDP, EPV 2024, POT 555, IDRD. Esto garantiza la
+    \hi{ortogonalidad al precio} que validamos estadísticamente.
+  \end{block}
+  \framenote{Equiponderación 0.20 c/u sigue la recomendación OECD para
+  indicadores compuestos cuando no hay información a priori sobre la
+  importancia relativa de los componentes~\cite{nardo2008}. Discusión sobre
+  compensatoriedad en la agregación lineal~\cite{munda2008}.}
+\end{frame}
+\note{\scriptsize
+\textbf{Citas:} Nardo et al. (2008) OECD; Munda (2008).\par
+\textbf{Discurso:}
+\begin{itemize}\itemsep0pt
+  \item Combinación lineal compensatoria: una zona puede compensar baja accesibilidad con buena dotación. Es lo que Munda llama \emph{compensatoriedad parcial}.
+  \item Si jurado pregunta ``¿por qué no GeoMean?'': discutirlo. GeoMean penaliza más los ceros, pero introduce supuesto fuerte de no-compensatoriedad que aquí no aplica.
+  \item Datos abiertos = replicabilidad. Cualquier persona puede recalcular el IUG en su PC con los scripts del repo.
+\end{itemize}
+}
+
+% ----------------------------------------------------------------
+% Frame dedicado: justificación de pesos y AHP
+% ----------------------------------------------------------------
+\begin{frame}{¿Por qué estos pesos? AHP + Equiponderación}
+  Decisión metodológica en \hi{dos niveles}:
+
+  \vspace{0.6em}
+  \textbf{1. Entre los 5 subíndices (nivel macro):}\quad
+  Pesos \hi{equiponderados $w_k = 0.20$}.
+
+  \begin{itemize}
+    \item Sin evidencia empírica que justifique a priori que una dimensión
+          urbana ``pesa'' más que otra para todos los hogares.
+    \item Recomendación explícita del \emph{Handbook} de indicadores
+          compuestos de la OECD~\cite{nardo2008}.
+    \item Evita supuestos arbitrarios y permite que el lector aplique
+          sus propios pesos (el sistema acepta vectores custom).
+  \end{itemize}
+
+  \vspace{0.4em}
+  \textbf{2. Dentro de un subíndice (nivel micro):}\quad
+  Pesos derivados por \hi{AHP} cuando hay juicio experto sólido.
+
+  \begin{itemize}
+    \item Caso aplicado: I\_SEG combina 7 tipos de delito ponderados
+          por \emph{severidad} (homicidio 0.566, delito sexual 0.267,
+          hurto 0.120, etc.).
+    \item AHP ofrece matriz de comparaciones pareadas + chequeo de
+          consistencia ($CR < 0.10$).
+  \end{itemize}
+  \framenote{AHP original de Saaty~\cite{saaty1980}; revisión moderna y
+  cuándo aplicarlo en sistemas compuestos~\cite{ishizaka2011}.
+  Equiponderación entre dimensiones~\cite{nardo2008}; discusión
+  compensatoriedad~\cite{munda2008}.}
+\end{frame}
+\note{\scriptsize
+\textbf{Citas:} Saaty (1980); Ishizaka \& Labib (2011); Nardo et al. (2008).\par
+\textbf{Si te preguntan ``¿por qué 0.20 c/u, no es arbitrario?'':}
+\begin{itemize}\itemsep0pt
+  \item No es arbitrario: es la regla de \emph{máxima entropía} entre los criterios cuando no hay información a priori. La justifica OECD explícitamente.
+  \item Si pones uno mayor que otro estás INTRODUCIENDO una preferencia que NO existe en los datos.
+  \item El sistema acepta vectores custom: un evaluador catastral puede aplicar sus propios pesos y recalcular en segundos.
+\end{itemize}
+\textbf{Si te preguntan ``¿por qué AHP solo dentro de I\_SEG?'':}
+\begin{itemize}\itemsep0pt
+  \item Porque ahí SÍ hay juicio normativo claro: la sociedad colombiana considera el homicidio más grave que el hurto a residencia. Eso se puede capturar con AHP.
+  \item Entre las 5 dimensiones (accesibilidad vs. seguridad vs. ...) NO hay un juicio normativo universal — depende del hogar.
+  \item Saaty: AHP requiere comparaciones pareadas con consistencia CR < 0.10. La validamos.
+\end{itemize}
+}
+
+\begin{frame}{I\_ACC · Accesibilidad}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.55\textwidth}
+      Modelo gravitacional sobre TransMilenio + SITP:
+      \[
+        I_{\text{ACC},i} = \sum_{j \in J} \frac{O_j}{d_{ij}^{\beta}}
+      \]
+      \begin{itemize}
+        \item $O_j$: capacidad/jerarquía de la estación.
+        \item $d_{ij}$: distancia geodésica desde el inmueble.
+        \item $\beta$: parámetro de decaimiento espacial \\
+              ($\beta \approx 1.5$ tras calibración).
+      \end{itemize}
+      \vspace{0.4em}
+      Fuentes: TMSA (149 estaciones), SITP-OSM (7\,693 paraderos).
+    \column{0.4\textwidth}
+      \includegraphics[width=\linewidth]{figs/hist_iacc.pdf}
+  \end{columns}
+  \framenote{Modelo gravitacional clásico de masa potencial de
+  Hansen~\cite{hansen1959}, generalizado al marco de interacción
+  espacial por Haynes \& Fotheringham~\cite{HaynesFotheringham1985}.
+  El decaimiento por distancia es consistente con la primera ley de
+  geografía de Tobler~\cite{tobler1970}.}
+\end{frame}
+\note{\scriptsize
+\textbf{Citas:} Hansen (1959); Haynes \& Fotheringham (1985); Tobler (1970).\par
+\textbf{Discurso:}
+\begin{itemize}\itemsep0pt
+  \item Hansen 1959 es el paper fundador de accesibilidad. Antes era ``distancia mínima'' — Hansen propuso sumar SOBRE todas las oportunidades pesadas por distancia. Esa idea de ``masa potencial'' es lo que usamos.
+  \item $\beta = 1.5$ es calibrado: se hizo grid search sobre el ajuste R² de log(precio) y ese valor maximiza la relación monótona con el precio observado.
+  \item TM: 149 estaciones. SITP: 7.693 paraderos. Esto da cobertura espacial real.
+\end{itemize}
+}
+
+\begin{frame}{I\_SEG · Seguridad tridimensional}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.55\textwidth}
+      Tres capas combinadas:
+      \[
+        I_{\text{SEG},i}' = 0.40\,S_{\text{micro}} + 0.30\,D_{\text{obj}}
+                          + 0.30\,D_{\text{subj}}
+      \]
+      \begin{itemize}
+        \item $S_{\text{micro}}$: proximidad a CAI (599 puntos).
+        \item $D_{\text{obj}}$: criminalidad por km$^2$ (ICSU/SIEDCO).
+        \item $D_{\text{subj}}$: percepción ciudadana \\
+              EPV 2024 ($n = 19\,354$)~\cite{ccb2024}.
+      \end{itemize}
+      \vspace{0.4em}
+      \textit{Paradoja de la inseguridad}: el 44\% de localidades
+      tienen criminalidad alta y percepción media --- la dimensión
+      objetiva sola no basta.
+    \column{0.4\textwidth}
+      \includegraphics[width=\linewidth]{figs/scatter_seg.pdf}
+  \end{columns}
+  \framenote{Pesos por severidad de delito mediante \emph{Analytic
+  Hierarchy Process}~\cite{saaty1980, ishizaka2011}: homicidio 56.6\%,
+  delitos sexuales 26.7\%, hurto a personas 12\%. Percepción ciudadana de
+  la EPV 2024 ($n = 19\,354$)~\cite{ccb2024}. Marco de seguridad urbana
+  multidimensional~\cite{cardenas2017}.}
+\end{frame}
+\note{\scriptsize
+\textbf{Citas:} Saaty (1980); Ishizaka \& Labib (2011); CCB (2024); Cárdenas (2017).\par
+\textbf{Discurso:}
+\begin{itemize}\itemsep0pt
+  \item Las tres capas miden cosas \emph{distintas} pero correlacionadas:
+  \begin{itemize}
+    \item Micro (proximidad CAI) = sentirse seguro porque hay policía cerca.
+    \item Objetiva (ICSU) = lo que dicen los reportes de SIEDCO.
+    \item Subjetiva (EPV) = cómo se sienten realmente los 19.354 encuestados.
+  \end{itemize}
+  \item \emph{Paradoja de la inseguridad}: hay localidades con baja criminalidad objetiva pero alta percepción de inseguridad (y viceversa). La métrica pura de denuncias falla — por eso necesitamos las tres capas.
+  \item AHP da los pesos DENTRO de la dimensión objetiva: homicidio pesa más que hurto porque la sociedad lo considera más grave.
+\end{itemize}
+}
+
+\begin{frame}{I\_HED · Hedónico (PCA validado)}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.6\textwidth}
+      Score derivado de \hi{Análisis de Componentes Principales}
+      sobre área construida, baños, garajes, ascensor, antigüedad.
+
+      \vspace{0.4em}
+      Validación previa al PCA~\cite{hair2010}:
+      \begin{itemize}
+        \item KMO $\geq 0.50$~\cite{kaiser1974}.
+        \item Bartlett $p < 0.05$~\cite{bartlett1954}.
+        \item Bootstrap de 200 réplicas para estabilidad de cargas.
+      \end{itemize}
+    \column{0.35\textwidth}
+      \includegraphics[width=\linewidth]{figs/scree_ihed.pdf}
+  \end{columns}
+  \framenote{Marco hedónico clásico de Rosen para atribuir parcialmente
+  el precio a atributos del bien~\cite{rosen1974}; evolución contemporánea
+  de las técnicas hedónicas en~\cite{Khoshnoud2023}. Validación PCA
+  estándar Hair et~al.~\cite{hair2010} con índices de Kaiser
+  (KMO)~\cite{kaiser1974} y test de esfericidad de
+  Bartlett~\cite{bartlett1954}.}
+\end{frame}
+\note{\scriptsize
+\textbf{Citas:} Rosen (1974); Khoshnoud et al. (2023); Hair et al. (2010); Kaiser (1974); Bartlett (1954).\par
+\textbf{Discurso:}
+\begin{itemize}\itemsep0pt
+  \item I\_HED captura el ``confort privado'': lo que el inmueble ofrece a quien vive ADENTRO. Es la única dimensión que NO depende del entorno.
+  \item PCA reduce 5--6 variables correlacionadas a un score único. Usamos PC1 que típicamente explica $>$60\% de varianza.
+  \item Validación previa al PCA es CRÍTICA: KMO $\geq$ 0.50 (mínimo aceptable) y Bartlett $p < 0.05$ (las variables comparten varianza). Si KMO falla, el PCA es inválido.
+  \item Bootstrap de 200 réplicas: confirma que las cargas factoriales son estables, no fruto de azar muestral.
+\end{itemize}
+}
+
+\begin{frame}{I\_DOT · Dotación de equipamientos}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.55\textwidth}
+      Proximidad acumulada con radios de caminabilidad:
+      \[
+        I_{\text{DOT},i} = \sum_{c} w_c \!\left(
+          |\text{POI}_c|_{400m} + 0.5\,|\text{POI}_c|_{800m}
+        \right)
+      \]
+      Categorías (\emph{post-corpus v2.0}):
+      \begin{itemize}
+        \item Salud: 8\,369 (IPS + farmacias)
+        \item Educación: 2\,820 (colegios + univ.)
+        \item Cultura: 157 (bibliotecas + teatros)
+        \item Comercio: 70 (CC)
+        \item Recreación: 194 (parques IDRD + escenarios)
+      \end{itemize}
+    \column{0.4\textwidth}
+      \includegraphics[width=\linewidth]{figs/poi_categorias.pdf}
+  \end{columns}
+  \framenote{Buffers caminables de 400/800~m son estándar internacional
+  de \textit{walkability} en planeación urbana; alineados con la primera
+  ley de Tobler~\cite{tobler1970}. Pesos por categoría según peso urbano
+  típico en el \emph{Handbook} de indicadores compuestos
+  OECD~\cite{nardo2008}.}
+\end{frame}
+\note{\scriptsize
+\textbf{Citas:} Tobler (1970); Nardo et al. (2008).\par
+\textbf{Discurso:}
+\begin{itemize}\itemsep0pt
+  \item 400~m = 5 min caminando a 1.3 m/s (velocidad peatonal promedio). 800~m = 10 min. Son los radios estándar de \emph{walkability} de la OECD y la New Urban Agenda.
+  \item Los POIs dentro de 400~m valen el doble que los entre 400--800~m. Refleja que el acceso inmediato es cualitativamente distinto.
+  \item Crítico: aquí cargamos POST-entrega los datasets de colegios SED, parques IDRD, etc. Pasamos de 4 categorías a 10 (versión v2.0). Ver slide de volumetría.
+\end{itemize}
+}
+
+\begin{frame}{I\_PNU · Potencial normativo (POT 555)}
+  \[
+    I_{\text{PNU},i} = 0.4\,\text{score}_\text{trat} + 0.4\,\text{score}_\text{edif}
+                     + 0.2\,\text{score}_\text{uso}
+  \]
+  \begin{itemize}
+    \item Tratamiento urbanístico (5\,703 polígonos): consolidación,
+          renovación, mejoramiento, conservación.
+    \item Edificabilidad permitida (2\,748 polígonos): alturas máximas.
+    \item Área de actividad (1\,135 polígonos): residencial, mixta,
+          comercial.
+  \end{itemize}
+  \begin{center}
+    \footnotesize Conecta con el método residual dinámico para evaluar
+    potencial de desarrollo~\cite{TasadorResidual}.
+  \end{center}
+  \framenote{Marco normativo POT 555 (Decreto Distrital,
+  Bogotá); metodología catastral del
+  IGAC~\cite{IGAC1912}. Literatura sobre el impacto de zonificación en
+  precios de vivienda~\cite{glaeser2002}.}
+\end{frame}
+\note{\scriptsize
+\textbf{Citas:} IGAC (2024); Glaeser \& Gyourko (2002); Tasadorfiable (2025).\par
+\textbf{Discurso:}
+\begin{itemize}\itemsep0pt
+  \item Esta es la dimensión que conecta directamente con el método de valoración \emph{residual dinámico} usado en catastro: cuánto valor de desarrollo puede absorber un predio.
+  \item POT 555 es el plan de ordenamiento territorial vigente en Bogotá.
+  \item Glaeser \& Gyourko: el paper clásico sobre cómo la zonificación restrictiva eleva precios de vivienda en EE.UU. Aplica análogamente acá.
+  \item Si jurado pregunta por la actualización catastral: IGAC resolución 1912 de 2024 (citada).
+\end{itemize}
+}
+
+% ================================================================
+\section{Pipeline y arquitectura}
+% ================================================================
+
+\begin{frame}{Pipeline de datos}
+  \begin{center}
+    \begin{tikzpicture}[
+      every node/.style={font=\small, draw=inmuPrimary, rounded corners,
+        align=center, minimum height=1.2cm, minimum width=2.3cm,
+        fill=inmuSurface},
+      arr/.style={-stealth, thick, draw=inmuGreen}
+    ]
+      \node (ingesta) {Ingesta\\\footnotesize scraping + APIs};
+      \node[right=1.2cm of ingesta] (proceso) {Procesamiento\\\footnotesize PostGIS\\geocoding};
+      \node[right=1.2cm of proceso] (rama)    {Distribución};
+      \node[above right=0.2cm and 1cm of rama] (sql)    {PostGIS\\\footnotesize coroplético};
+      \node[below right=0.2cm and 1cm of rama] (vec)    {pgvector\\\footnotesize RAG};
+      \draw[arr] (ingesta) -- (proceso);
+      \draw[arr] (proceso) -- (rama);
+      \draw[arr] (rama) -- (sql);
+      \draw[arr] (rama) -- (vec);
+    \end{tikzpicture}
+  \end{center}
+  \vfill
+  \footnotesize MongoDB para \textit{staging} de heterogeneidad de formatos
+  (HTML, GeoJSON, SHP, CSV, JSONB). Flyway gestiona el esquema PostgreSQL.
+  Cadencia mensual el día 15.
+\end{frame}
+
+\begin{frame}{Pila tecnológica}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.32\textwidth}
+      \textbf{Datos}
+      \begin{itemize}
+        \item PostgreSQL 16 + PostGIS
+        \item pgvector
+        \item Redis 7
+        \item MongoDB (staging)
+        \item Flyway (migraciones)
+      \end{itemize}
+    \column{0.32\textwidth}
+      \textbf{Backend}
+      \begin{itemize}
+        \item FastAPI + asyncpg
+        \item JWT + bcrypt cost 12
+        \item Cloudflare Turnstile
+        \item SlowAPI rate-limit
+        \item Habeas Data (Ley 1581/2012)
+      \end{itemize}
+    \column{0.32\textwidth}
+      \textbf{Frontend}
+      \begin{itemize}
+        \item React 18 + Vite + Tailwind
+        \item Leaflet (mapa coroplético)
+        \item three.js (escenas 3D)
+        \item Recharts
+        \item nginx + Cloudflare Tunnel
+      \end{itemize}
+  \end{columns}
+\end{frame}
+
+% ================================================================
+\section{Datos · Volumetría v2.0}
+% ================================================================
+
+\begin{frame}{Volumetría del corpus (v2.0 vigente)}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{lrr}
+    \toprule
+    \textbf{Entidad}                 & \textbf{v1.0 (tesis)} & \textbf{v2.0 (vigente)} \\
+    \midrule
+    Inmuebles totales (BD)            & 6\,418  & 45\,438  \\
+    \quad de los cuales bogotanos     & 6\,418  & 23\,761  \\
+    \addlinespace
+    Tratamientos urbanísticos (POT)   & 5\,703  & 5\,703   \\
+    Edificabilidad                    & 2\,748  & 2\,748   \\
+    Áreas de actividad                & 1\,135  & 1\,135   \\
+    \addlinespace
+    Dotaciones POI unificadas         & 8\,434  & 11\,610  \\
+    \quad colegios SED                & 0       & 2\,237   \\
+    \quad universidades               & 0       & 583      \\
+    \quad parques + escenarios IDRD   & 0       & 194      \\
+    \quad teatros y auditorios        & 0       & 134      \\
+    Estaciones TransMilenio           & 149     & 149      \\
+    Paraderos SITP (OSM)              & 7\,693  & 7\,693   \\
+    CAI Policía                       & 599     & 599      \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \vspace{0.4em}
+  \footnotesize
+  \hi{Efecto monotónico no-decreciente:} la cota inferior reportada en
+  v1.0 se preserva; las pruebas re-ejecutadas en v2.0 reproducen las
+  conclusiones.
+\end{frame}
+\note{\scriptsize
+\textbf{Transparencia académica:}
+\begin{itemize}\itemsep0pt
+  \item El documento de tesis se cerró con v1.0 (6.418 inmuebles). Post-entrega cargamos colegios SED (2.237), universidades (583), parques IDRD (194), teatros (134) y otros: v2.0.
+  \item I\_DOT es \emph{monotónico no-decreciente} en POIs: más datos solo pueden subir el score, nunca bajarlo. Las conclusiones cualitativas se preservan.
+  \item Cambio documentado en \texttt{CHANGELOG\_CORPUS.md} del repo público.
+  \item Si jurado pregunta por la diferencia entre PDF entregado y sitio actual: el sitio refleja v2.0, el PDF v1.0; el cambio fue ampliación, no corrección de error.
+\end{itemize}
+}
+
+% ================================================================
+\section{Validación estadística}
+% ================================================================
+
+\begin{frame}{Estudio de normalidad (subíndices, n = 23\,761)}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{lrrrl}
+    \toprule
+    \textbf{Subíndice} & \textbf{Skewness} & \textbf{Kurtosis exc.} &
+    \textbf{Shapiro--Wilk W} & \textbf{Veredicto} \\
+    \midrule
+    I\_URB             &  $-0.42$ &  $-0.71$ & 0.945 & no normal (asimétrico) \\
+    I\_ACC             &  $+0.13$ &  $-1.65$ & 0.830 & \hi{bimodal} \\
+    I\_SEG             &  $-0.26$ &  $-0.57$ & 0.915 & no normal \\
+    I\_HED             &  $-0.62$ &  $-0.48$ & 0.890 & asimétrico izquierdo \\
+    I\_DOT             &  $-0.26$ &  $-1.66$ & 0.797 & \hi{bimodal} \\
+    I\_PNU             &  $+0.31$ &  $-0.29$ & 0.891 & casi simétrico \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \vspace{0.4em}
+  \footnotesize
+  \textbf{Lectura:} ningún subíndice pasa las pruebas formales de
+  normalidad (Shapiro--Wilk, Jarque--Bera, Anderson--Darling, K--S
+  rechazan $H_0$ con $p < 10^{-40}$). \hi{Esto es esperable y
+  académicamente correcto}: los subíndices están normalizados a [0, 5]
+  por \textit{rank min-max}, lo que produce distribuciones con soporte
+  acotado, frecuentemente bimodales. La inferencia se hace por
+  \emph{intervalos bootstrap} y t-Student conforme al protocolo
+  IAAO~\cite{iaao2013, student1908}.
+\end{frame}
+\note{\scriptsize
+\textbf{Citas:} IAAO (2013); Student/Gosset (1908).\par
+\textbf{Si te preguntan ``¿por qué no son normales?'':}
+\begin{itemize}\itemsep0pt
+  \item Porque están normalizados a [0, 5] por \emph{rank min-max}, lo que produce soporte ACOTADO. Una distribución normal tiene soporte $(-\infty, \infty)$.
+  \item Los subíndices I\_ACC e I\_DOT son \emph{bimodales} (kurtosis exceso $\approx -1.65$): refleja que muchos inmuebles están o muy cerca o muy lejos de TM/equipamientos. No hay punto medio en Bogotá.
+  \item Eso NO es un problema: rechazar normalidad no significa rechazar el indicador. Solo significa que NO podemos usar inferencia paramétrica clásica $\Rightarrow$ usamos bootstrap.
+  \item IAAO 2013 es el estándar de tasación masiva internacional. Recomienda explícitamente bootstrap cuando hay no-normalidad.
+\end{itemize}
+}
+
+\begin{frame}{Normalidad de residuos hedónicos (n = 11\,539)}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.55\textwidth}
+      \footnotesize
+      Modelo: $\log(P_i) = \beta_0 + \beta_1 \text{IUG} + \beta_2 \log A_i
+                          + \beta_3 \text{hab}_i + \beta_4 \text{baños}_i
+                          + \beta_5 \text{estrato}_i + \varepsilon_i$
+
+      \vspace{0.5em}
+      \begin{tabular}{lr}
+        \toprule
+        \textbf{Estadístico}      & \textbf{Valor}    \\
+        \midrule
+        Skewness                  & $-3.68$           \\
+        Kurtosis exceso           & $+38.96$          \\
+        Jarque--Bera $\chi^2$     & 755\,643          \\
+        Anderson--Darling $A^2$   & 273.3 (crit 0.75) \\
+        Veredicto                 & \hi{colas pesadas} \\
+        \bottomrule
+      \end{tabular}
+    \column{0.4\textwidth}
+      \includegraphics[width=\linewidth]{figs/qq_residuos.pdf}
+  \end{columns}
+  \vspace{0.6em}
+  \footnotesize
+  Los residuos exhiben colas pesadas (kurtosis exceso $\approx 39$):
+  evidencia de \emph{outliers} legítimos en el mercado bogotano (lujo,
+  oportunidades). \hi{La inferencia se hace por bootstrap y errores
+  estándar robustos} (HC3), no por aproximación normal asintótica.
+\end{frame}
+\note{\scriptsize
+\textbf{Discurso:}
+\begin{itemize}\itemsep0pt
+  \item Skewness $-3.68$ + kurtosis exceso $+39$: residuos con colas \emph{muy} pesadas. Es lo esperable en mercado inmobiliario: hay outliers reales (penthouses de lujo, oportunidades de inversión).
+  \item NO es un error del modelo — son inmuebles reales que el modelo no puede capturar con un solo coeficiente lineal.
+  \item HC3 (Heteroskedasticity-Consistent type 3): corrección estándar para errores robustos. Recomendada cuando hay heterocedasticidad o no-normalidad.
+  \item Si jurado insiste: GWR (geographically weighted regression) podría capturar mejor los outliers locales. Está en ``trabajo futuro''.
+\end{itemize}
+}
+
+\begin{frame}{Ortogonalidad entre subíndices}
+  \begin{center}
+    \includegraphics[width=0.95\linewidth]{figs/heatmap_corr.pdf}
+  \end{center}
+  \vspace{-0.6em}
+  \footnotesize
+  \hi{Lectura:} ningún par de subíndices supera $|r| > 0.5$ ni $|\rho| > 0.5$,
+  confirmando que cada dimensión aporta información independiente.
+  Esto valida la \textbf{premisa de ortogonalidad} del IUG y justifica
+  reportar los 5 subíndices por separado --- el agregado no captura el
+  detalle accionable.
+\end{frame}
+\note{\scriptsize
+\textbf{Citas:} Nimon \& Oswald (2013); Anselin (1995).\par
+\textbf{Discurso:}
+\begin{itemize}\itemsep0pt
+  \item Esta es la prueba VISUAL de que las 5 dimensiones NO redundan: si la correlación entre I\_ACC e I\_DOT fuera $r=0.9$, sería absurdo tenerlas separadas.
+  \item Que ningún par supere $|r|>0.5$ valida el diseño: cada dimensión es genuinamente independiente.
+  \item Spearman (no-paramétrico) confirma lo mismo que Pearson — robustez a no-normalidad.
+  \item Nimon \& Oswald 2013 desarrollaron precisamente la idea de \emph{commonality analysis} para descomponer varianza compartida en indicadores compuestos.
+\end{itemize}
+}
+
+\begin{frame}{Pruebas estadísticas --- 11 tests sobre datos reales}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{lrrl}
+    \toprule
+    \textbf{Prueba} & \textbf{v1.0} & \textbf{v2.0} & \textbf{Estado} \\
+    \midrule
+    $\Delta R^2$ (completo $-$ IUG)            & $+0.053$ & $+0.052$ & \hi{subíndices dominan} \\
+    $\Delta$AIC                                & $-658$   & $-1586$  & \hi{subíndices dominan} \\
+    Varianza común (commonality)               & 0.0\%    & 3.0\%    & \hi{ortogonalidad ok} \\
+    $\rho$ Spearman ranking (MC)               & 0.995    & 0.998    & \hi{robusto} \\
+    IC 95\% bootstrap $\Delta R^2$             & [0.039;0.064] & [0.041;0.062] & excluye 0 \\
+    Ramsey RESET                               & $p < 10^{-200}$ & idem & forma funcional \\
+    AUC clasificador estrato                   & 0.480    & 0.483    & \hi{azar, esperado} \\
+    Mann--Whitney Q4 vs Q1 residual            & $p=0.0007$ & $p<10^{-4}$ & discrimina \\
+    K--S COMPRAR vs CONSERVAR                  & $p<10^{-37}$ & $p<10^{-40}$ & distintos \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \vspace{0.4em}
+  \footnotesize
+  \hi{La metodología es robusta a la ampliación del corpus.} Las
+  conclusiones cualitativas (ortogonalidad, capacidad de discriminar
+  \emph{mispricing}) se mantienen y se refuerzan con $n$ duplicado.
+\end{frame}
+\note{\scriptsize
+\textbf{Citas:} Nardo et al. (2008); Roberts et al. (2017); IAAO (2013); Student (1908).\par
+\textbf{Interpretación de las 11 pruebas:}
+\begin{itemize}\itemsep0pt
+  \item $\Delta R^2 = +0.052$: los 5 subíndices juntos explican 5.2~pp MÁS de la varianza del log(precio) que solo el IUG agregado. Justifica reportar los 5 por separado.
+  \item $\Delta$AIC $= -1586$: enorme magnitud (regla: $|\Delta\text{AIC}| > 10$ es ``fuerte''). El modelo con los 5 subíndices es categóricamente mejor.
+  \item Commonality 3\%: las 5 dimensiones comparten apenas 3\% de varianza --- son casi independientes.
+  \item AUC 0.483: el IUG NO predice estrato (cae al azar, $\approx 0.5$). PRUEBA de ortogonalidad respecto a una variable proxy del precio.
+  \item Mann--Whitney $p<10^{-4}$: el cuadrante COMPRAR es estadísticamente distinto del cuadrante CONSERVAR. Discriminación real.
+\end{itemize}
+}
+
+% ================================================================
+\section{Resultados aplicados}
+% ================================================================
+
+\begin{frame}{Ranking en vivo · Top 8 localidades por IUG (v2.0)}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.55\textwidth}
+      \footnotesize
+      \begin{tabular}{rlrrr}
+        \toprule
+        \# & \textbf{Localidad}     & \textbf{IUG} & \textbf{Acc} & \textbf{Dot} \\
+        \midrule
+        1 & BARRIOS UNIDOS          & 3.95 & 3.68 & 4.74 \\
+        2 & PUENTE ARANDA           & 3.88 & 4.16 & 4.71 \\
+        3 & SUMAPAZ                 & 3.86 & 3.23 & 4.12 \\
+        4 & ANTONIO NARIÑO          & 3.81 & 4.43 & 4.71 \\
+        5 & TUNJUELITO              & 3.76 & 4.30 & 4.18 \\
+        6 & BOSA                    & 3.58 & 4.12 & 4.92 \\
+        7 & SANTA FE                & 3.56 & 3.73 & 4.72 \\
+        8 & RAFAEL URIBE URIBE      & 3.51 & 2.66 & 4.34 \\
+        \bottomrule
+      \end{tabular}
+    \column{0.4\textwidth}
+      \includegraphics[width=\linewidth]{figs/mapa_iug_v2.pdf}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Mispricing detectado --- cuadrante de decisión}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.55\textwidth}
+      Sobre el residual $\varepsilon_i = \log(P_i) - \widehat{\log(P_i)}$:
+      \begin{itemize}
+        \item \textbf{Comprar} (IUG alto + precio bajo): \hi{30.7\%}
+        \item \textbf{Vender} (IUG bajo + precio alto): \hi{24.7\%}
+        \item Conservar y evitar: el resto
+        \item Mann--Whitney $p = 0.0007$ entre Q4 y Q1 residual
+      \end{itemize}
+      \vspace{0.4em}
+      \footnotesize
+      Conceptualmente alineado con el marco de \emph{irrational
+      exuberance}~\cite{shiller2015}: el mercado no es eficiente
+      cuando los fundamentales de calidad urbana objetiva quedan
+      desconectados del precio observado.
+    \column{0.4\textwidth}
+      \includegraphics[width=\linewidth]{figs/cuadrante_decisiones.pdf}
+  \end{columns}
+\end{frame}
+\note{\scriptsize
+\textbf{Citas:} Shiller (2015) \textit{Irrational Exuberance}.\par
+\textbf{Este es el slide más importante de los resultados:}
+\begin{itemize}\itemsep0pt
+  \item COMPRAR (30.7\%): inmuebles con calidad urbana ALTA pero precio BAJO --- oportunidades de inversión genuinas según el modelo.
+  \item VENDER (24.7\%): calidad BAJA pero precio ALTO --- ``burbujas locales''.
+  \item Mann--Whitney $p=0.0007$ entre Q1 y Q4 residual = los cuadrantes NO son ruido, son grupos estadísticamente distintos.
+  \item Shiller: el mercado no es eficiente cuando los fundamentales se desconectan del precio. Aquí cuantificamos esa desconexión.
+  \item Recordar al jurado: el cuadrante NO recomienda automáticamente comprar. Es una herramienta de \emph{tamizaje}.
+\end{itemize}
+}
+
+% ================================================================
+\section{Producto · Plataforma}
+% ================================================================
+
+\begin{frame}{La plataforma INMU}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.5\textwidth}
+      \hi{Cuatro módulos} sobre el mismo motor de datos:
+      \begin{enumerate}
+        \item \textbf{Mapa interactivo:} coroplético + filtros por
+              localidad/barrio, tipo, IUG, 10 capas POI.
+        \item \textbf{Asistente conversacional con sentido espacial}
+              (RAG): convierte ``cerca de'' en metros sobre red vial.
+        \item \textbf{5 dimensiones nombradas y explicables}
+              en la página académica.
+        \item \textbf{ACM (Análisis Comparativo de Mercado):}
+              PDF auditable con comparables y veredicto.
+      \end{enumerate}
+    \column{0.5\textwidth}
+      \includegraphics[width=\linewidth]{figs/dashboard.png}
+  \end{columns}
+\end{frame}
+\note{\scriptsize
+\textbf{Discurso:}
+\begin{itemize}\itemsep0pt
+  \item En la sustentación: abrir el sitio en vivo (https://inmu.vara-alta.lat). Mostrar el mapa, los filtros, las capas POI.
+  \item Crear cuenta con \texttt{ia\_trial@inmu.com} / \texttt{\#insuranceuse\_ACA\_123} ya está sembrado por si necesitas demostrar el flujo logueado.
+  \item Énfasis: la plataforma NO es un mockup --- es funcional, segura (Ley 1581/2012), con TLS 1.3, captcha Turnstile, JWT + bcrypt.
+  \item Si te preguntan por hábeas data: el sistema registra el consent del usuario en \texttt{iug.consent\_log} con IP + user agent + versión de política. Trazabilidad SIC.
+\end{itemize}
+}
+
+\begin{frame}{RAG multi-dimensional con sentido espacial}
+  \footnotesize
+  Pipeline (\texttt{POST /api/llm/search-natural}):
+  \begin{enumerate}
+    \item \textbf{Intent parser:} regex + 17 categorías POI + sinónimos +
+          \emph{Gemini Flash fallback}.
+    \item \textbf{Geocoding:} Nominatim/OSM con \emph{viewbox} Bogotá,
+          cache Redis 7 días.
+    \item \textbf{Spatial search:} CTE con \texttt{LATERAL JOIN}s sobre
+          cada categoría; scoring híbrido $0.45 \cdot \text{IUG} +
+          0.40 \cdot \text{prox} + 0.15 \cdot \text{addr}$.
+    \item \textbf{Relaxation automática} si los \emph{hard requirements}
+          devuelven cero.
+    \item \textbf{Explicación humana:} ``a 320 m del Hospital San Ignacio
+          ($\approx$4 min a pie) + IUG 3.8/5''.
+  \end{enumerate}
+  \vspace{0.4em}
+  Ejemplo: \emph{``Apto en Chapinero cerca a hospital y parque, menos
+  de 600M, mínimo 80~m\textsuperscript{2}''} $\Rightarrow$ 3 resultados con explicación
+  geocodificada en menos de 200~ms.
+\end{frame}
+\note{\scriptsize
+\textbf{Demo en vivo recomendada para este slide:}
+\begin{itemize}\itemsep0pt
+  \item Abrir https://inmu.vara-alta.lat/dashboard/asistente.
+  \item Escribir LITERALMENTE: ``Apto en Chapinero cerca a hospital y parque, menos de 600M, mínimo 80m2''.
+  \item Mostrar que devuelve resultados con explicación ``a 113~m del centro médico, a 85~m del parque''.
+  \item ANTICIPAR preguntas: si el jurado pregunta ``¿y si pongo una dirección?'', escribir: ``Apartamento a 600m de Calle 100 \# 15-50''. Eso usa Nominatim/OSM para geocodificar.
+\end{itemize}
+\textbf{Si te preguntan ``¿por qué no usaron LLM directo, sin parser de reglas?'':}
+\begin{itemize}\itemsep0pt
+  \item Reglas son deterministas + baratas + interpretables. El LLM solo entra como \emph{fallback} para casos ambiguos.
+  \item Costo: $\sim\$0.0001$/query con Gemini Flash, vs. $\sim\$0$ con reglas.
+\end{itemize}
+}
+
+% ================================================================
+\section{Conclusiones}
+% ================================================================
+
+\begin{frame}{Aportes}
+  \begin{itemize}
+    \item \hi{Metodológico:} indicador compuesto a nivel de inmueble,
+          construido por OECD-style con validación estadística completa
+          (commonality, bootstrap, CV espacial)~\cite{nardo2008, roberts2017}.
+    \item \hi{Empírico:} 23\,761 inmuebles bogotanos georreferenciados,
+          11\,610 POIs cargados, 5\,703 polígonos POT. Trazabilidad
+          v1.0 $\to$ v2.0 documentada.
+    \item \hi{Tecnológico:} plataforma operacional en producción,
+          API documentada, hábeas data conforme a Ley 1581/2012,
+          repositorio público.
+    \item \hi{Social:} insumo objetivo para hogares y reguladores ---
+          el IUG es libre de la inercia del mercado.
+  \end{itemize}
+\end{frame}
+\note{\scriptsize
+\textbf{Citas:} Nardo et al. (2008); Roberts et al. (2017).\par
+\textbf{Resumen de los cuatro aportes (uno por verticales):}
+\begin{itemize}\itemsep0pt
+  \item METODOLÓGICO: el ``cómo'' replicable.
+  \item EMPÍRICO: las 23.761 observaciones que sostienen el análisis.
+  \item TECNOLÓGICO: la plataforma que demuestra que es operacional, no solo teórico.
+  \item SOCIAL: el ``para qué'' --- democratizar evaluación urbana objetiva.
+\end{itemize}
+}
+
+\begin{frame}{Limitaciones y trabajo futuro}
+  \textbf{Limitaciones reconocidas:}
+  \begin{itemize}
+    \item Cobertura del corpus restringida a Bogotá (multi-ciudad pendiente).
+    \item Plazas de mercado (42 polígonos) con CRS no estándar --- pendiente
+          de cargar.
+    \item Residuos hedónicos con colas pesadas: requiere errores robustos
+          o bootstrap (lo hicimos).
+  \end{itemize}
+  \vspace{0.6em}
+  \textbf{Líneas futuras:}
+  \begin{itemize}
+    \item Modelo hedónico con regresión cuantílica~\cite{koenker2005}
+          para evaluar el efecto del IUG en distintos segmentos del precio.
+    \item GWR (\textit{geographically weighted regression}) con
+          diagnóstico de colinealidad~\cite{wheeler2007}.
+    \item Series temporales del IUG (pipeline mensual ya implementado,
+          falta análisis longitudinal).
+  \end{itemize}
+\end{frame}
+\note{\scriptsize
+\textbf{Citas:} Koenker (2005); Wheeler (2007).\par
+\textbf{Sé honesto con las limitaciones — el jurado lo valora:}
+\begin{itemize}\itemsep0pt
+  \item Multi-ciudad: tenemos 21.671 inmuebles de Medellín/Cali/Barranquilla en la BD, pero las capas POT/TM son solo de Bogotá. Los marcamos con \texttt{iurb=NULL} para no contaminar promedios. Reto: replicar el pipeline para otras ciudades requiere cargar sus capas oficiales.
+  \item Plazas de mercado: 42 polígonos del IPES con CRS no estándar. Impacto marginal en I\_DOT.
+  \item Colas pesadas en residuos: $\Rightarrow$ trabajos futuros con regresión cuantílica (Koenker 2005) o GWR (Wheeler 2007).
+\end{itemize}
+\textbf{Si te preguntan ``¿qué harías diferente si empezaras hoy?'':}
+\begin{itemize}\itemsep0pt
+  \item Cargar TODOS los datasets antes de empezar el análisis (lección aprendida del v1.0 $\to$ v2.0).
+  \item Diseñar el sistema multi-ciudad desde el inicio.
+\end{itemize}
+}
+
+\begin{frame}[plain]{Gracias}
+  \vfill
+  \begin{center}
+    {\Large \textbf{¿Preguntas?}}\\[1em]
+    \large \url{https://inmu.vara-alta.lat}\\[0.4em]
+    \small Repositorio: \url{https://github.com/neylinsomne/indice-urbano-global-bogota}
+  \end{center}
+  \vfill
+\end{frame}
+
+% ================================================================
+% Referencias --- mismas que Doc_final.tex (compatibilidad)
+% ================================================================
+\appendix
+\begin{frame}[allowframebreaks]{Referencias}
+  \scriptsize
+  \begin{thebibliography}{99}
+
+    \bibitem{rosen1974}
+    Rosen, S. (1974). Hedonic prices and implicit markets.
+    \textit{Journal of Political Economy, 82}(1), 34--55.
+
+    \bibitem{hansen1959}
+    Hansen, W. G. (1959). How Accessibility Shapes Land Use.
+    \textit{Journal of the American Institute of Planners, 25}(2), 73--76.
+
+    \bibitem{anselin1995}
+    Anselin, L. (1995). Local Indicators of Spatial Association --- LISA.
+    \textit{Geographical Analysis, 27}(2), 93--115.
+
+    \bibitem{koenker2005}
+    Koenker, R. (2005). \textit{Quantile Regression}. CUP.
+
+    \bibitem{Khoshnoud2023}
+    Khoshnoud, M., Sirmans, G.~S. y Zietz, E.~N. (2023). The evolution
+    of hedonic pricing models. \textit{J. Real Estate Lit., 31}(1).
+
+    \bibitem{hair2010}
+    Hair, J.~F. et al. (2010). \textit{Multivariate Data Analysis}
+    (7$^a$ ed.). Pearson.
+
+    \bibitem{kaiser1974}
+    Kaiser, H.~F. (1974). An index of factorial simplicity.
+    \textit{Psychometrika, 39}(1), 31--36.
+
+    \bibitem{bartlett1954}
+    Bartlett, M.~S. (1954). A note on the multiplying factors for various
+    $\chi^2$ approximations. \textit{JRSS-B, 16}(2), 296--298.
+
+    \bibitem{roberts2017}
+    Roberts, D.~R. et al. (2017). Cross-validation strategies for data
+    with temporal, spatial, hierarchical, or phylogenetic structure.
+    \textit{Ecography, 40}(8), 913--929.
+
+    \bibitem{student1908}
+    Student [Gosset, W.~S.] (1908). The probable error of a mean.
+    \textit{Biometrika, 6}(1), 1--25.
+
+    \bibitem{iaao2013}
+    International Association of Assessing Officers (2013).
+    \textit{Standard on Ratio Studies}. Kansas City, MO.
+
+    \bibitem{tobler1970}
+    Tobler, W.~R. (1970). A computer movie simulating urban growth
+    in the Detroit region. \textit{Economic Geography, 46}(s1).
+
+    \bibitem{shiller2015}
+    Shiller, R.~J. (2015). \textit{Irrational Exuberance} (3$^a$ ed.).
+    Princeton UP.
+
+    \bibitem{nardo2008}
+    Nardo, M. et al. (2008). \textit{Handbook on Constructing Composite
+    Indicators}. OECD.
+
+    \bibitem{nimon2013}
+    Nimon, K.~F. y Oswald, F.~L. (2013). Understanding the results
+    of multiple linear regression.
+    \textit{Organizational Research Methods, 16}(4), 650--674.
+
+    \bibitem{HaynesFotheringham1985}
+    Haynes, K.~E. y Fotheringham, A.~S. (1985).
+    \textit{Gravity and Spatial Interaction Models}. Sage.
+
+    \bibitem{ccb2024}
+    CCB (2024). \textit{Encuesta de Percepción y Victimización (EPV) 2024}.
+    $n = 19\,354$.
+
+    \bibitem{IGAC1912}
+    IGAC (2024). \textit{Resolución 1912 de 2024}: metodología para la
+    actualización masiva de valores catastrales rezagados.
+
+    \bibitem{TasadorResidual}
+    Tasadorfiable (2025). Método de valoración residual dinámico.
+
+    \bibitem{glaeser2002}
+    Glaeser, E.~L. y Gyourko, J. (2002). The Impact of Zoning on
+    Housing Affordability. NBER WP 8835.
+
+    \bibitem{wheeler2007}
+    Wheeler, D.~C. (2007). Diagnostic tools and remedial methods for
+    collinearity in geographically weighted regression.
+    \textit{Environment and Planning A, 39}(10), 2464--2481.
+
+    \bibitem{saaty1980}
+    Saaty, T.~L. (1980). \textit{The Analytic Hierarchy Process: Planning,
+    Priority Setting, Resource Allocation}. McGraw-Hill.
+
+    \bibitem{ishizaka2011}
+    Ishizaka, A. y Labib, A. (2011). Review of the main developments in
+    the analytic hierarchy process.
+    \textit{Expert Systems with Applications, 38}(11), 14336--14345.
+
+    \bibitem{munda2008}
+    Munda, G. (2008). \textit{Social Multi-Criteria Evaluation for a
+    Sustainable Economy}. Springer.
+
+    \bibitem{cardenas2017}
+    Cárdenas O'Byrne, S. (2017). Medir el uso del espacio público urbano
+    seguro. \textit{Sociedad y Economía}, (33), 11--250.
+
+  \end{thebibliography}
+\end{frame}
+
+\end{document}

@@ -1,10 +1,26 @@
-# Secrets
+# Secrets — never commit these
 .env
 .env.local
 .env.*.local
+.env.production
+.env.staging
+.env.cloudflare
 *.pem
 *.key
+*.crt
+*.p12
+*.pfx
 secrets/
+credentials/
+
+# Gitleaks audit reports (no se publican)
+.gitleaks-report.json
+.gitleaks-report.csv
+
+# Cloudflare tunnel credentials (json con token, NUNCA al repo)
+cloudflared/
+*-credentials.json
+config.yml.local
 
 # Stitch design exports (binarios, no aportan al repo)
 stitch_extract/
@@ -57,6 +73,19 @@ data/processed/
 data/full_dump.sql
 *.dump
 
+# Scrapers — caches y dumps de páginas (pueden contener API keys públicas de terceros)
+services/scraping/**/page_content.txt
+services/scraping/**/*.html
+services/scraping/**/cache/
+services/scraping/**/.scrapy/
+services/scraping/**/finca/cookies/
+services/scraping/**/finca/proxies-rotativas/
+*.jl
+*.jsonl
+
+# Notebooks: limpiar outputs antes de commit
+# (mantener .ipynb pero sin outputs gigantes; usar nbstripout opcional)
+
 # Logs
 logs/
 *.log
@@ -64,3 +93,10 @@ logs/
 # Temp
 tmp/
 temp/
+
+# Chrome extensions (.crx) — binarios de terceros, no se distribuyen
+*.crx
+
+# Test residues en spiders
+services/scraping/**/resultados.json
+services/scraping/**/prueba.py

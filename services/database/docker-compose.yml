@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  flyway:
+    image: flyway/flyway:10
+    container_name: iug-flyway
+    depends_on:
+      - db
+    environment:
+      - FLYWAY_URL=jdbc:postgresql://db:5432/postgres
+      - FLYWAY_USER=postgres
+      - FLYWAY_PASSWORD=${PG_PASSWORD:-xd}
+      - FLYWAY_SCHEMAS=iug
+      - FLYWAY_BASELINE_ON_MIGRATE=true
+    volumes:
+      - ./migrations:/flyway/sql
+      - ./flyway.conf:/flyway/conf/flyway.conf
+    command: migrate
+    networks:
+      - gisnet
+
+  db:
+    image: postgis/postgis:16-3.4
+    container_name: iug-postgres
+    environment:
+      - POSTGRES_PASSWORD=${PG_PASSWORD:-xd}
+      - POSTGRES_DB=postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./init:/docker-entrypoint-initdb.d  # Scripts de inicialización
+    networks:
+      - gisnet
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pg_data:
+
+networks:
+  gisnet:
+    external: true
