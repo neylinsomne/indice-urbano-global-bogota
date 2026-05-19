@@ -211,4 +211,4 @@ Datos de fuentes oficiales (DANE, IDECA, SDP, IDRD, IGAC, Cámara de Comercio de
 ## 📬 Contacto
 
 Issues técnicos: usar el sistema de issues de GitHub.
-Consultas académicas: neylbernate (at) gmail (dot) com.
+Consultas académicas: neylbernate@gmail.com.
